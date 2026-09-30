@@ -1,0 +1,21 @@
+opportunity,detail,estimated_hours_saved,recommendation,confidence,human_review_required
+Duplicate work,"2 open 'Risk Review' items for customer C0020: T-000270, T-000531",2.3,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Data Entry / Reconciliation' items for customer C0022: T-001135, T-002005",1.3,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0034: T-001001, T-002006",4.6,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'AML Alert Review' items for customer C0058: T-001195, T-002001",4.4,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"3 open 'Risk Review' items for customer C0073: T-000809, T-001843, T-001407",7.8,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Credit Assessment' items for customer C0087: T-001338, T-001350",5.6,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Credit Assessment' items for customer C0089: T-000928, T-000084",7.0,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0118: T-001218, T-001706",3.6,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Credit Assessment' items for customer C0136: T-000202, T-002003",7.6,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0142: T-000561, T-000513",3.4,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Loan Application Intake' items for customer C0169: T-001898, T-002002",1.8,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0174: T-000923, T-001645",5.2,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Collections Follow-up' items for customer C0189: T-000724, T-000806",1.0,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0194: T-001215, T-000574",4.7,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Credit Assessment' items for customer C0209: T-000110, T-002004",5.1,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0236: T-001317, T-000787",5.5,Merge duplicates; add duplicate check at intake,0.9,No
+Duplicate work,"2 open 'Risk Review' items for customer C0252: T-000818, T-001918",5.4,Merge duplicates; add duplicate check at intake,0.9,No
+Long handoff chains,182 items with 4+ handoffs; most in Credit Assessment (72),45.5,Map the flow; remove non-value handoffs; single owner per case,0.7,Yes
+Rework loops,13 items returned 2+ times,11.1,"Fix at source: intake checklist, clear acceptance criteria",0.75,Yes
+Unassigned work,3 open items without an owner,0.0,"Auto-routing by skill, capacity and SLA",0.95,No

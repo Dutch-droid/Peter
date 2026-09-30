@@ -1,0 +1,2 @@
+item_id,check_type,customer_id,status,severity,due_at,related_task_id,description
+K-0001,KYC,C0042,Open,High,2026-09-25T00:00:00,,Beneficial owner documents missing

@@ -1,0 +1,35 @@
+staff_id,name,team,branch,capacity_hours_week,open_tasks,open_hours,workload_ratio,hours_worked_7d,utilisation_7d_pct,load_status
+S001,Eva Smit,Loan Origination,Rotterdam,40.0,8,22.9,0.57,44.6,112.0,Balanced
+S002,Lisa Meijer,Loan Origination,Eindhoven,40.0,6,15.4,0.38,44.1,110.0,Balanced
+S003,Bram Jansen,Loan Origination,Eindhoven,36.0,5,14.3,0.4,25.7,71.0,Balanced
+S004,Lotte Mulder,Loan Origination,Utrecht,40.0,7,12.6,0.32,23.5,59.0,Balanced
+S005,Lotte Bakker,Loan Origination,Amsterdam,24.0,3,6.3,0.26,12.6,52.0,Balanced
+S006,Iris Bakker,Loan Origination,Utrecht,40.0,2,3.7,0.09,18.4,46.0,Under-utilised
+S007,Noor Vos,Credit Risk,Rotterdam,40.0,40,194.5,4.86,95.6,239.0,Overloaded
+S008,Lisa Visser,Credit Risk,Rotterdam,24.0,40,182.1,7.59,123.0,512.0,Overloaded
+S009,Ruben de Boer,Credit Risk,Eindhoven,40.0,16,75.0,1.88,75.5,189.0,Overloaded
+S010,Ruben Vos,Credit Risk,Rotterdam,36.0,10,42.7,1.19,64.9,180.0,Overloaded
+S011,Lotte Jansen,Compliance,Utrecht,32.0,5,12.5,0.39,35.9,112.0,Balanced
+S012,Lotte Vos,Compliance,Rotterdam,40.0,7,19.8,0.5,45.2,113.0,Balanced
+S013,Noor Visser,Compliance,Eindhoven,40.0,2,9.3,0.23,26.2,66.0,Balanced
+S014,Sem Bos,Compliance,Rotterdam,40.0,1,2.8,0.07,60.7,152.0,Balanced
+S015,Sem Jansen,Compliance,Eindhoven,40.0,4,14.5,0.36,14.1,35.0,Balanced
+S016,Sam Smit,Compliance,Utrecht,40.0,0,0.0,0.0,19.2,48.0,Under-utilised
+S017,Bram Meijer,Customer Service,Amsterdam,32.0,2,1.9,0.06,30.0,94.0,Balanced
+S018,Daan de Boer,Customer Service,Rotterdam,36.0,0,0.0,0.0,23.2,64.0,Balanced
+S019,Iris de Boer,Customer Service,Utrecht,36.0,0,0.0,0.0,5.2,14.0,Under-utilised
+S020,Iris de Boer,Customer Service,Amsterdam,36.0,0,0.0,0.0,1.7,5.0,Under-utilised
+S021,Sanne Smit,Customer Service,Eindhoven,32.0,0,0.0,0.0,4.2,13.0,Under-utilised
+S022,Lisa Bos,Customer Service,Rotterdam,32.0,1,4.0,0.12,0.4,1.0,Under-utilised
+S023,Daan Meijer,Customer Service,Utrecht,40.0,1,0.7,0.02,1.0,2.0,Under-utilised
+S024,Anouk Smit,Customer Service,Eindhoven,32.0,0,0.0,0.0,2.1,7.0,Under-utilised
+S025,Daan de Vries,Collections,Eindhoven,36.0,10,14.3,0.4,12.0,33.0,Balanced
+S026,Ruben Vos,Collections,Utrecht,32.0,2,2.9,0.09,8.8,28.0,Under-utilised
+S027,Lotte Smit,Collections,Amsterdam,32.0,1,2.0,0.06,8.5,27.0,Under-utilised
+S028,Fleur de Boer,Collections,Rotterdam,24.0,1,2.1,0.09,2.0,8.0,Under-utilised
+S029,Milan Vos,Operations,Rotterdam,40.0,5,12.4,0.31,31.6,79.0,Balanced
+S030,Niels Mulder,Operations,Eindhoven,40.0,0,0.0,0.0,38.5,96.0,Balanced
+S031,Anouk Smit,Operations,Utrecht,24.0,0,0.0,0.0,20.4,85.0,Balanced
+S032,Sanne Jansen,Operations,Rotterdam,32.0,0,0.0,0.0,10.3,32.0,Under-utilised
+S033,Sem Meijer,Operations,Utrecht,40.0,2,6.4,0.16,23.0,57.0,Balanced
+S034,Emma Smit,Operations,Utrecht,36.0,1,4.8,0.13,6.0,17.0,Under-utilised

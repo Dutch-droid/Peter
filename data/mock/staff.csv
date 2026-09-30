@@ -1,0 +1,35 @@
+staff_id,name,team,branch,role,capacity_hours_week,skills,approval_authority
+S001,Eva Smit,Loan Origination,Rotterdam,Team Lead,40.0,Loan Application Intake,Y
+S002,Lisa Meijer,Loan Origination,Eindhoven,Analyst,40.0,Loan Application Intake;Loan Approval Recommendation,Y
+S003,Bram Jansen,Loan Origination,Eindhoven,Analyst,36.0,Loan Application Intake,N
+S004,Lotte Mulder,Loan Origination,Utrecht,Analyst,40.0,Loan Application Intake;Credit Assessment;Risk Review,N
+S005,Lotte Bakker,Loan Origination,Amsterdam,Analyst,24.0,Loan Application Intake;Loan Approval Recommendation;Credit Assessment;Risk Review,N
+S006,Iris Bakker,Loan Origination,Utrecht,Analyst,40.0,Loan Application Intake;Credit Assessment;Risk Review,N
+S007,Noor Vos,Credit Risk,Rotterdam,Team Lead,40.0,Credit Assessment;Risk Review,Y
+S008,Lisa Visser,Credit Risk,Rotterdam,Analyst,24.0,Credit Assessment;Risk Review,N
+S009,Ruben de Boer,Credit Risk,Eindhoven,Analyst,40.0,Credit Assessment;Risk Review,N
+S010,Ruben Vos,Credit Risk,Rotterdam,Analyst,36.0,Credit Assessment;Risk Review,N
+S011,Lotte Jansen,Compliance,Utrecht,Team Lead,32.0,KYC Review;AML Alert Review,Y
+S012,Lotte Vos,Compliance,Rotterdam,Analyst,40.0,KYC Review;AML Alert Review,N
+S013,Noor Visser,Compliance,Eindhoven,Analyst,40.0,KYC Review,N
+S014,Sem Bos,Compliance,Rotterdam,Analyst,40.0,KYC Review;AML Alert Review,N
+S015,Sem Jansen,Compliance,Eindhoven,Analyst,40.0,KYC Review;AML Alert Review,N
+S016,Sam Smit,Compliance,Utrecht,Analyst,40.0,KYC Review;AML Alert Review,N
+S017,Bram Meijer,Customer Service,Amsterdam,Team Lead,32.0,Customer Request;Complaint Handling;KYC Review;Collections Follow-up,N
+S018,Daan de Boer,Customer Service,Rotterdam,Analyst,36.0,Customer Request;Complaint Handling;KYC Review;Collections Follow-up,N
+S019,Iris de Boer,Customer Service,Utrecht,Analyst,36.0,Customer Request;KYC Review;Collections Follow-up,N
+S020,Iris de Boer,Customer Service,Amsterdam,Analyst,36.0,Customer Request;Complaint Handling,N
+S021,Sanne Smit,Customer Service,Eindhoven,Analyst,32.0,Customer Request;Complaint Handling,N
+S022,Lisa Bos,Customer Service,Rotterdam,Analyst,32.0,Customer Request;Complaint Handling,N
+S023,Daan Meijer,Customer Service,Utrecht,Analyst,40.0,Customer Request;Complaint Handling,N
+S024,Anouk Smit,Customer Service,Eindhoven,Analyst,32.0,Customer Request;Complaint Handling,N
+S025,Daan de Vries,Collections,Eindhoven,Team Lead,36.0,Collections Follow-up,Y
+S026,Ruben Vos,Collections,Utrecht,Analyst,32.0,Collections Follow-up,N
+S027,Lotte Smit,Collections,Amsterdam,Analyst,32.0,Collections Follow-up,N
+S028,Fleur de Boer,Collections,Rotterdam,Analyst,24.0,Collections Follow-up,N
+S029,Milan Vos,Operations,Rotterdam,Team Lead,40.0,Data Entry / Reconciliation;Document Check;Management Reporting;Loan Application Intake,N
+S030,Niels Mulder,Operations,Eindhoven,Analyst,40.0,Data Entry / Reconciliation;Document Check;Management Reporting;Loan Application Intake,N
+S031,Anouk Smit,Operations,Utrecht,Analyst,24.0,Data Entry / Reconciliation,N
+S032,Sanne Jansen,Operations,Rotterdam,Analyst,32.0,Data Entry / Reconciliation,N
+S033,Sem Meijer,Operations,Utrecht,Analyst,40.0,Data Entry / Reconciliation;Document Check;Management Reporting,N
+S034,Emma Smit,Operations,Utrecht,Analyst,36.0,Data Entry / Reconciliation,N

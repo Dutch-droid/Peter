@@ -1,0 +1,25 @@
+metric,value
+as_of,2026-09-30 09:00:00
+open_cases,185
+completed_in_period,1821
+period_days,44
+pending_approvals,66
+escalated,9
+overdue_items,122
+at_risk_items,10
+sla_open_breach_pct,65.9
+sla_completed_on_time_pct,55.8
+avg_turnaround_hours,78.6
+avg_processing_hours,3.0
+error_rate_pct,6.5
+rework_rate_pct,15.9
+staff_utilisation_pct,79.6
+overloaded_staff,4
+underutilised_staff,13
+unassigned_open,3
+compliance_exceptions,284
+aml_open,12
+aml_overdue,5
+high_risk_customer_open_items,17
+potential_hours_saved_per_week,307.4
+items_needing_human_review,38

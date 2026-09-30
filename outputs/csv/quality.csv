@@ -1,0 +1,5 @@
+finding,type,scope,recommended_action,priority,confidence,human_review_required
+Noor Visser (S013) error rate 34% vs 7% average (62 items),Training gap,S013,Targeted coaching and 100% peer review for 2 weeks,High,0.85,No
+Sam Smit (S016) error rate 12% vs 7% average (24 items),Training gap,S016,Targeted coaching and 100% peer review for 2 weeks,High,0.79,Yes
+'KYC Review' rework rate 36%,Process failure,KYC Review,Root-cause top rework reasons; add checklist at intake,High,0.8,Yes
+111 completed regulated items have no recorded approver (11.7%),Compliance gap,regulated items,Audit sample; enforce approver field in workflow,Critical,0.9,No

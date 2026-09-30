@@ -1,0 +1,285 @@
+exception,type,reference,severity,days_overdue,action
+Regulated item T-001584 (Risk Review) past SLA by 775h,Regulatory SLA breach,T-001584,High,32,Prioritise and notify compliance
+Overdue KYC (K-0065): Beneficial owner documents missing,KYC,K-0065,High,19,Assign owner and clear or escalate
+Regulated item T-000568 (Risk Review) past SLA by 457h,Regulatory SLA breach,T-000568,High,19,Prioritise and notify compliance
+Regulated item T-000171 (Risk Review) past SLA by 412h,Regulatory SLA breach,T-000171,High,17,Prioritise and notify compliance
+Regulated item T-001401 (Risk Review) past SLA by 219h,Regulatory SLA breach,T-001401,High,9,Prioritise and notify compliance
+Overdue Risk Review (K-0046): Annual risk review outstanding,Risk Review,K-0046,High,3,Assign owner and clear or escalate
+Regulated item T-000923 (Risk Review) past SLA by 74h,Regulatory SLA breach,T-000923,High,3,Prioritise and notify compliance
+Regulated item T-000855 (Loan Approval Recommendation) past SLA by 29h,Regulatory SLA breach,T-000855,High,1,Prioritise and notify compliance
+Approval pending with non-approver (S008) on T-001401,Policy violation,T-001401,High,0,Route to authorised approver
+Approval pending with non-approver (S006) on T-001468,Policy violation,T-001468,High,0,Route to authorised approver
+Approval pending with non-approver (S010) on T-001584,Policy violation,T-001584,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000194,Policy violation,T-000194,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001447,Policy violation,T-001447,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000390,Policy violation,T-000390,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-001414,Policy violation,T-001414,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001001,Policy violation,T-001001,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-002006,Policy violation,T-002006,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000928,Policy violation,T-000928,High,0,Route to authorised approver
+Approval pending with non-approver (S022) on T-001574,Policy violation,T-001574,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000816,Policy violation,T-000816,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000901,Policy violation,T-000901,High,0,Route to authorised approver
+Approval pending with non-approver (S005) on T-000998,Policy violation,T-000998,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000353,Policy violation,T-000353,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000666,Policy violation,T-000666,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000459,Policy violation,T-000459,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000728,Policy violation,T-000728,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000410,Policy violation,T-000410,High,0,Route to authorised approver
+Approval pending with non-approver (S005) on T-001843,Policy violation,T-001843,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-000110,Policy violation,T-000110,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001328,Policy violation,T-001328,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-002004,Policy violation,T-002004,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-001356,Policy violation,T-001356,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001353,Policy violation,T-001353,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001825,Policy violation,T-001825,High,0,Route to authorised approver
+Approval pending with non-approver (S010) on T-000217,Policy violation,T-000217,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001958,Policy violation,T-001958,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001569,Policy violation,T-001569,High,0,Route to authorised approver
+Approval pending with non-approver (S033) on T-001407,Policy violation,T-001407,High,0,Route to authorised approver
+Approval pending with non-approver (S003) on T-000528,Policy violation,T-000528,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001918,Policy violation,T-001918,High,0,Route to authorised approver
+Approval pending with non-approver (S010) on T-001475,Policy violation,T-001475,High,0,Route to authorised approver
+Approval pending with non-approver (S010) on T-001645,Policy violation,T-001645,High,0,Route to authorised approver
+Approval pending with non-approver (S013) on T-000084,Policy violation,T-000084,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-001424,Policy violation,T-001424,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000558,Policy violation,T-000558,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-001088,Policy violation,T-001088,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000777,Policy violation,T-000777,High,0,Route to authorised approver
+Approval pending with non-approver (S009) on T-000531,Policy violation,T-000531,High,0,Route to authorised approver
+Approval pending with non-approver (S008) on T-001502,Policy violation,T-001502,High,0,Route to authorised approver
+Missing approval on completed regulated item T-000011,Missing approval,T-000011,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000070,Missing approval,T-000070,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000090,Missing approval,T-000090,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000112,Missing approval,T-000112,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000123,Missing approval,T-000123,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000164,Missing approval,T-000164,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000175,Missing approval,T-000175,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000232,Missing approval,T-000232,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000252,Missing approval,T-000252,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000304,Missing approval,T-000304,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000305,Missing approval,T-000305,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000344,Missing approval,T-000344,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000413,Missing approval,T-000413,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000421,Missing approval,T-000421,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000427,Missing approval,T-000427,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000433,Missing approval,T-000433,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000464,Missing approval,T-000464,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000468,Missing approval,T-000468,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000482,Missing approval,T-000482,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000502,Missing approval,T-000502,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000530,Missing approval,T-000530,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000540,Missing approval,T-000540,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000547,Missing approval,T-000547,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000567,Missing approval,T-000567,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000571,Missing approval,T-000571,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000582,Missing approval,T-000582,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000589,Missing approval,T-000589,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000609,Missing approval,T-000609,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000612,Missing approval,T-000612,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000616,Missing approval,T-000616,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000621,Missing approval,T-000621,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000625,Missing approval,T-000625,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000731,Missing approval,T-000731,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000737,Missing approval,T-000737,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000747,Missing approval,T-000747,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000752,Missing approval,T-000752,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000766,Missing approval,T-000766,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000767,Missing approval,T-000767,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000770,Missing approval,T-000770,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000786,Missing approval,T-000786,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000789,Missing approval,T-000789,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000807,Missing approval,T-000807,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000833,Missing approval,T-000833,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000835,Missing approval,T-000835,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000867,Missing approval,T-000867,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000904,Missing approval,T-000904,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000919,Missing approval,T-000919,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000959,Missing approval,T-000959,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000960,Missing approval,T-000960,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-000963,Missing approval,T-000963,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001004,Missing approval,T-001004,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001008,Missing approval,T-001008,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001030,Missing approval,T-001030,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001075,Missing approval,T-001075,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001079,Missing approval,T-001079,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001081,Missing approval,T-001081,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001084,Missing approval,T-001084,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001087,Missing approval,T-001087,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001095,Missing approval,T-001095,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001098,Missing approval,T-001098,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001106,Missing approval,T-001106,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001146,Missing approval,T-001146,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001149,Missing approval,T-001149,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001150,Missing approval,T-001150,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001167,Missing approval,T-001167,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001182,Missing approval,T-001182,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001183,Missing approval,T-001183,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001206,Missing approval,T-001206,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001214,Missing approval,T-001214,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001282,Missing approval,T-001282,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001285,Missing approval,T-001285,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001299,Missing approval,T-001299,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001316,Missing approval,T-001316,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001320,Missing approval,T-001320,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001330,Missing approval,T-001330,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001371,Missing approval,T-001371,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001377,Missing approval,T-001377,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001384,Missing approval,T-001384,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001394,Missing approval,T-001394,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001416,Missing approval,T-001416,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001417,Missing approval,T-001417,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001465,Missing approval,T-001465,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001489,Missing approval,T-001489,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001499,Missing approval,T-001499,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001506,Missing approval,T-001506,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001521,Missing approval,T-001521,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001522,Missing approval,T-001522,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001638,Missing approval,T-001638,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001639,Missing approval,T-001639,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001665,Missing approval,T-001665,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001669,Missing approval,T-001669,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001678,Missing approval,T-001678,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001683,Missing approval,T-001683,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001696,Missing approval,T-001696,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001698,Missing approval,T-001698,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001703,Missing approval,T-001703,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001726,Missing approval,T-001726,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001734,Missing approval,T-001734,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001743,Missing approval,T-001743,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001751,Missing approval,T-001751,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001763,Missing approval,T-001763,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001808,Missing approval,T-001808,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001828,Missing approval,T-001828,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001859,Missing approval,T-001859,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001860,Missing approval,T-001860,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001902,Missing approval,T-001902,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001914,Missing approval,T-001914,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001938,Missing approval,T-001938,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001978,Missing approval,T-001978,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001990,Missing approval,T-001990,High,0,Retrospective approval / audit review
+Missing approval on completed regulated item T-001996,Missing approval,T-001996,High,0,Retrospective approval / audit review
+Regulated item T-001468 (Loan Approval Recommendation) past SLA by 10h,Regulatory SLA breach,T-001468,High,0,Prioritise and notify compliance
+Regulated item T-001955 (Credit Assessment) past SLA by 12h,Regulatory SLA breach,T-001955,High,0,Prioritise and notify compliance
+Regulated item T-001687 (Risk Review) past SLA by 901h,Regulatory SLA breach,T-001687,Medium,37,Prioritise and notify compliance
+Regulated item T-001979 (Loan Approval Recommendation) past SLA by 641h,Regulatory SLA breach,T-001979,Medium,26,Prioritise and notify compliance
+Regulated item T-000798 (Risk Review) past SLA by 613h,Regulatory SLA breach,T-000798,Medium,25,Prioritise and notify compliance
+Regulated item T-001353 (Credit Assessment) past SLA by 614h,Regulatory SLA breach,T-001353,Medium,25,Prioritise and notify compliance
+Regulated item T-001303 (Risk Review) past SLA by 556h,Regulatory SLA breach,T-001303,Medium,23,Prioritise and notify compliance
+Regulated item T-001447 (Risk Review) past SLA by 520h,Regulatory SLA breach,T-001447,Medium,21,Prioritise and notify compliance
+Regulated item T-001664 (Credit Assessment) past SLA by 459h,Regulatory SLA breach,T-001664,Medium,19,Prioritise and notify compliance
+Overdue AML (K-0006): Unusual transaction pattern flagged,AML,K-0006,Medium,18,Assign owner and clear or escalate
+Overdue KYC (K-0013): Beneficial owner documents missing,KYC,K-0013,Medium,17,Assign owner and clear or escalate
+Overdue Risk Review (K-0004): Annual risk review outstanding,Risk Review,K-0004,Medium,16,Assign owner and clear or escalate
+Overdue Risk Review (K-0053): Annual risk review outstanding,Risk Review,K-0053,Medium,16,Assign owner and clear or escalate
+Overdue Policy (K-0069): Exception to lending policy,Policy,K-0069,Medium,16,Assign owner and clear or escalate
+Overdue Approval (K-0044): Dual approval not evidenced,Approval,K-0044,Medium,14,Assign owner and clear or escalate
+Regulated item T-000390 (Credit Assessment) past SLA by 357h,Regulatory SLA breach,T-000390,Medium,14,Prioritise and notify compliance
+Regulated item T-000453 (Credit Assessment) past SLA by 347h,Regulatory SLA breach,T-000453,Medium,14,Prioritise and notify compliance
+Regulated item T-000459 (Risk Review) past SLA by 356h,Regulatory SLA breach,T-000459,Medium,14,Prioritise and notify compliance
+Overdue KYC (K-0002): Beneficial owner documents missing,KYC,K-0002,Medium,13,Assign owner and clear or escalate
+Regulated item T-000028 (Risk Review) past SLA by 323h,Regulatory SLA breach,T-000028,Medium,13,Prioritise and notify compliance
+Regulated item T-001612 (Credit Assessment) past SLA by 334h,Regulatory SLA breach,T-001612,Medium,13,Prioritise and notify compliance
+Overdue AML (K-0038): Unusual transaction pattern flagged,AML,K-0038,Medium,12,Assign owner and clear or escalate
+Regulated item T-001331 (Risk Review) past SLA by 293h,Regulatory SLA breach,T-001331,Medium,12,Prioritise and notify compliance
+Regulated item T-000523 (Risk Review) past SLA by 292h,Regulatory SLA breach,T-000523,Medium,12,Prioritise and notify compliance
+Regulated item T-001317 (Risk Review) past SLA by 306h,Regulatory SLA breach,T-001317,Medium,12,Prioritise and notify compliance
+Regulated item T-001889 (Credit Assessment) past SLA by 266h,Regulatory SLA breach,T-001889,Medium,11,Prioritise and notify compliance
+Regulated item T-001351 (Credit Assessment) past SLA by 241h,Regulatory SLA breach,T-001351,Medium,10,Prioritise and notify compliance
+Regulated item T-001356 (Credit Assessment) past SLA by 254h,Regulatory SLA breach,T-001356,Medium,10,Prioritise and notify compliance
+Overdue Approval (K-0061): Dual approval not evidenced,Approval,K-0061,Medium,9,Assign owner and clear or escalate
+Regulated item T-000194 (Risk Review) past SLA by 229h,Regulatory SLA breach,T-000194,Medium,9,Prioritise and notify compliance
+Regulated item T-001001 (Risk Review) past SLA by 225h,Regulatory SLA breach,T-001001,Medium,9,Prioritise and notify compliance
+Regulated item T-002006 (Risk Review) past SLA by 225h,Regulatory SLA breach,T-002006,Medium,9,Prioritise and notify compliance
+Regulated item T-001006 (Credit Assessment) past SLA by 228h,Regulatory SLA breach,T-001006,Medium,9,Prioritise and notify compliance
+Regulated item T-000249 (Risk Review) past SLA by 230h,Regulatory SLA breach,T-000249,Medium,9,Prioritise and notify compliance
+Regulated item T-001674 (Credit Assessment) past SLA by 195h,Regulatory SLA breach,T-001674,Medium,8,Prioritise and notify compliance
+Regulated item T-000901 (Risk Review) past SLA by 215h,Regulatory SLA breach,T-000901,Medium,8,Prioritise and notify compliance
+Regulated item T-000688 (Credit Assessment) past SLA by 200h,Regulatory SLA breach,T-000688,Medium,8,Prioritise and notify compliance
+Regulated item T-001569 (Risk Review) past SLA by 202h,Regulatory SLA breach,T-001569,Medium,8,Prioritise and notify compliance
+Regulated item T-001052 (Risk Review) past SLA by 209h,Regulatory SLA breach,T-001052,Medium,8,Prioritise and notify compliance
+Regulated item T-001865 (Credit Assessment) past SLA by 211h,Regulatory SLA breach,T-001865,Medium,8,Prioritise and notify compliance
+Overdue Risk Review (K-0028): Annual risk review outstanding,Risk Review,K-0028,Medium,7,Assign owner and clear or escalate
+Overdue Approval (K-0063): Dual approval not evidenced,Approval,K-0063,Medium,7,Assign owner and clear or escalate
+Regulated item T-000068 (Risk Review) past SLA by 176h,Regulatory SLA breach,T-000068,Medium,7,Prioritise and notify compliance
+Regulated item T-001414 (Risk Review) past SLA by 176h,Regulatory SLA breach,T-001414,Medium,7,Prioritise and notify compliance
+Regulated item T-000928 (Credit Assessment) past SLA by 181h,Regulatory SLA breach,T-000928,Medium,7,Prioritise and notify compliance
+Regulated item T-001753 (Credit Assessment) past SLA by 149h,Regulatory SLA breach,T-001753,Medium,6,Prioritise and notify compliance
+Regulated item T-000809 (Risk Review) past SLA by 151h,Regulatory SLA breach,T-000809,Medium,6,Prioritise and notify compliance
+Regulated item T-001328 (Risk Review) past SLA by 167h,Regulatory SLA breach,T-001328,Medium,6,Prioritise and notify compliance
+Overdue Approval (K-0011): Dual approval not evidenced,Approval,K-0011,Medium,5,Assign owner and clear or escalate
+Regulated item T-001539 (Credit Assessment) past SLA by 137h,Regulatory SLA breach,T-001539,Medium,5,Prioritise and notify compliance
+Regulated item T-001609 (Loan Approval Recommendation) past SLA by 125h,Regulatory SLA breach,T-001609,Medium,5,Prioritise and notify compliance
+Regulated item T-000256 (Risk Review) past SLA by 137h,Regulatory SLA breach,T-000256,Medium,5,Prioritise and notify compliance
+Regulated item T-000765 (Risk Review) past SLA by 121h,Regulatory SLA breach,T-000765,Medium,5,Prioritise and notify compliance
+Regulated item T-000126 (Risk Review) past SLA by 126h,Regulatory SLA breach,T-000126,Medium,5,Prioritise and notify compliance
+Regulated item T-001024 (Collections Follow-up) past SLA by 124h,Regulatory SLA breach,T-001024,Medium,5,Prioritise and notify compliance
+Regulated item T-000818 (Risk Review) past SLA by 127h,Regulatory SLA breach,T-000818,Medium,5,Prioritise and notify compliance
+Regulated item T-000238 (Credit Assessment) past SLA by 131h,Regulatory SLA breach,T-000238,Medium,5,Prioritise and notify compliance
+Regulated item T-000110 (Credit Assessment) past SLA by 142h,Regulatory SLA breach,T-000110,Medium,5,Prioritise and notify compliance
+Regulated item T-002004 (Credit Assessment) past SLA by 142h,Regulatory SLA breach,T-002004,Medium,5,Prioritise and notify compliance
+Regulated item T-001652 (Loan Approval Recommendation) past SLA by 123h,Regulatory SLA breach,T-001652,Medium,5,Prioritise and notify compliance
+Overdue Risk Review (K-0040): Annual risk review outstanding,Risk Review,K-0040,Medium,4,Assign owner and clear or escalate
+Regulated item T-000921 (Loan Approval Recommendation) past SLA by 119h,Regulatory SLA breach,T-000921,Medium,4,Prioritise and notify compliance
+Regulated item T-001236 (Credit Assessment) past SLA by 108h,Regulatory SLA breach,T-001236,Medium,4,Prioritise and notify compliance
+Regulated item T-000675 (KYC Review) past SLA by 114h,Regulatory SLA breach,T-000675,Medium,4,Prioritise and notify compliance
+Regulated item T-001843 (Risk Review) past SLA by 103h,Regulatory SLA breach,T-001843,Medium,4,Prioritise and notify compliance
+Regulated item T-000150 (Risk Review) past SLA by 106h,Regulatory SLA breach,T-000150,Medium,4,Prioritise and notify compliance
+Regulated item T-000202 (Credit Assessment) past SLA by 100h,Regulatory SLA breach,T-000202,Medium,4,Prioritise and notify compliance
+Regulated item T-002003 (Credit Assessment) past SLA by 100h,Regulatory SLA breach,T-002003,Medium,4,Prioritise and notify compliance
+Regulated item T-001825 (Risk Review) past SLA by 104h,Regulatory SLA breach,T-001825,Medium,4,Prioritise and notify compliance
+Regulated item T-001958 (Risk Review) past SLA by 102h,Regulatory SLA breach,T-001958,Medium,4,Prioritise and notify compliance
+Regulated item T-000235 (Credit Assessment) past SLA by 109h,Regulatory SLA breach,T-000235,Medium,4,Prioritise and notify compliance
+Regulated item T-001215 (Risk Review) past SLA by 110h,Regulatory SLA breach,T-001215,Medium,4,Prioritise and notify compliance
+Regulated item T-000816 (Risk Review) past SLA by 73h,Regulatory SLA breach,T-000816,Medium,3,Prioritise and notify compliance
+Regulated item T-000728 (Credit Assessment) past SLA by 74h,Regulatory SLA breach,T-000728,Medium,3,Prioritise and notify compliance
+Regulated item T-000410 (Credit Assessment) past SLA by 86h,Regulatory SLA breach,T-000410,Medium,3,Prioritise and notify compliance
+Regulated item T-000217 (Risk Review) past SLA by 77h,Regulatory SLA breach,T-000217,Medium,3,Prioritise and notify compliance
+Regulated item T-001218 (Risk Review) past SLA by 84h,Regulatory SLA breach,T-001218,Medium,3,Prioritise and notify compliance
+Regulated item T-000382 (Loan Approval Recommendation) past SLA by 87h,Regulatory SLA breach,T-000382,Medium,3,Prioritise and notify compliance
+Regulated item T-000042 (Risk Review) past SLA by 48h,Regulatory SLA breach,T-000042,Medium,2,Prioritise and notify compliance
+Regulated item T-000561 (Risk Review) past SLA by 53h,Regulatory SLA breach,T-000561,Medium,2,Prioritise and notify compliance
+Regulated item T-000270 (Risk Review) past SLA by 54h,Regulatory SLA breach,T-000270,Medium,2,Prioritise and notify compliance
+Regulated item T-000353 (Credit Assessment) past SLA by 48h,Regulatory SLA breach,T-000353,Medium,2,Prioritise and notify compliance
+Regulated item T-000962 (Credit Assessment) past SLA by 51h,Regulatory SLA breach,T-000962,Medium,2,Prioritise and notify compliance
+Regulated item T-000466 (Risk Review) past SLA by 49h,Regulatory SLA breach,T-000466,Medium,2,Prioritise and notify compliance
+Regulated item T-001357 (Risk Review) past SLA by 69h,Regulatory SLA breach,T-001357,Medium,2,Prioritise and notify compliance
+Regulated item T-001922 (Credit Assessment) past SLA by 51h,Regulatory SLA breach,T-001922,Medium,2,Prioritise and notify compliance
+Regulated item T-000528 (Loan Approval Recommendation) past SLA by 56h,Regulatory SLA breach,T-000528,Medium,2,Prioritise and notify compliance
+Regulated item T-001013 (Risk Review) past SLA by 36h,Regulatory SLA breach,T-001013,Medium,1,Prioritise and notify compliance
+Regulated item T-000227 (Loan Approval Recommendation) past SLA by 26h,Regulatory SLA breach,T-000227,Medium,1,Prioritise and notify compliance
+Regulated item T-000661 (Loan Approval Recommendation) past SLA by 36h,Regulatory SLA breach,T-000661,Medium,1,Prioritise and notify compliance
+Regulated item T-000998 (Loan Approval Recommendation) past SLA by 43h,Regulatory SLA breach,T-000998,Medium,1,Prioritise and notify compliance
+Regulated item T-001157 (Risk Review) past SLA by 36h,Regulatory SLA breach,T-001157,Medium,1,Prioritise and notify compliance
+Regulated item T-000666 (Risk Review) past SLA by 38h,Regulatory SLA breach,T-000666,Medium,1,Prioritise and notify compliance
+Regulated item T-000674 (Risk Review) past SLA by 47h,Regulatory SLA breach,T-000674,Medium,1,Prioritise and notify compliance
+Regulated item T-001429 (Credit Assessment) past SLA by 25h,Regulatory SLA breach,T-001429,Medium,1,Prioritise and notify compliance
+Regulated item T-001319 (KYC Review) past SLA by 41h,Regulatory SLA breach,T-001319,Medium,1,Prioritise and notify compliance
+Regulated item T-001574 (Credit Assessment) past SLA by 17h,Regulatory SLA breach,T-001574,Medium,0,Prioritise and notify compliance
+Regulated item T-000064 (KYC Review) past SLA by 9h,Regulatory SLA breach,T-000064,Medium,0,Prioritise and notify compliance
+Regulated item T-001513 (KYC Review) past SLA by 3h,Regulatory SLA breach,T-001513,Medium,0,Prioritise and notify compliance
+Regulated item T-001529 (Credit Assessment) past SLA by 6h,Regulatory SLA breach,T-001529,Medium,0,Prioritise and notify compliance
+Regulated item T-000908 (Credit Assessment) past SLA by 23h,Regulatory SLA breach,T-000908,Medium,0,Prioritise and notify compliance
+Regulated item T-001607 (Loan Approval Recommendation) past SLA by 8h,Regulatory SLA breach,T-001607,Medium,0,Prioritise and notify compliance
+Regulated item T-001507 (Risk Review) past SLA by 10h,Regulatory SLA breach,T-001507,Medium,0,Prioritise and notify compliance
+Regulated item T-000705 (Loan Approval Recommendation) past SLA by 4h,Regulatory SLA breach,T-000705,Medium,0,Prioritise and notify compliance
+Regulated item T-000787 (Risk Review) past SLA by 23h,Regulatory SLA breach,T-000787,Medium,0,Prioritise and notify compliance
+Regulated item T-001010 (KYC Review) past SLA by 5h,Regulatory SLA breach,T-001010,Medium,0,Prioritise and notify compliance
+Regulated item T-001407 (Risk Review) past SLA by 11h,Regulatory SLA breach,T-001407,Medium,0,Prioritise and notify compliance
+Regulated item T-001731 (KYC Review) past SLA by 4h,Regulatory SLA breach,T-001731,Medium,0,Prioritise and notify compliance
+Regulated item T-000339 (Risk Review) past SLA by 8h,Regulatory SLA breach,T-000339,Medium,0,Prioritise and notify compliance
+Regulated item T-001168 (AML Alert Review) past SLA by 24h,Regulatory SLA breach,T-001168,Medium,0,Prioritise and notify compliance
+Overdue KYC (K-0055): Beneficial owner documents missing,KYC,K-0055,Low,17,Assign owner and clear or escalate
+Overdue Risk Review (K-0029): Annual risk review outstanding,Risk Review,K-0029,Low,16,Assign owner and clear or escalate
+Overdue KYC (K-0021): Beneficial owner documents missing,KYC,K-0021,Low,15,Assign owner and clear or escalate
+Overdue KYC (K-0017): Beneficial owner documents missing,KYC,K-0017,Low,13,Assign owner and clear or escalate
+Overdue KYC (K-0020): Beneficial owner documents missing,KYC,K-0020,Low,11,Assign owner and clear or escalate
+Overdue Risk Review (K-0032): Annual risk review outstanding,Risk Review,K-0032,Low,8,Assign owner and clear or escalate
+Overdue KYC (K-0054): Beneficial owner documents missing,KYC,K-0054,Low,8,Assign owner and clear or escalate
+Overdue KYC (K-0025): Beneficial owner documents missing,KYC,K-0025,Low,6,Assign owner and clear or escalate
+Overdue AML (K-0045): Unusual transaction pattern flagged,AML,K-0045,Low,6,Assign owner and clear or escalate
+Overdue Policy (K-0005): Exception to lending policy,Policy,K-0005,Low,5,Assign owner and clear or escalate
+Overdue AML (K-0034): Unusual transaction pattern flagged,AML,K-0034,Low,5,Assign owner and clear or escalate
+Overdue KYC (K-0001): Beneficial owner documents missing,KYC,K-0001,Low,4,Assign owner and clear or escalate
+Overdue AML (K-0048): Unusual transaction pattern flagged,AML,K-0048,Low,1,Assign owner and clear or escalate
+Overdue KYC (K-0068): Beneficial owner documents missing,KYC,K-0068,Low,0,Assign owner and clear or escalate

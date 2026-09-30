@@ -1,0 +1,7 @@
+team,completed,avg_tat_hours,avg_processing_hours,sla_on_time_pct,error_rate_pct,rework_rate_pct,open_tasks,breached,throughput_per_day,completion_rate_pct
+Collections,147,83.3,1.9,74.8,6.1,12.2,15,4,3.34,90.7
+Compliance,345,45.6,3.6,57.4,11.0,27.2,19,7,7.84,94.8
+Credit Risk,293,234.1,5.8,20.8,5.8,14.3,110,89,6.66,72.7
+Customer Service,251,13.7,1.5,97.6,5.6,12.4,3,0,5.7,98.8
+Loan Origination,432,75.5,2.7,25.9,5.3,11.1,30,20,9.82,93.5
+Operations,353,29.7,2.0,82.4,5.1,15.9,8,2,8.02,97.8

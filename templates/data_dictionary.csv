@@ -1,0 +1,37 @@
+table,column,type,required,allowed_values,description,example
+tasks,task_id,text,Yes,,Unique work item ID,T-000123
+tasks,task_type,text,Yes,,"Work type, e.g. KYC Review, Credit Assessment",KYC Review
+tasks,team,text,Yes,,Owning team / department,Compliance
+tasks,branch,text,Yes,,Branch or location,Amsterdam
+tasks,assigned_to,text,No,,staff_id of the assignee (blank = unassigned),S007
+tasks,status,text,Yes,"New, In Progress, Pending Review, Pending Approval, Escalated, Rework, Completed",Current workflow status,In Progress
+tasks,created_at,datetime,Yes,,When the item entered the queue (ISO 8601),2026-09-20T09:15:00
+tasks,due_at,datetime,Yes,,SLA deadline (ISO 8601),2026-09-22T09:15:00
+tasks,completed_at,datetime,No,,Completion time (required when status = Completed),
+tasks,customer_id,text,No,,Customer identifier (anonymised is fine),C0042
+tasks,customer_risk,text,Yes,"Low, Medium, High",Customer risk rating,Medium
+tasks,amount,number,No,,Exposure / revenue value in EUR,125000
+tasks,regulatory_flag,text,Yes,"Y, N",Y if the item has a regulatory deadline or requirement,N
+tasks,est_hours,number,Yes,,Estimated effort (open) in hours,2.5
+tasks,actual_hours,number,No,,Actual effort in hours (completed items),
+tasks,rework_count,number,No,,Times the item was returned for rework,0
+tasks,handoff_count,number,No,,Number of handoffs between people/teams,1
+tasks,error_flag,text,No,"Y, N",Y if a quality error was found on the item,N
+tasks,approved_by,text,No,,staff_id of the approver (required for completed regulated items),
+tasks,source_system,text,No,,"CRM, Loan Mgmt, Core Banking, NAV, ...",CRM
+staff,staff_id,text,Yes,,Unique staff ID,S007
+staff,name,text,Yes,,Display name (use a pseudonym if preferred),Sam de Vries
+staff,team,text,Yes,,Team / department,Compliance
+staff,branch,text,Yes,,Branch or location,Amsterdam
+staff,role,text,No,,Job role,Analyst
+staff,capacity_hours_week,number,Yes,,Productive hours available per week,32
+staff,skills,text,No,,Semicolon-separated task_types the person can handle,KYC Review;AML Alert Review
+staff,approval_authority,text,Yes,"Y, N",Y if authorised to approve,N
+compliance,item_id,text,Yes,,Unique compliance item ID,K-0001
+compliance,check_type,text,Yes,"KYC, AML, Risk Review, Approval, Policy",Type of check,KYC
+compliance,customer_id,text,No,,Customer identifier,C0042
+compliance,status,text,Yes,"Open, Cleared, Escalated",Current status,Open
+compliance,severity,text,Yes,"Low, Medium, High",Severity,High
+compliance,due_at,datetime,Yes,,Deadline (ISO 8601),2026-09-25T00:00:00
+compliance,related_task_id,text,No,,Linked task_id,
+compliance,description,text,No,,Short description,Beneficial owner documents missing

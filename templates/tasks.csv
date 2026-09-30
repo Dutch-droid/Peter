@@ -1,0 +1,2 @@
+task_id,task_type,team,branch,assigned_to,status,created_at,due_at,completed_at,customer_id,customer_risk,amount,regulatory_flag,est_hours,actual_hours,rework_count,handoff_count,error_flag,approved_by,source_system
+T-000123,KYC Review,Compliance,Amsterdam,S007,In Progress,2026-09-20T09:15:00,2026-09-22T09:15:00,,C0042,Medium,125000,N,2.5,,0,1,N,,CRM

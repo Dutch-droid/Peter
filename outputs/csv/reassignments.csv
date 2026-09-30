@@ -1,0 +1,18 @@
+task_id,task_type,priority,sla_status,est_hours,from_staff,from_team,to_staff,to_name,to_team,cross_team,to_ratio_before,reason,confidence,human_review_required
+T-000171,Risk Review,Critical,Breached,3.3,S008,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.09,Assignee overloaded,0.8,Yes
+T-001539,Credit Assessment,Critical,Breached,3.8,S008,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.17,Assignee overloaded,0.8,Yes
+T-001955,Credit Assessment,Critical,Breached,3.8,S008,Credit Risk,S005,Lotte Bakker,Loan Origination,Yes,0.26,Assignee overloaded,0.8,Yes
+T-000923,Risk Review,Critical,Breached,3.5,S008,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.27,Assignee overloaded,0.8,Yes
+T-000028,Risk Review,Critical,Breached,4.3,S008,Credit Risk,S004,Lotte Mulder,Loan Origination,Yes,0.32,Assignee overloaded,0.8,Yes
+T-000068,Risk Review,Critical,Breached,3.2,S007,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.36,Assignee overloaded,0.8,Yes
+T-001013,Risk Review,Critical,Breached,8.5,S008,Credit Risk,S005,Lotte Bakker,Loan Origination,Yes,0.42,Assignee overloaded,0.8,Yes
+T-000256,Risk Review,Critical,Breached,5.2,S007,Credit Risk,S004,Lotte Mulder,Loan Origination,Yes,0.42,Assignee overloaded,0.8,Yes
+T-000765,Risk Review,Critical,Breached,2.8,S010,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.44,Assignee overloaded,0.8,Yes
+T-000126,Risk Review,Critical,Breached,3.5,S007,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.51,Assignee overloaded,0.8,Yes
+T-000042,Risk Review,Critical,Breached,4.6,S007,Credit Risk,S004,Lotte Mulder,Loan Origination,Yes,0.55,Assignee overloaded,0.8,Yes
+T-000561,Risk Review,Critical,Breached,4.7,S007,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.59,Assignee overloaded,0.8,Yes
+T-001612,Credit Assessment,Critical,Breached,5.7,S008,Credit Risk,S004,Lotte Mulder,Loan Origination,Yes,0.67,Assignee overloaded,0.8,Yes
+T-001753,Credit Assessment,Critical,Breached,3.3,S009,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.71,Assignee overloaded,0.8,Yes
+T-000818,Risk Review,Critical,Breached,2.1,S008,Credit Risk,S005,Lotte Bakker,Loan Origination,Yes,0.78,Assignee overloaded,0.8,Yes
+T-000150,Risk Review,Critical,Breached,2.3,S008,Credit Risk,S006,Iris Bakker,Loan Origination,Yes,0.8,Assignee overloaded,0.8,Yes
+T-001317,Risk Review,Critical,Breached,2.8,S010,Credit Risk,S004,Lotte Mulder,Loan Origination,Yes,0.81,Assignee overloaded,0.8,Yes

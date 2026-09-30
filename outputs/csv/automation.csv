@@ -1,0 +1,13 @@
+process,team,volume_per_week,manual_hours_per_week,assumed_automation_share,est_hours_saved_per_week,est_rework_hours_per_week,automation_recommendation,business_benefit,confidence,human_review_required
+Credit Assessment,Credit Risk,36.3,217.4,0.2,43.5,13.1,Automated data gathering / spreading; credit decision stays human,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Management Reporting,Operations,11.3,52.0,0.8,41.6,3.0,Scheduled auto-generated SLA / workload reports,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+KYC Review,Compliance,33.9,114.4,0.35,40.0,12.8,Pre-populated KYC checklist with automated screening; analyst reviews exceptions,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Risk Review,Credit Risk,27.8,133.5,0.25,33.4,6.2,Scheduled review triggers and pre-filled review packs,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Loan Application Intake,Loan Origination,38.3,70.0,0.45,31.5,2.8,Automated intake validation and routing,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Data Entry / Reconciliation,Operations,23.2,36.0,0.7,25.2,1.6,Automated cross-system reconciliation (CRM / Loan Mgmt / NAV),"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Collections Follow-up,Collections,25.8,48.0,0.5,24.0,2.7,Automated reminder sequences with escalation triggers,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+AML Alert Review,Compliance,24.0,90.6,0.25,22.6,4.5,Alert triage scoring to auto-close clear false positives (sampled by humans),"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Document Check,Operations,22.9,24.7,0.6,14.8,1.3,Automated document completeness / expiry validation,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Loan Approval Recommendation,Loan Origination,35.2,127.2,0.1,12.7,4.9,Pack assembly only; approval stays with authorised staff,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Customer Request,Customer Service,24.5,23.7,0.45,10.7,0.8,Templated responses and status self-service for routine requests,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes
+Complaint Handling,Customer Service,15.9,37.0,0.2,7.4,2.0,Auto-classification and routing of complaints,"Faster turnaround, fewer errors, capacity freed for backlog",0.7,Yes

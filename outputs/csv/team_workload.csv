@@ -1,0 +1,7 @@
+team,staff_count,capacity_hours_week,open_hours,open_tasks,hours_worked_7d,workload_ratio,utilisation_7d_pct,approvers,load_status
+Collections,4,124.0,21.3,14,31.3,0.17,25.0,1,Under-utilised
+Compliance,6,232.0,58.900000000000006,19,201.3,0.25,87.0,1,Balanced
+Credit Risk,4,140.0,494.3,106,359.0,3.53,256.0,1,Overloaded
+Customer Service,8,276.0,6.6000000000000005,4,67.8,0.02,25.0,0,Under-utilised
+Loan Origination,6,220.0,75.2,31,168.9,0.34,77.0,2,Balanced
+Operations,6,212.0,23.6,8,129.8,0.11,61.0,0,Balanced

@@ -1,0 +1,71 @@
+item_id,check_type,customer_id,status,severity,due_at,related_task_id,description
+K-0001,KYC,C0126,Open,Low,2026-09-25T15:45:35,,Beneficial owner documents missing
+K-0002,KYC,C0075,Escalated,Medium,2026-09-16T13:55:28,,Beneficial owner documents missing
+K-0003,AML,C0040,Cleared,Medium,2026-09-20T10:21:29,,Unusual transaction pattern flagged
+K-0004,Risk Review,C0097,Open,Medium,2026-09-13T15:40:20,,Annual risk review outstanding
+K-0005,Policy,C0083,Open,Low,2026-09-24T12:04:05,,Exception to lending policy
+K-0006,AML,C0012,Open,Medium,2026-09-12T04:58:49,,Unusual transaction pattern flagged
+K-0007,KYC,C0291,Cleared,Low,2026-09-20T20:20:40,,Beneficial owner documents missing
+K-0008,Approval,C0257,Open,Low,2026-09-30T14:38:09,,Dual approval not evidenced
+K-0009,KYC,C0215,Open,Low,2026-10-01T21:47:10,,Beneficial owner documents missing
+K-0010,Policy,C0109,Open,Low,2026-10-07T23:16:18,,Exception to lending policy
+K-0011,Approval,C0269,Open,Medium,2026-09-24T21:09:22,,Dual approval not evidenced
+K-0012,KYC,C0068,Open,Low,2026-10-12T03:30:55,,Beneficial owner documents missing
+K-0013,KYC,C0283,Open,Medium,2026-09-12T09:20:48,,Beneficial owner documents missing
+K-0014,Risk Review,C0260,Open,Low,2026-10-09T08:57:21,,Annual risk review outstanding
+K-0015,Risk Review,C0154,Open,Low,2026-10-12T04:09:51,,Annual risk review outstanding
+K-0016,KYC,C0041,Cleared,High,2026-09-18T08:01:37,,Beneficial owner documents missing
+K-0017,KYC,C0032,Open,Low,2026-09-16T11:06:03,,Beneficial owner documents missing
+K-0018,Risk Review,C0116,Open,Medium,2026-10-12T05:28:44,,Annual risk review outstanding
+K-0019,Risk Review,C0071,Open,Medium,2026-10-04T05:34:53,,Annual risk review outstanding
+K-0020,KYC,C0182,Escalated,Low,2026-09-19T03:00:38,,Beneficial owner documents missing
+K-0021,KYC,C0013,Escalated,Low,2026-09-14T22:24:02,,Beneficial owner documents missing
+K-0022,AML,C0217,Open,Low,2026-10-09T18:11:16,,Unusual transaction pattern flagged
+K-0023,KYC,C0033,Cleared,Low,2026-09-16T18:26:02,,Beneficial owner documents missing
+K-0024,Risk Review,C0065,Open,Low,2026-10-12T10:02:07,,Annual risk review outstanding
+K-0025,KYC,C0064,Open,Low,2026-09-24T06:09:58,,Beneficial owner documents missing
+K-0026,KYC,C0110,Cleared,Medium,2026-09-15T06:51:37,,Beneficial owner documents missing
+K-0027,AML,C0118,Cleared,Low,2026-09-23T13:55:52,,Unusual transaction pattern flagged
+K-0028,Risk Review,C0265,Open,Medium,2026-09-23T08:40:50,,Annual risk review outstanding
+K-0029,Risk Review,C0158,Open,Low,2026-09-14T05:56:33,,Annual risk review outstanding
+K-0030,KYC,C0139,Cleared,High,2026-09-16T23:58:55,,Beneficial owner documents missing
+K-0031,AML,C0182,Cleared,Low,2026-10-06T10:31:47,,Unusual transaction pattern flagged
+K-0032,Risk Review,C0114,Open,Low,2026-09-21T20:27:58,,Annual risk review outstanding
+K-0033,Approval,C0289,Cleared,Medium,2026-10-09T04:55:18,,Dual approval not evidenced
+K-0034,AML,C0051,Open,Low,2026-09-24T11:10:08,,Unusual transaction pattern flagged
+K-0035,AML,C0256,Open,High,2026-10-15T05:58:11,,Unusual transaction pattern flagged
+K-0036,KYC,C0077,Cleared,Medium,2026-09-11T06:03:42,,Beneficial owner documents missing
+K-0037,KYC,C0144,Cleared,Medium,2026-09-12T20:16:14,,Beneficial owner documents missing
+K-0038,AML,C0044,Escalated,Medium,2026-09-18T06:05:23,,Unusual transaction pattern flagged
+K-0039,KYC,C0275,Cleared,Medium,2026-10-14T18:32:41,,Beneficial owner documents missing
+K-0040,Risk Review,C0253,Open,Medium,2026-09-25T18:19:15,,Annual risk review outstanding
+K-0041,AML,C0205,Open,High,2026-10-08T21:08:04,,Unusual transaction pattern flagged
+K-0042,KYC,C0036,Open,Medium,2026-10-14T00:54:59,,Beneficial owner documents missing
+K-0043,KYC,C0049,Cleared,Low,2026-09-16T06:03:43,,Beneficial owner documents missing
+K-0044,Approval,C0051,Open,Medium,2026-09-15T19:39:51,,Dual approval not evidenced
+K-0045,AML,C0116,Open,Low,2026-09-23T21:54:00,,Unusual transaction pattern flagged
+K-0046,Risk Review,C0082,Open,High,2026-09-26T22:43:57,,Annual risk review outstanding
+K-0047,KYC,C0064,Open,High,2026-10-12T14:34:35,,Beneficial owner documents missing
+K-0048,AML,C0204,Open,Low,2026-09-29T00:28:57,,Unusual transaction pattern flagged
+K-0049,Risk Review,C0282,Cleared,Medium,2026-09-11T02:12:44,,Annual risk review outstanding
+K-0050,AML,C0117,Cleared,Low,2026-10-02T21:23:10,,Unusual transaction pattern flagged
+K-0051,AML,C0151,Open,Medium,2026-10-05T22:51:15,,Unusual transaction pattern flagged
+K-0052,KYC,C0101,Cleared,High,2026-10-12T22:26:46,,Beneficial owner documents missing
+K-0053,Risk Review,C0141,Open,Medium,2026-09-13T18:45:04,,Annual risk review outstanding
+K-0054,KYC,C0098,Open,Low,2026-09-21T11:31:57,,Beneficial owner documents missing
+K-0055,KYC,C0043,Open,Low,2026-09-12T19:52:07,,Beneficial owner documents missing
+K-0056,KYC,C0118,Cleared,High,2026-10-09T16:12:08,,Beneficial owner documents missing
+K-0057,AML,C0270,Open,Medium,2026-10-08T05:37:15,,Unusual transaction pattern flagged
+K-0058,AML,C0209,Open,Medium,2026-10-04T01:10:12,,Unusual transaction pattern flagged
+K-0059,Risk Review,C0281,Cleared,Low,2026-10-15T01:06:50,,Annual risk review outstanding
+K-0060,AML,C0005,Open,Medium,2026-10-03T01:52:10,,Unusual transaction pattern flagged
+K-0061,Approval,C0124,Open,Medium,2026-09-21T04:58:35,,Dual approval not evidenced
+K-0062,AML,C0213,Cleared,Medium,2026-10-12T01:41:38,,Unusual transaction pattern flagged
+K-0063,Approval,C0120,Open,Medium,2026-09-22T12:52:38,,Dual approval not evidenced
+K-0064,KYC,C0186,Open,High,2026-10-13T04:28:59,,Beneficial owner documents missing
+K-0065,KYC,C0113,Open,High,2026-09-10T12:38:51,,Beneficial owner documents missing
+K-0066,Policy,C0089,Cleared,Low,2026-09-23T20:03:47,,Exception to lending policy
+K-0067,KYC,C0221,Open,Medium,2026-10-11T11:44:42,,Beneficial owner documents missing
+K-0068,KYC,C0037,Open,Low,2026-09-29T21:23:46,,Beneficial owner documents missing
+K-0069,Policy,C0065,Open,Medium,2026-09-14T07:59:59,,Exception to lending policy
+K-0070,KYC,C0176,Open,Medium,2026-10-08T03:57:06,,Beneficial owner documents missing

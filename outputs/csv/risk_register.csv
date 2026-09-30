@@ -1,0 +1,6 @@
+category,risk_description,likelihood_1_5,impact_1_5,risk_score,rating,mitigation,escalation_required,confidence,human_review_required
+Operational,122 open items past SLA (66% of backlog),5,4,20,Critical,Reprioritise using execution ranking; redeploy capacity to breached queues,Yes - senior management now,0.9,No
+Compliance,284 compliance exceptions incl. 5 overdue AML reviews,4,5,20,Critical,Clear overdue AML/KYC first; weekly compliance stand-up,Yes - senior management now,0.85,No
+Capacity,Overloaded teams: Credit Risk,5,4,20,Critical,"Redeploy, cross-skill, temporary staffing / overtime",Yes - senior management now,0.85,No
+Customer service,10 breached items belong to High-risk customers,4,4,16,Critical,Named owner and daily review of High-risk customer items,Yes - senior management now,0.85,No
+Financial,"€356,300 exposure with collections follow-ups past SLA (4 items)",4,3,12,High,Automated reminders with escalation ladder,Yes - department head,0.75,Yes

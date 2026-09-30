@@ -1,0 +1,133 @@
+execution_rank,task_id,task_type,team,branch,assigned_to,status,customer_risk,regulatory_flag,amount,est_hours,age_hours,hours_to_due,sla_status,priority_score,priority
+1,T-000171,Risk Review,Credit Risk,Rotterdam,S008,Escalated,High,Y,235600.0,3.3,531.9,-411.9,Breached,100.0,Critical
+2,T-000855,Loan Approval Recommendation,Loan Origination,Eindhoven,S002,Pending Approval,High,Y,394600.0,3.1,76.7,-28.7,Breached,100.0,Critical
+3,T-000568,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,High,Y,142300.0,2.3,576.8,-456.8,Breached,98.7,Critical
+4,T-001401,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,High,Y,89100.0,2.3,338.6,-218.6,Breached,93.6,Critical
+5,T-001468,Loan Approval Recommendation,Loan Origination,Utrecht,S006,Pending Approval,High,Y,64100.0,2.2,58.0,-10.0,Breached,91.2,Critical
+6,T-001539,Credit Assessment,Credit Risk,Rotterdam,S008,In Progress,Medium,Y,258000.0,3.8,208.9,-136.9,Breached,88.0,Critical
+7,T-001584,Risk Review,Credit Risk,Rotterdam,S010,Pending Approval,High,Y,30800.0,4.4,895.1,-775.1,Breached,88.0,Critical
+8,T-001609,Loan Approval Recommendation,Loan Origination,Eindhoven,S003,In Progress,Medium,Y,739200.0,3.8,173.1,-125.1,Breached,88.0,Critical
+9,T-001955,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Review,High,Y,30000.0,3.8,84.1,-12.1,Breached,87.9,Critical
+10,T-000923,Risk Review,Credit Risk,Rotterdam,S008,Pending Review,High,Y,24600.0,3.5,193.7,-73.7,Breached,87.4,Critical
+11,T-000028,Risk Review,Credit Risk,Rotterdam,S008,In Progress,Medium,Y,142300.0,4.3,443.1,-323.1,Breached,86.7,Critical
+12,T-000068,Risk Review,Credit Risk,Rotterdam,S007,Escalated,Medium,Y,89600.0,3.2,296.1,-176.1,Breached,86.6,Critical
+13,T-001013,Risk Review,Credit Risk,Rotterdam,S008,Escalated,Medium,Y,59200.0,8.5,156.3,-36.3,Breached,83.7,Critical
+14,T-000256,Risk Review,Credit Risk,Rotterdam,S007,Escalated,Low,Y,989000.0,5.2,257.1,-137.1,Breached,83.0,Critical
+15,T-000765,Risk Review,Credit Risk,Rotterdam,S010,Pending Review,Medium,Y,89400.0,2.8,240.8,-120.8,Breached,81.6,Critical
+16,T-000194,Risk Review,Credit Risk,Eindhoven,S009,Pending Approval,Medium,Y,80300.0,2.3,349.2,-229.2,Breached,80.7,Critical
+17,T-001447,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Medium,Y,79400.0,4.5,639.9,-519.9,Breached,80.7,Critical
+18,T-000126,Risk Review,Credit Risk,Rotterdam,S007,Escalated,Medium,Y,20900.0,3.5,246.4,-126.4,Breached,80.0,Critical
+19,T-000390,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Approval,Medium,Y,72500.0,4.5,428.9,-356.9,Breached,80.0,Critical
+20,T-001414,Risk Review,Credit Risk,Eindhoven,S009,Pending Approval,Medium,Y,72200.0,5.4,295.7,-175.7,Breached,80.0,Critical
+21,T-000227,Loan Approval Recommendation,Loan Origination,Utrecht,S004,In Progress,Medium,Y,68600.0,2.7,74.4,-26.4,Breached,79.6,Critical
+22,T-000661,Loan Approval Recommendation,Loan Origination,Utrecht,S004,Pending Review,Medium,Y,62800.0,1.8,83.7,-35.7,Breached,79.1,Critical
+23,T-000072,Loan Approval Recommendation,Loan Origination,Utrecht,S006,Pending Review,High,Y,41400.0,1.5,43.7,4.3,At Risk,79.0,Critical
+24,T-000042,Risk Review,Credit Risk,Rotterdam,S007,In Progress,Low,Y,1077500.0,4.6,168.0,-48.0,Breached,78.0,Critical
+25,T-000561,Risk Review,Credit Risk,Rotterdam,S007,In Progress,Low,Y,383500.0,4.7,172.6,-52.6,Breached,78.0,Critical
+26,T-001001,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,253900.0,4.6,345.3,-225.3,Breached,78.0,Critical
+27,T-001024,Collections Follow-up,Collections,Amsterdam,S027,In Progress,Low,Y,214000.0,2.0,219.6,-123.6,Breached,78.0,Critical
+28,T-001612,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Review,Low,Y,199800.0,5.7,406.0,-334.0,Breached,78.0,Critical
+29,T-001753,Credit Assessment,Credit Risk,Eindhoven,S009,New,Low,Y,196200.0,3.3,221.2,-149.2,Breached,78.0,Critical
+30,T-002006,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,253900.0,4.6,345.3,-225.3,Breached,78.0,Critical
+31,T-000798,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,151000.0,3.2,732.6,-612.6,Breached,77.6,Critical
+32,T-000928,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Approval,Medium,Y,37600.0,4.5,253.4,-181.4,Breached,76.6,Critical
+33,T-001674,Credit Assessment,Credit Risk,Rotterdam,S008,In Progress,Low,Y,131200.0,5.2,267.4,-195.4,Breached,75.6,Critical
+34,T-001006,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Medium,Y,25700.0,5.6,300.0,-228.0,Breached,75.5,Critical
+35,T-001574,Credit Assessment,Credit Risk,Rotterdam,S022,Pending Approval,Medium,Y,24600.0,4.0,88.7,-16.7,Breached,75.4,Critical
+36,T-000064,KYC Review,Compliance,Eindhoven,,New,Medium,Y,22390.0,2.4,56.8,-8.8,Breached,75.2,Critical
+37,T-000816,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Medium,Y,22800.0,3.7,192.7,-72.7,Breached,75.2,Critical
+38,T-000901,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Medium,Y,22100.0,2.3,334.6,-214.6,Breached,75.1,Critical
+39,T-000921,Loan Approval Recommendation,Loan Origination,Rotterdam,S001,Escalated,Low,Y,71200.0,2.4,167.1,-119.1,Breached,74.9,Critical
+40,T-000270,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Medium,Y,9000.0,4.8,173.5,-53.5,Breached,73.9,Critical
+41,T-000998,Loan Approval Recommendation,Loan Origination,Amsterdam,S005,Pending Approval,Medium,Y,9300.0,2.1,91.1,-43.1,Breached,73.9,Critical
+42,T-000818,Risk Review,Credit Risk,Rotterdam,S008,In Progress,Medium,Y,8200.0,2.1,247.0,-127.0,Breached,73.8,Critical
+43,T-000353,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Approval,Medium,Y,6400.0,4.0,120.5,-48.5,Breached,73.6,Critical
+44,T-000962,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Review,Medium,Y,5200.0,8.1,123.3,-51.3,Breached,73.5,Critical
+45,T-001236,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,108600.0,8.2,180.3,-108.3,Breached,73.5,Critical
+46,T-001889,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Medium,Y,5500.0,4.9,338.2,-266.2,Breached,73.5,Critical
+47,T-001303,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Medium,Y,3100.0,2.9,675.7,-555.7,Breached,73.3,Critical
+48,T-001157,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,92000.0,2.2,156.2,-36.2,Breached,71.9,Critical
+49,T-000453,Credit Assessment,Credit Risk,Rotterdam,S008,In Progress,Low,Y,90000.0,5.4,419.2,-347.2,Breached,71.7,Critical
+50,T-000666,Risk Review,Credit Risk,Eindhoven,S009,Pending Approval,Low,Y,88500.0,5.5,158.1,-38.1,Breached,71.5,Critical
+51,T-001513,KYC Review,Compliance,Utrecht,S011,Pending Review,Low,Y,82380.0,2.6,51.4,-3.4,Breached,70.9,Critical
+52,T-000809,Risk Review,Credit Risk,Eindhoven,S009,In Progress,Low,Y,76500.0,7.0,271.4,-151.4,Breached,70.4,Critical
+53,T-000459,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,71600.0,5.0,476.4,-356.4,Breached,69.9,Critical
+54,T-000674,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,66700.0,4.5,166.6,-46.6,Breached,69.4,Critical
+55,T-001529,Credit Assessment,Credit Risk,Rotterdam,S008,New,Low,Y,64200.0,5.1,77.6,-5.6,Breached,69.2,Critical
+56,T-000675,KYC Review,Compliance,Utrecht,S011,Escalated,Low,Y,11080.0,2.5,161.8,-113.8,Breached,69.1,Critical
+57,T-000728,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,63600.0,3.4,145.9,-73.9,Breached,69.1,Critical
+58,T-000466,Risk Review,Credit Risk,Rotterdam,S007,Rework,Low,Y,62100.0,5.8,168.8,-48.8,Breached,69.0,Critical
+59,T-000410,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Approval,Low,Y,60700.0,5.3,157.7,-85.7,Breached,68.9,Critical
+60,T-001843,Risk Review,Credit Risk,Rotterdam,S005,Pending Approval,Low,Y,61300.0,2.7,223.0,-103.0,Breached,68.9,Critical
+61,T-000238,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,55700.0,5.9,203.3,-131.3,Breached,68.4,Critical
+62,T-000150,Risk Review,Credit Risk,Rotterdam,S008,In Progress,Low,Y,52600.0,2.3,225.8,-105.8,Breached,68.1,Critical
+63,T-000202,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,51600.0,7.6,171.7,-99.7,Breached,68.0,Critical
+64,T-002003,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,51600.0,7.6,171.7,-99.7,Breached,68.0,Critical
+65,T-000110,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,49800.0,5.1,214.3,-142.3,Breached,67.8,Critical
+66,T-001328,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,49400.0,4.4,286.6,-166.6,Breached,67.8,Critical
+67,T-002004,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,49800.0,5.1,214.3,-142.3,Breached,67.8,Critical
+68,T-001351,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,46900.0,5.9,313.4,-241.4,Breached,67.5,Critical
+69,T-000249,Risk Review,Credit Risk,Rotterdam,S008,Pending Review,Low,Y,40700.0,5.1,350.3,-230.3,Breached,66.9,Critical
+70,T-001356,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Approval,Low,Y,40000.0,4.4,325.9,-253.9,Breached,66.9,Critical
+71,T-001353,Credit Assessment,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,38400.0,7.5,685.5,-613.5,Breached,66.7,Critical
+72,T-001825,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,37900.0,2.3,223.7,-103.7,Breached,66.7,Critical
+73,T-000217,Risk Review,Credit Risk,Rotterdam,S010,Pending Approval,Low,Y,37100.0,3.6,197.1,-77.1,Breached,66.6,Critical
+74,T-000688,Credit Assessment,Credit Risk,Rotterdam,S008,In Progress,Low,Y,37300.0,5.9,271.8,-199.8,Breached,66.6,Critical
+75,T-001664,Credit Assessment,Credit Risk,Rotterdam,S008,Rework,Low,Y,37200.0,5.0,530.7,-458.7,Breached,66.6,Critical
+76,T-001958,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,35300.0,3.5,221.7,-101.7,Breached,66.4,Critical
+77,T-001218,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,34100.0,4.1,203.8,-83.8,Breached,66.3,Critical
+78,T-001652,Loan Approval Recommendation,Loan Origination,Eindhoven,S002,Pending Approval,Low,Y,32600.0,1.8,170.8,-122.8,Breached,66.1,Critical
+79,T-000382,Loan Approval Recommendation,Loan Origination,Rotterdam,S001,In Progress,Low,Y,29100.0,2.7,135.1,-87.1,Breached,65.8,Critical
+80,T-001687,Risk Review,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,29200.0,4.0,1020.8,-900.8,Breached,65.8,Critical
+81,T-001569,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Low,Y,27800.0,4.5,322.3,-202.3,Breached,65.7,Critical
+82,T-001052,Risk Review,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,25500.0,5.5,328.9,-208.9,Breached,65.5,Critical
+83,T-001865,Credit Assessment,Credit Risk,Rotterdam,S008,Rework,Low,Y,25900.0,5.3,282.9,-210.9,Breached,65.5,Critical
+84,T-001979,Loan Approval Recommendation,Loan Origination,Rotterdam,S001,Pending Approval,Low,Y,26100.0,2.7,689.1,-641.1,Breached,65.5,Critical
+85,T-001357,Risk Review,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,24600.0,4.4,189.2,-69.2,Breached,65.4,Critical
+86,T-000908,Credit Assessment,Credit Risk,Rotterdam,S010,Pending Review,Low,Y,22300.0,5.1,94.6,-22.6,Breached,65.1,Critical
+87,T-001331,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,17900.0,5.3,412.9,-292.9,Breached,64.7,Critical
+88,T-000235,Credit Assessment,Credit Risk,Rotterdam,S008,New,Low,Y,14900.0,6.3,180.6,-108.6,Breached,64.4,Critical
+89,T-000523,Risk Review,Credit Risk,Rotterdam,S010,Rework,Low,Y,14300.0,4.6,412.5,-292.5,Breached,64.4,Critical
+90,T-001607,Loan Approval Recommendation,Loan Origination,Eindhoven,S002,Pending Approval,Low,Y,14600.0,3.1,55.8,-7.8,Breached,64.4,Critical
+91,T-001317,Risk Review,Credit Risk,Rotterdam,S010,In Progress,Low,Y,13300.0,2.8,426.4,-306.4,Breached,64.3,Critical
+92,T-001215,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,12300.0,4.5,229.7,-109.7,Breached,64.2,Critical
+93,T-001507,Risk Review,Credit Risk,Rotterdam,S010,Pending Review,Low,Y,12900.0,3.8,129.8,-9.8,Breached,64.2,Critical
+94,T-000705,Loan Approval Recommendation,Loan Origination,Rotterdam,S001,New,Low,Y,11800.0,3.8,52.2,-4.2,Breached,64.1,Critical
+95,T-000787,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,11800.0,5.5,142.9,-22.9,Breached,64.1,Critical
+96,T-001010,KYC Review,Compliance,Rotterdam,S014,Pending Review,Low,Y,10300.0,2.8,52.7,-4.7,Breached,64.0,Critical
+97,T-001407,Risk Review,Credit Risk,Rotterdam,S033,Pending Approval,Low,Y,10000.0,5.1,130.8,-10.8,Breached,64.0,Critical
+98,T-001922,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,9800.0,6.8,123.3,-51.3,Breached,63.9,Critical
+99,T-001429,Credit Assessment,Credit Risk,Rotterdam,S007,In Progress,Low,Y,8600.0,4.9,96.6,-24.6,Breached,63.8,Critical
+100,T-000528,Loan Approval Recommendation,Loan Origination,Eindhoven,S003,Pending Approval,Low,Y,7500.0,1.8,104.2,-56.2,Breached,63.7,Critical
+101,T-001731,KYC Review,Compliance,Rotterdam,S012,Rework,Low,Y,6480.0,3.7,52.0,-4.0,Breached,63.6,Critical
+102,T-000339,Risk Review,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,4000.0,3.8,127.6,-7.6,Breached,63.4,Critical
+103,T-001319,KYC Review,Compliance,Rotterdam,S012,Pending Review,Low,Y,3720.0,2.0,89.0,-41.0,Breached,63.4,Critical
+104,T-001168,AML Alert Review,Compliance,Rotterdam,S012,New,Low,Y,1950.0,3.5,47.9,-23.9,Breached,63.2,Critical
+105,T-001918,Risk Review,Credit Risk,Rotterdam,S008,Pending Approval,Medium,Y,54000.0,5.4,102.0,18.0,At Risk,68.2,High
+106,T-000165,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,186700.0,4.1,64.2,7.8,At Risk,68.0,High
+107,T-000089,Loan Application Intake,Loan Origination,Eindhoven,S003,In Progress,Medium,N,154500.0,2.3,25.4,-1.4,Breached,67.9,High
+108,T-000324,Management Reporting,Operations,Rotterdam,S029,Pending Review,High,N,7210.0,3.0,109.9,-37.9,Breached,65.7,High
+109,T-001692,Management Reporting,Operations,Rotterdam,S029,In Progress,High,N,5460.0,5.1,123.2,-51.2,Breached,65.5,High
+110,T-001238,Credit Assessment,Credit Risk,Rotterdam,S007,Pending Approval,Medium,Y,24400.0,3.6,62.3,9.7,At Risk,65.4,High
+111,T-000233,AML Alert Review,Compliance,Utrecht,S011,In Progress,Medium,Y,4540.0,2.3,21.7,2.3,At Risk,63.4,High
+113,T-000574,Risk Review,Credit Risk,Rotterdam,S007,Pending Approval,Low,Y,53200.0,4.7,115.9,4.1,At Risk,58.1,High
+114,T-001733,Credit Assessment,Credit Risk,Rotterdam,S008,In Progress,Low,N,275200.0,5.1,313.7,-241.7,Breached,58.0,High
+115,T-001269,Credit Assessment,Credit Risk,Rotterdam,S008,New,Low,Y,48600.0,5.8,68.8,3.2,At Risk,57.7,High
+116,T-001861,Loan Application Intake,Loan Origination,Amsterdam,S005,In Progress,Low,N,147300.0,1.5,50.2,-26.2,Breached,57.2,High
+118,T-000084,Credit Assessment,Credit Risk,Eindhoven,S013,Pending Approval,Medium,N,34800.0,7.0,257.6,-185.6,Breached,56.4,High
+119,T-001424,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Approval,Medium,N,25100.0,4.2,173.6,-101.6,Breached,55.4,High
+120,T-001253,Collections Follow-up,Collections,Eindhoven,S025,Pending Review,Medium,N,24200.0,1.5,445.1,-349.1,Breached,55.3,High
+121,T-001635,Risk Review,Credit Risk,Rotterdam,S007,Pending Review,Low,Y,10900.0,3.5,91.6,28.4,At Risk,54.1,High
+122,T-000907,Loan Application Intake,Loan Origination,Utrecht,S004,New,Low,Y,4300.0,1.8,18.6,5.4,At Risk,53.4,High
+123,T-000613,KYC Review,Compliance,Rotterdam,S012,Pending Review,Low,Y,3540.0,2.7,39.4,8.6,At Risk,53.3,High
+125,T-001381,Collections Follow-up,Collections,Eindhoven,S025,Rework,Low,N,96700.0,1.6,300.4,-204.4,Breached,52.3,High
+126,T-001631,Credit Assessment,Credit Risk,Rotterdam,S008,Escalated,Low,N,44600.0,6.0,327.8,-255.8,Breached,52.3,High
+129,T-001968,Loan Application Intake,Loan Origination,Utrecht,S004,In Progress,Low,N,69500.0,1.5,45.9,-21.9,Breached,49.7,Medium
+130,T-001527,Credit Assessment,Credit Risk,Rotterdam,S010,In Progress,Low,N,66800.0,4.1,179.4,-107.4,Breached,49.4,Medium
+131,T-001338,Credit Assessment,Credit Risk,Rotterdam,S007,Escalated,Low,N,10300.0,5.4,149.3,-77.3,Breached,49.0,Medium
+132,T-001350,Credit Assessment,Credit Risk,Eindhoven,S009,Pending Review,Low,N,51000.0,5.6,357.6,-285.6,Breached,47.9,Medium
+134,T-001526,Loan Application Intake,Loan Origination,Eindhoven,S002,In Progress,Low,N,36600.0,1.8,84.4,-60.4,Breached,46.5,Medium
+136,T-001651,Loan Application Intake,Loan Origination,Eindhoven,S003,In Progress,Low,N,23300.0,1.6,38.1,-14.1,Breached,45.2,Medium
+137,T-000027,Collections Follow-up,Collections,Utrecht,,New,Low,N,21400.0,1.4,114.8,-18.8,Breached,45.1,Medium
+138,T-001898,Loan Application Intake,Loan Origination,Utrecht,S004,Rework,Low,N,21000.0,1.8,187.1,-163.1,Breached,45.0,Medium
+139,T-002002,Loan Application Intake,Loan Origination,Utrecht,S004,Rework,Low,N,21000.0,1.8,187.1,-163.1,Breached,45.0,Medium
