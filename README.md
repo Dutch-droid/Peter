@@ -19,6 +19,12 @@ Change these before any real use.
 - **Self-service**: employees see their balances, requests and published payslips only.
 - **Settings** (admin): PAYE bands, personal relief, allowances/deductions (with min/max), leave types.
 
+## More modules
+- **Exports:** payslip PDF (employee: own published payslips; admin: any), payroll-run CSV with one column per allowance/deduction, employees CSV (admin), leave requests CSV (scoped by role). CSV cells are protected against spreadsheet formula injection.
+- **Leave calendar** (`/leave/calendar`): month view. Admins see everyone; others see their department. Approved leave is visible to the team; pending leave only to the requester, their manager and admins.
+- **Recruitment** (admin): jobs and a candidate pipeline board (Applied, Screening, Interview, Offer, Hired, Rejected) with drag-and-drop and a keyboard-friendly dropdown fallback.
+- **Performance:** review cycles, personal goals with progress, self-assessment then manager review. Employees only see their manager's rating once the review is completed.
+
 ## UX design
 - **Tables:** search, sort, filter and paginate (TanStack Table). **Forms:** shared zod validation on client and server, inline errors, toast feedback, confirm dialogs for irreversible actions.
 - **Smart defaults:** leave starts next working day with Annual preselected and the end date following the start; payroll month suggests the next unprocessed month; new employees get today's hire date, a generated password and the manager's department.

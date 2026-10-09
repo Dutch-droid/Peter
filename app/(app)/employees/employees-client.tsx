@@ -41,7 +41,7 @@ export function EmployeesClient({ rows, isAdmin }: { rows: EmpRow[]; isAdmin: bo
       <div className="card">
         <DataTable data={rows} columns={columns} searchPlaceholder="Search name, email, title…"
           filters={[{ id: 'department', label: 'Department' }, { id: 'status', label: 'Status' }]}
-          toolbar={isAdmin ? <button type="button" onClick={() => setAdding(true)}>+ Add employee</button> : null} />
+          toolbar={isAdmin ? <><a className="btn" href="/employees/export" download>Export CSV</a><button type="button" onClick={() => setAdding(true)}>+ Add employee</button></> : null} />
       </div>
       {isAdmin && (
         <>

@@ -20,7 +20,7 @@ form.row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}label{display:
 .side a{display:block;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--ink)}
 .side a:hover{background:var(--bg)}.side a[aria-current=page]{background:var(--brand);color:#fff}
 .side .who{margin-top:auto;font-size:13px;color:var(--mute);padding:8px 10px}
-.content{padding:24px;max-width:1100px;width:100%;margin:0}
+.content{padding:24px;max-width:1100px;width:100%;margin:0;min-width:0}
 .topbar{display:none}
 @media (max-width:800px){
   .shell{grid-template-columns:1fr}
@@ -88,3 +88,35 @@ input:focus-visible,select:focus-visible{box-shadow:0 0 0 3px color-mix(in srgb,
 .steps span.on{border-color:var(--brand);color:var(--brand);font-weight:600}.steps span.ok{background:var(--ok);border-color:var(--ok);color:#fff}
 .hero{background:linear-gradient(120deg,color-mix(in srgb,var(--brand) 14%,var(--card)),var(--card))}
 .hero h1{margin:0 0 4px}.nudge{border-left:4px solid var(--brand)}
+
+a.btn{display:inline-block;padding:7px 10px;border:1px solid var(--line);border-radius:6px;text-decoration:none;color:var(--ink);background:transparent;transition:transform .12s var(--ease),box-shadow .15s}
+a.btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.15)}a.btn.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+
+/* ---- leave calendar ---- */
+.cal{display:grid;grid-template-columns:repeat(7,minmax(110px,1fr));overflow-x:auto}
+.calhead{padding:6px 8px;font-size:12px;color:var(--mute);border-bottom:1px solid var(--line)}
+.calday{min-height:96px;padding:4px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px;overflow:hidden}
+.calday .num{font-size:12px;color:var(--mute);padding:0 2px}.calday.out{opacity:.4}.calday.we{background:color-mix(in srgb,var(--line) 35%,transparent)}
+.calday.today .num{background:var(--brand);color:#fff;border-radius:99px;width:22px;height:22px;display:grid;place-items:center}
+.chip{font-size:12px;padding:1px 6px;border-radius:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:inline-block}
+.chip.approved{background:color-mix(in srgb,var(--ok) 22%,transparent);color:var(--ink)}
+.chip.pending{background:repeating-linear-gradient(45deg,color-mix(in srgb,#f79009 25%,transparent) 0 6px,transparent 6px 12px);border:1px dashed #f79009;color:var(--ink)}
+.more{font-size:12px;color:var(--mute);padding:0 4px}
+
+/* ---- recruitment board ---- */
+.board{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(220px,1fr);gap:12px;overflow-x:auto;padding-bottom:8px}
+.col{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px;min-height:220px;display:flex;flex-direction:column;gap:8px;transition:background-color .15s,border-color .15s}
+.col h3{margin:0;font-size:14px;display:flex;justify-content:space-between}.col .count{color:var(--mute);font-weight:400}
+.col.over{border-color:var(--brand);background:color-mix(in srgb,var(--brand) 8%,var(--card))}.col.muted{opacity:.85}
+.dropHint{color:var(--mute);font-size:12px;border:1px dashed var(--line);border-radius:8px;padding:14px;text-align:center}
+.kcard{border:1px solid var(--line);background:var(--bg);border-radius:8px;padding:8px;display:grid;gap:6px;cursor:grab;transition:transform .15s var(--ease),box-shadow .15s,opacity .15s}
+.kcard:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(0,0,0,.12)}.kcard.dragging{opacity:.4;transform:rotate(2deg)}
+.kcard .name{font-weight:600;text-align:left}.kcard select{font-size:12px;padding:3px 6px}
+textarea{width:100%;resize:vertical}
+
+/* ---- performance ---- */
+fieldset.rating{border:0;padding:0;margin:0;display:flex;gap:8px;flex-wrap:wrap}fieldset.rating legend{font-size:13px;color:var(--mute);padding:0 0 4px}
+.ratingopt{flex-direction:row;align-items:center;gap:6px;border:1px solid var(--line);border-radius:8px;padding:6px 10px;cursor:pointer;transition:border-color .15s,background-color .15s}
+.ratingopt:has(input:checked){border-color:var(--brand);background:color-mix(in srgb,var(--brand) 10%,transparent)}
+.ratingopt span{font-weight:700;color:var(--ink)}.ratingopt small{color:var(--mute)}
+input[type=range]{padding:0;accent-color:var(--brand)}

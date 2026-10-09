@@ -44,4 +44,20 @@ export function seed(db: DB) {
   tb.run(288000, 10); tb.run(388000, 25); tb.run(6000000, 30); tb.run(9600000, 32.5); tb.run(null, 35);
 
   db.prepare("INSERT INTO settings (key,value) VALUES ('currency','KES'), ('monthly_relief','2400')").run();
+
+  // Recruitment sample: one open role with candidates spread across the pipeline.
+  const job = Number(db.prepare("INSERT INTO jobs (title,department,location,description) VALUES (?,?,?,?)")
+    .run('Senior Backend Engineer', 'Engineering', 'Nairobi', 'Own our payroll and HR services.').lastInsertRowid);
+  const cand = db.prepare('INSERT INTO candidates (job_id,name,email,stage,notes) VALUES (?,?,?,?,?)');
+  cand.run(job, 'Faith Wambui', 'faith@example.com', 'interview', 'Strong systems background.');
+  cand.run(job, 'Kevin Otieno', 'kevin@example.com', 'screening', '');
+  cand.run(job, 'Mary Achieng', 'mary@example.com', 'applied', '');
+
+  // Performance sample: an open cycle with a couple of goals.
+  const cycle = Number(db.prepare("INSERT INTO review_cycles (name,start_date,end_date) VALUES ('H2 2026','2026-07-01','2026-12-31')").run().lastInsertRowid);
+  const rv = db.prepare('INSERT INTO reviews (cycle_id, employee_id) VALUES (?,?)');
+  [admin, mgr, e1, e2].forEach((id) => rv.run(cycle, id));
+  const goal = db.prepare('INSERT INTO goals (employee_id,cycle_id,title,description,progress) VALUES (?,?,?,?,?)');
+  goal.run(e1, cycle, 'Ship the payroll export service', 'Production ready with monitoring', 60);
+  goal.run(e1, cycle, 'Mentor a junior engineer', '', 25);
 }

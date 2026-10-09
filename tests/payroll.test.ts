@@ -115,3 +115,49 @@ test('generatePassword is long enough and varies', () => {
   assert.equal(a.length, 12);
   assert.notEqual(a, b);
 });
+
+import { csvCell, toCsv } from '../lib/csv';
+import { buildPayslipPdf } from '../lib/payslip-pdf';
+
+test('csv escapes quotes, commas and newlines', () => {
+  assert.equal(csvCell('a,b'), '"a,b"');
+  assert.equal(csvCell('say "hi"'), '"say ""hi"""');
+  assert.equal(csvCell('l1\nl2'), '"l1\nl2"');
+  assert.equal(csvCell(null), '');
+  assert.equal(csvCell(12.5), '12.5');
+});
+
+test('csv neutralises spreadsheet formulas but keeps negative numbers', () => {
+  assert.equal(csvCell('=SUM(A1:A9)'), "'=SUM(A1:A9)");
+  assert.equal(csvCell('@cmd'), "'@cmd");
+  assert.equal(csvCell('-5'), '-5');
+  assert.equal(csvCell(-5), '-5');
+  assert.ok(toCsv(['a'], [['b']]).startsWith('﻿a\r\nb'));
+});
+
+test('payslip pdf renders a valid, non-trivial PDF (even with non-Latin-1 names)', async () => {
+  const slip = computePayslip(120000, [], []);
+  const bytes = await buildPayslipPdf({ company: 'Co', name: 'Zoë 山田', jobTitle: 'Eng', department: 'R&D', period: '2026-09', draft: false, slip });
+  assert.equal(Buffer.from(bytes.slice(0, 5)).toString(), '%PDF-');
+  assert.ok(bytes.length > 1500);
+});
+
+import { entriesOn, monthGrid, shiftMonth } from '../lib/calendar';
+
+test('calendar grid is Monday-first, whole weeks, and covers the month', () => {
+  const g = monthGrid('2026-10'); // 1 Oct 2026 is a Thursday
+  assert.equal(g[0][0].date, '2026-09-28');
+  assert.ok(g.every((w) => w.length === 7));
+  const days = g.flat().filter((c) => c.inMonth).map((c) => c.date);
+  assert.equal(days.length, 31);
+  assert.equal(g.at(-1)![6].date >= '2026-10-31', true);
+  assert.equal(g[0][5].weekend, true);
+});
+
+test('calendar helpers: entriesOn spans ranges, shiftMonth wraps years', () => {
+  const e = [{ name: 'A', type: 'Annual', status: 'approved', start_date: '2026-10-05', end_date: '2026-10-07' }];
+  assert.equal(entriesOn('2026-10-06', e).length, 1);
+  assert.equal(entriesOn('2026-10-08', e).length, 0);
+  assert.equal(shiftMonth('2026-12', 1), '2027-01');
+  assert.equal(shiftMonth('2026-01', -1), '2025-12');
+});

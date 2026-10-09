@@ -96,6 +96,48 @@ export const periodSchema = z.object({
   period: z.string().regex(/^\d{4}-(0[1-9]|1[0-2])$/, 'Pick a month'),
 });
 
+export const STAGES = ['applied', 'screening', 'interview', 'offer', 'hired', 'rejected'] as const;
+export type Stage = (typeof STAGES)[number];
+
+export const jobSchema = z.object({
+  id: z.number().nullable(),
+  title: z.string().trim().min(1, 'Required'),
+  department: z.string().trim(),
+  location: z.string().trim(),
+  description: z.string().trim().max(2000, 'Keep it under 2000 characters'),
+  status: z.enum(['open', 'closed']),
+});
+
+export const candidateSchema = z.object({
+  id: z.number().nullable(),
+  job_id: z.number(),
+  name: z.string().trim().min(1, 'Required'),
+  email: z.union([z.literal(''), z.string().trim().toLowerCase().pipe(z.email('Enter a valid email'))]),
+  phone: z.string().trim().max(40, 'Too long'),
+  notes: z.string().trim().max(2000, 'Keep it under 2000 characters'),
+});
+
+export const cycleSchema = z
+  .object({ name: z.string().trim().min(1, 'Required'), start_date: dateStr, end_date: dateStr })
+  .refine((v) => v.end_date > v.start_date, { path: ['end_date'], message: 'End must be after start' });
+
+export const goalSchema = z.object({
+  cycle_id: z.number(),
+  title: z.string().trim().min(1, 'Describe the goal'),
+  description: z.string().trim().max(500, 'Keep it under 500 characters'),
+});
+
+export const ratingSchema = z.object({
+  review_id: z.number(),
+  rating: z.number('Choose a rating').int().min(1, 'Choose a rating').max(5, 'Choose a rating'),
+  comment: z.string().trim().min(1, 'Add a short comment').max(2000, 'Keep it under 2000 characters'),
+});
+
+export type JobInput = z.infer<typeof jobSchema>;
+export type CandidateInput = z.infer<typeof candidateSchema>;
+export type CycleInput = z.infer<typeof cycleSchema>;
+export type GoalInput = z.infer<typeof goalSchema>;
+export type RatingInput = z.infer<typeof ratingSchema>;
 export type EmployeeInput = z.infer<typeof employeeSchema>;
 export type EmployeeUpdateInput = z.infer<typeof employeeUpdateSchema>;
 export type LeaveRequestInput = z.infer<typeof leaveRequestSchema>;

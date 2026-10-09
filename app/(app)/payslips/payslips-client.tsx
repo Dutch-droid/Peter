@@ -12,7 +12,7 @@ export function PayslipsClient({ rows }: { rows: SlipListRow[] }) {
     { accessorKey: 'period', header: 'Period' },
     { accessorKey: 'gross', header: 'Gross', meta: { n: true }, cell: ({ getValue }) => kes(Number(getValue())) },
     { accessorKey: 'net', header: 'Net', meta: { n: true }, cell: ({ getValue }) => kes(Number(getValue())) },
-    { id: 'v', header: '', enableSorting: false, cell: ({ row }) => <Link href={`/payslips/${row.original.id}`}>View</Link> },
+    { id: 'v', header: '', enableSorting: false, cell: ({ row }) => <span style={{ display: 'flex', gap: 12 }}><Link href={`/payslips/${row.original.id}`}>View</Link><a href={`/payslips/${row.original.id}/pdf`} download>PDF</a></span> },
   ], []);
   return (
     <>

@@ -7,7 +7,7 @@ import { createSession, destroySession, hashPassword, requireUser, verifyPasswor
 import { businessDays, leaveUsed } from '@/lib/leave';
 import { computePayslip, type Bracket, type Component } from '@/lib/payroll';
 import {
-  bracketsSchema, componentSchema, employeeSchema, employeeUpdateSchema, leaveRequestSchema,
+  STAGES, bracketsSchema, candidateSchema, componentSchema, cycleSchema, employeeSchema, goalSchema, jobSchema, ratingSchema, employeeUpdateSchema, leaveRequestSchema,
   leaveTypeSchema, periodSchema,
 } from '@/lib/schemas';
 import type { z } from 'zod';
@@ -227,4 +227,165 @@ export async function saveLeaveType(input: unknown): Promise<Result> {
   revalidatePath('/settings');
   revalidatePath('/leave');
   return ok(`${p.data.name} saved`);
+}
+
+/* ---------- Recruitment (admin) ---------- */
+
+export async function saveJob(input: unknown): Promise<Result<{ id: number }>> {
+  await requireUser(['admin']);
+  const p = jobSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const v = p.data;
+  const d = db();
+  let id = v.id;
+  if (id) {
+    d.prepare('UPDATE jobs SET title=?, department=?, location=?, description=?, status=? WHERE id=?')
+      .run(v.title, v.department, v.location, v.description, v.status, id);
+  } else {
+    id = Number(d.prepare('INSERT INTO jobs (title,department,location,description,status) VALUES (?,?,?,?,?)')
+      .run(v.title, v.department, v.location, v.description, v.status).lastInsertRowid);
+  }
+  revalidatePath('/recruitment');
+  return ok(v.id ? 'Job updated' : 'Job created', { id });
+}
+
+export async function saveCandidate(input: unknown): Promise<Result> {
+  await requireUser(['admin']);
+  const p = candidateSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const v = p.data;
+  const d = db();
+  if (!d.prepare('SELECT 1 FROM jobs WHERE id=?').get(v.job_id)) return fail('That job no longer exists');
+  if (v.id) {
+    const r = d.prepare('UPDATE candidates SET name=?, email=?, phone=?, notes=? WHERE id=? AND job_id=?')
+      .run(v.name, v.email, v.phone, v.notes, v.id, v.job_id);
+    if (!r.changes) return fail('Candidate not found');
+  } else {
+    d.prepare('INSERT INTO candidates (job_id,name,email,phone,notes) VALUES (?,?,?,?,?)')
+      .run(v.job_id, v.name, v.email, v.phone, v.notes);
+  }
+  revalidatePath(`/recruitment/${v.job_id}`);
+  revalidatePath('/recruitment');
+  return ok(v.id ? 'Candidate updated' : `${v.name} added to the pipeline`);
+}
+
+export async function moveCandidate(id: number, stage: string): Promise<Result> {
+  await requireUser(['admin']);
+  if (!(STAGES as readonly string[]).includes(stage)) return fail('Unknown stage');
+  const row = db().prepare('SELECT job_id, name FROM candidates WHERE id=?').get(id) as { job_id: number; name: string } | undefined;
+  if (!row) return fail('Candidate not found');
+  db().prepare('UPDATE candidates SET stage=? WHERE id=?').run(stage, id);
+  revalidatePath(`/recruitment/${row.job_id}`);
+  revalidatePath('/recruitment');
+  return ok(`${row.name} moved to ${stage}`);
+}
+
+export async function deleteCandidate(id: number): Promise<Result> {
+  await requireUser(['admin']);
+  const row = db().prepare('SELECT job_id FROM candidates WHERE id=?').get(id) as { job_id: number } | undefined;
+  if (!row) return fail('Candidate not found');
+  db().prepare('DELETE FROM candidates WHERE id=?').run(id);
+  revalidatePath(`/recruitment/${row.job_id}`);
+  revalidatePath('/recruitment');
+  return ok('Candidate removed');
+}
+
+/* ---------- Performance ---------- */
+
+export async function createCycle(input: unknown): Promise<Result> {
+  await requireUser(['admin']);
+  const p = cycleSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const d = db();
+  try {
+    d.transaction(() => {
+      const id = Number(d.prepare('INSERT INTO review_cycles (name,start_date,end_date) VALUES (?,?,?)')
+        .run(p.data.name, p.data.start_date, p.data.end_date).lastInsertRowid);
+      const ins = d.prepare('INSERT INTO reviews (cycle_id, employee_id) VALUES (?,?)');
+      for (const e of d.prepare("SELECT id FROM employees WHERE status='active'").all() as { id: number }[]) ins.run(id, e.id);
+    })();
+  } catch (e) {
+    return dbError(e, 'A review cycle with that name already exists');
+  }
+  revalidatePath('/performance');
+  return ok(`${p.data.name} started. Everyone has a review to complete.`);
+}
+
+export async function closeCycle(id: number): Promise<Result> {
+  await requireUser(['admin']);
+  const r = db().prepare("UPDATE review_cycles SET status='closed' WHERE id=? AND status='open'").run(id);
+  if (!r.changes) return fail('Cycle is already closed');
+  revalidatePath('/performance');
+  return ok('Cycle closed');
+}
+
+const openCycle = (id: number) =>
+  db().prepare("SELECT 1 FROM review_cycles WHERE id=? AND status='open'").get(id);
+
+export async function addGoal(input: unknown): Promise<Result> {
+  const u = await requireUser();
+  const p = goalSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  if (!openCycle(p.data.cycle_id)) return fail('This review cycle is closed');
+  db().prepare('INSERT INTO goals (employee_id,cycle_id,title,description) VALUES (?,?,?,?)')
+    .run(u.employeeId, p.data.cycle_id, p.data.title, p.data.description);
+  revalidatePath('/performance');
+  return ok('Goal added');
+}
+
+export async function setGoalProgress(id: number, progress: number): Promise<Result> {
+  const u = await requireUser();
+  if (!Number.isInteger(progress) || progress < 0 || progress > 100) return fail('Progress must be 0 to 100');
+  const g = db().prepare(
+    `SELECT g.cycle_id FROM goals g WHERE g.id=? AND g.employee_id=?`).get(id, u.employeeId) as { cycle_id: number } | undefined;
+  if (!g) return fail('You can only update your own goals');
+  if (!openCycle(g.cycle_id)) return fail('This review cycle is closed');
+  db().prepare('UPDATE goals SET progress=? WHERE id=?').run(progress, id);
+  revalidatePath('/performance');
+  return ok(progress === 100 ? 'Goal complete. Well done!' : 'Progress saved');
+}
+
+export async function deleteGoal(id: number): Promise<Result> {
+  const u = await requireUser();
+  const g = db().prepare('SELECT cycle_id FROM goals WHERE id=? AND employee_id=?').get(id, u.employeeId) as { cycle_id: number } | undefined;
+  if (!g) return fail('You can only remove your own goals');
+  if (!openCycle(g.cycle_id)) return fail('This review cycle is closed');
+  db().prepare('DELETE FROM goals WHERE id=?').run(id);
+  revalidatePath('/performance');
+  return ok('Goal removed');
+}
+
+export async function submitSelfReview(input: unknown): Promise<Result> {
+  const u = await requireUser();
+  const p = ratingSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const r = db().prepare(
+    `SELECT rv.status, rv.cycle_id FROM reviews rv WHERE rv.id=? AND rv.employee_id=?`,
+  ).get(p.data.review_id, u.employeeId) as { status: string; cycle_id: number } | undefined;
+  if (!r) return fail('That is not your review');
+  if (r.status === 'completed') return fail('This review is already completed');
+  if (!openCycle(r.cycle_id)) return fail('This review cycle is closed');
+  db().prepare(`UPDATE reviews SET self_rating=?, self_comment=?, status='self_done' WHERE id=?`)
+    .run(p.data.rating, p.data.comment, p.data.review_id);
+  revalidatePath('/performance');
+  return ok('Self-assessment submitted. Your manager will review it next.');
+}
+
+export async function submitManagerReview(input: unknown): Promise<Result> {
+  const u = await requireUser(['admin', 'manager']);
+  const p = ratingSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const r = db().prepare(
+    `SELECT rv.status, rv.cycle_id, rv.employee_id, e.manager_id FROM reviews rv
+     JOIN employees e ON e.id=rv.employee_id WHERE rv.id=?`,
+  ).get(p.data.review_id) as { status: string; cycle_id: number; employee_id: number; manager_id: number | null } | undefined;
+  if (!r) return fail('Review not found');
+  if (r.employee_id === u.employeeId) return fail('You cannot rate your own review');
+  if (u.role === 'manager' && r.manager_id !== u.employeeId) return fail('Not one of your direct reports');
+  if (r.status === 'pending') return fail('Wait for their self-assessment first');
+  if (!openCycle(r.cycle_id)) return fail('This review cycle is closed');
+  db().prepare(`UPDATE reviews SET manager_rating=?, manager_comment=?, status='completed' WHERE id=?`)
+    .run(p.data.rating, p.data.comment, p.data.review_id);
+  revalidatePath('/performance');
+  return ok('Review completed');
 }

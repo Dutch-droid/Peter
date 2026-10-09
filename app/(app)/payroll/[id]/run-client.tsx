@@ -21,7 +21,7 @@ export function RunClient({ run, rows }: { run: { id: number; period: string; st
     { accessorKey: 'name', header: 'Employee' },
     { accessorKey: 'department', header: 'Department' },
     money('Gross', 'gross'), money('Deductions', 'ded'), money('PAYE', 'tax'), money('Net', 'net'),
-    { id: 'slip', header: '', enableSorting: false, cell: ({ row }) => <Link href={`/payslips/${row.original.id}`}>Payslip</Link> },
+    { id: 'slip', header: '', enableSorting: false, cell: ({ row }) => <span style={{ display: 'flex', gap: 12 }}><Link href={`/payslips/${row.original.id}`}>Payslip</Link><a href={`/payslips/${row.original.id}/pdf`} download>PDF</a></span> },
   // eslint-disable-next-line react-hooks/exhaustive-deps
   ], []);
   return (
@@ -43,7 +43,8 @@ export function RunClient({ run, rows }: { run: { id: number; period: string; st
         <div className="card stat"><b>{kes(sum('net'))}</b><span>Total net pay</span></div>
       </div>
       <div className="card"><DataTable data={rows} columns={columns} filters={[{ id: 'department', label: 'Department' }]}
-        searchPlaceholder="Search employee…" /></div>
+        searchPlaceholder="Search employee…"
+        toolbar={<a className="btn" href={`/payroll/${run.id}/export`} download>Export CSV</a>} /></div>
       {run.status === 'draft' && (
         <div style={{ display: 'flex', gap: 8 }}>
           <ConfirmButton label="Finalize & publish" title="Finalize this payroll?"

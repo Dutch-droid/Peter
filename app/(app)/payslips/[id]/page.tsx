@@ -19,7 +19,11 @@ export default async function Payslip({ params }: { params: Promise<{ id: string
     <tr key={n}><td>{n}</td><td className="n">{neg ? '− ' : ''}{kes(a)}</td></tr>);
   return (
     <>
-      <h1>Payslip · {row.period}{row.status === 'draft' && ' (draft)'}</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12, flexWrap: 'wrap' }}>
+        <h1 style={{ margin: 0 }}>Payslip · {row.period}{row.status === 'draft' && ' (draft)'}</h1><span className="sp" />
+        <a className="btn primary" href={`/payslips/${id}/pdf`} download>Download PDF</a>
+      </div>
+      <div style={{ height: 16 }} />
       <div className="card"><p><b>{row.name}</b> · {row.job_title}</p>
         <table><tbody>
           {line('Basic salary', p.base)}

@@ -1,5 +1,6 @@
 'use client';
 import { useMemo } from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { ColumnDef } from '@tanstack/react-table';
@@ -20,7 +21,9 @@ export function LeaveClient({ balances, mine, queue, defaults }: {
 }) {
   return (
     <>
-      <h1>Leave</h1>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}><h1 style={{ margin: 0 }}>Leave</h1><span className="sp" />
+        <Link className="btn" href="/leave/calendar">Team calendar</Link></div>
+      <div style={{ height: 16 }} />
       <div className="stats">{balances.map((b) => (
         <div key={b.id} className="card stat"><b>{b.left}</b><span>{b.name} days yours to use</span>
           <div style={{ marginTop: 8 }}><Progress value={b.total - b.left} max={b.total} label={`${b.name} used`} /></div>
@@ -96,6 +99,7 @@ function MyRequests({ rows }: { rows: MyReq[] }) {
   return (
     <div className="card"><h2>My requests</h2>
       <DataTable data={rows} columns={columns} filters={[{ id: 'status', label: 'Status' }, { id: 'type', label: 'Type' }]}
-        searchPlaceholder="Search my requests…" empty="You haven't requested any leave yet." /></div>
+        searchPlaceholder="Search my requests…" empty="You haven't requested any leave yet."
+        toolbar={<a className="btn" href="/leave/export" download>Export CSV</a>} /></div>
   );
 }

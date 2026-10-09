@@ -11,7 +11,10 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     { href: '/', label: 'Dashboard' },
     ...(u.role !== 'employee' ? [{ href: '/employees', label: 'Employees' }] : []),
     { href: '/leave', label: 'Leave' },
+    { href: '/leave/calendar', label: 'Calendar' },
     { href: '/payslips', label: 'My payslips' },
+    { href: '/performance', label: 'Performance' },
+    ...(u.role === 'admin' ? [{ href: '/recruitment', label: 'Recruitment' }] : []),
     ...(u.role === 'admin' ? [{ href: '/payroll', label: 'Payroll' }, { href: '/settings', label: 'Settings' }] : []),
   ];
   return (
