@@ -78,3 +78,40 @@ test('Kenya seed: KES 120,000 salary produces a sane payslip', () => {
   assert.deepEqual(p.deductions.map((d) => d.amount), [6480, 3795, 2070]);
   assert.ok(p.tax > 0 && p.net > 0 && p.net < p.gross);
 });
+
+import { bracketsSchema, componentSchema, leaveRequestSchema } from '../lib/schemas';
+
+test('schemas: leave request rules', () => {
+  const ok = { leave_type_id: 1, start_date: '2026-11-02', end_date: '2026-11-04', reason: '' };
+  assert.ok(leaveRequestSchema.safeParse(ok).success);
+  assert.ok(!leaveRequestSchema.safeParse({ ...ok, end_date: '2026-11-01' }).success);
+  assert.ok(!leaveRequestSchema.safeParse({ ...ok, start_date: '2026-11-07', end_date: '2026-11-08' }).success);
+  assert.ok(!leaveRequestSchema.safeParse({ ...ok, start_date: '2026-12-30', end_date: '2027-01-02' }).success);
+});
+
+test('schemas: component and bracket rules', () => {
+  const c = { name: 'X', kind: 'deduction', calc: 'percent', value: 5, taxable: true, min_amount: null, max_amount: null };
+  assert.ok(componentSchema.safeParse(c).success);
+  assert.ok(!componentSchema.safeParse({ ...c, value: 150 }).success);
+  assert.ok(!componentSchema.safeParse({ ...c, min_amount: 10, max_amount: 5 }).success);
+  const b = (brackets: { upper_limit: number | null; rate: number }[]) => bracketsSchema.safeParse({ brackets, monthly_relief: 0 }).success;
+  assert.ok(b([{ upper_limit: 100, rate: 10 }, { upper_limit: null, rate: 20 }]));
+  assert.ok(!b([{ upper_limit: 100, rate: 10 }]));
+  assert.ok(!b([{ upper_limit: 200, rate: 10 }, { upper_limit: 100, rate: 20 }, { upper_limit: null, rate: 30 }]));
+  assert.ok(!b([{ upper_limit: null, rate: 10 }, { upper_limit: null, rate: 20 }]));
+});
+
+import { nextWorkingDay } from '../lib/leave-days';
+import { generatePassword } from '../lib/password';
+
+test('nextWorkingDay skips weekends', () => {
+  assert.equal(nextWorkingDay(new Date('2026-10-08T10:00:00Z')), '2026-10-09'); // Thu -> Fri
+  assert.equal(nextWorkingDay(new Date('2026-10-09T10:00:00Z')), '2026-10-12'); // Fri -> Mon
+  assert.equal(nextWorkingDay(new Date('2026-10-10T10:00:00Z')), '2026-10-12'); // Sat -> Mon
+});
+
+test('generatePassword is long enough and varies', () => {
+  const a = generatePassword(), b = generatePassword();
+  assert.equal(a.length, 12);
+  assert.notEqual(a, b);
+});

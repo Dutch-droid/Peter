@@ -107,7 +107,16 @@ export function openDb(file: string): DB {
   raw.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
   raw.exec(SCHEMA);
   return {
-    prepare: (sql) => raw.prepare(sql) as unknown as Stmt,
+    prepare: (sql) => {
+      const st = raw.prepare(sql);
+      // node:sqlite rows have a null prototype; React won't pass those to client components.
+      const plain = <T,>(r: T): T => (r && typeof r === 'object' ? ({ ...r } as T) : r);
+      return {
+        run: (...p) => st.run(...p),
+        get: (...p) => plain(st.get(...p)),
+        all: (...p) => st.all(...p).map(plain),
+      };
+    },
     exec: (sql) => raw.exec(sql),
     transaction: (fn) => () => {
       raw.exec('BEGIN');

@@ -1,26 +1,30 @@
-import Link from 'next/link';
 import { requireUser } from '@/lib/auth';
+import { NavLinks } from '@/components/nav-links';
+import { ToastProvider } from '@/components/toast';
 import { logout } from '../actions';
 
 export const dynamic = 'force-dynamic';
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const u = await requireUser();
+  const links = [
+    { href: '/', label: 'Dashboard' },
+    ...(u.role !== 'employee' ? [{ href: '/employees', label: 'Employees' }] : []),
+    { href: '/leave', label: 'Leave' },
+    { href: '/payslips', label: 'My payslips' },
+    ...(u.role === 'admin' ? [{ href: '/payroll', label: 'Payroll' }, { href: '/settings', label: 'Settings' }] : []),
+  ];
   return (
-    <>
-      <nav>
-        <b>PeopleFlow HR</b>
-        <Link href="/">Dashboard</Link>
-        {u.role !== 'employee' && <Link href="/employees">Employees</Link>}
-        <Link href="/leave">Leave</Link>
-        <Link href="/payslips">My payslips</Link>
-        {u.role === 'admin' && <Link href="/payroll">Payroll</Link>}
-        {u.role === 'admin' && <Link href="/settings">Settings</Link>}
-        <span className="sp" />
-        <span>{u.name} · {u.role}</span>
-        <form action={logout}><button className="sec">Sign out</button></form>
-      </nav>
-      <main>{children}</main>
-    </>
+    <ToastProvider>
+      <div className="shell">
+        <aside className="side">
+          <div className="brand">PeopleFlow HR</div>
+          <NavLinks links={links} />
+          <div className="who">{u.name}<br />{u.role}
+            <form action={logout} style={{ marginTop: 8 }}><button className="sec">Sign out</button></form></div>
+        </aside>
+        <main className="content">{children}</main>
+      </div>
+    </ToastProvider>
   );
 }

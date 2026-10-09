@@ -10,3 +10,11 @@ export function businessDays(startISO: string, endISO: string): number {
   }
   return n;
 }
+
+/** ISO date (UTC) of the next Monday–Friday strictly after `from`. */
+export function nextWorkingDay(from: Date): string {
+  const d = new Date(Date.UTC(from.getUTCFullYear(), from.getUTCMonth(), from.getUTCDate()));
+  do d.setUTCDate(d.getUTCDate() + 1);
+  while (d.getUTCDay() === 0 || d.getUTCDay() === 6);
+  return d.toISOString().slice(0, 10);
+}
