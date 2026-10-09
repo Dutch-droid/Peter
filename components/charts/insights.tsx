@@ -27,7 +27,7 @@ export function AdminInsights({ pay, depts, leave, funnel, year }: {
   return (
     <div className="viz-grid">
       <div className="viz-wide">
-        <LineChart title="Payroll cost" subtitle="Gross vs net pay per finalized run, last 12 runs" unit="KES" emptyText="Finalize a payroll run to see the trend."
+        <LineChart title="Payroll cost" subtitle={`Gross vs net pay per finalized run, ${year}`} unit="KES" emptyText={`No finalized payroll in ${year}.`}
           series={[{ key: 'gross', label: 'Gross', color: 'var(--s1)' }, { key: 'net', label: 'Net', color: 'var(--s2)' }]}
           points={pay.map((p) => ({ x: periodLabel(p.period), values: { gross: p.gross, net: p.net } }))} format={kes} />
       </div>
@@ -44,7 +44,7 @@ export function AdminInsights({ pay, depts, leave, funnel, year }: {
 export function MyInsights({ pay, leave, year }: { pay: Pay[]; leave: number[]; year: number }) {
   return (
     <div className="viz-grid">
-      <LineChart title="My net pay" subtitle="Take-home per published payslip" unit="KES" area emptyText="Your payslips will chart here once payroll is published."
+      <LineChart title="My net pay" subtitle={`Take-home per published payslip, ${year}`} unit="KES" area emptyText={`No published payslips in ${year}.`}
         series={[{ key: 'net', label: 'Net pay', color: 'var(--s1)' }]}
         points={pay.map((p) => ({ x: periodLabel(p.period), values: { net: p.net } }))} format={kes} />
       <ColumnChart title="My leave" subtitle={`Approved working days per month, ${year}`} data={leave.map((v, i) => ({ label: MONTHS[i], value: v }))}

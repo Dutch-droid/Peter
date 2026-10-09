@@ -25,6 +25,14 @@ Change these before any real use.
 - **Recruitment** (admin): jobs and a candidate pipeline board (Applied, Screening, Interview, Offer, Hired, Rejected) with drag-and-drop and a keyboard-friendly dropdown fallback.
 - **Performance:** review cycles, personal goals with progress, self-assessment then manager review. Employees only see their manager's rating once the review is completed.
 
+## Public holidays and hiring
+- **Public holidays** (Settings): excluded from leave day counts and balances, shown on the leave calendar. Seeded with Kenya's fixed-date holidays for 2026; add movable days (for example Eid) and each new year's dates yourself, and check them against the official gazette.
+- **Hire to employee:** move a candidate to Hired, then **Create employee** pre-fills their name, email, job title and department, generates a password and creates the employee record and login in one step.
+- **Chart filter:** a year selector above the dashboard charts scopes the payroll and leave charts; headcount and hiring are as of today.
+
+## Screenshots
+See `docs/screenshots/` for a tour of every module (light, dark and mobile).
+
 ## Dashboard charts
 Hand-built SVG (no chart library). Admins: payroll cost line chart (gross vs net), headcount-by-department donut, leave-taken columns, hiring-pipeline bars. Everyone else: own net-pay trend and own leave.
 Every chart has a hover/keyboard tooltip (arrow keys, Esc), a Table view with the exact numbers, dark mode, and an empty state. Palette checked with a colour-blind / contrast validator; the donut folds small departments into "Other" past five.

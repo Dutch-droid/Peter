@@ -1,6 +1,6 @@
 import { db } from '@/lib/db';
 import { requireUser } from '@/lib/auth';
-import { leaveUsed } from '@/lib/leave';
+import { holidaySet, leaveUsed } from '@/lib/leave';
 import { nextWorkingDay } from '@/lib/leave-days';
 import { LeaveClient, type MyReq, type QueueReq } from './leave-client';
 
@@ -22,5 +22,5 @@ export default async function Leave() {
   // Smart defaults: the type you most likely want (Annual, if you still have days), starting next working day.
   const preferred = balances.find((b) => /annual/i.test(b.name) && b.left > 0) ?? [...balances].sort((a, b) => b.left - a.left)[0];
   const defaults = { typeId: preferred?.id ?? 0, start: nextWorkingDay(new Date()) };
-  return <LeaveClient balances={balances} mine={mine} queue={queue} defaults={defaults} />;
+  return <LeaveClient balances={balances} mine={mine} queue={queue} defaults={defaults} holidays={[...holidaySet()]} />;
 }

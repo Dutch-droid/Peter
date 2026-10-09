@@ -155,3 +155,9 @@ input[type=range]{padding:0;accent-color:var(--brand)}
 .dlegend .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.dlegend .pc{color:var(--mute);text-align:right}
 .viz-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:16px}.viz-grid>.card{margin:0}.viz-wide{grid-column:1/-1}
 @media (max-width:420px){.viz-grid{grid-template-columns:1fr}}
+
+.calday.hol{background:color-mix(in srgb,var(--brand) 7%,transparent)}
+.chip.holiday{background:color-mix(in srgb,var(--brand) 18%,transparent);color:var(--ink);border:1px solid color-mix(in srgb,var(--brand) 40%,transparent)}
+
+.filterrow{display:flex;gap:12px;align-items:flex-end;flex-wrap:wrap;margin-bottom:12px}.filterrow label{min-width:110px}
+.viz-dim{opacity:.55;transition:opacity .15s}

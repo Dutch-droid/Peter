@@ -7,14 +7,15 @@ import { DataTable } from '@/components/data-table';
 import { ConfirmButton, Modal } from '@/components/modal';
 import { Field, asNumber, asOptNumber } from '@/components/form';
 import { useRun } from '@/components/toast';
-import { bracketsSchema, componentSchema, leaveTypeSchema, type BracketsInput, type ComponentInput, type LeaveTypeInput } from '@/lib/schemas';
-import { deleteComponent, saveBrackets, saveComponent, saveLeaveType } from '../../actions';
+import { bracketsSchema, componentSchema, holidaySchema, leaveTypeSchema, type BracketsInput, type ComponentInput, type HolidayInput, type LeaveTypeInput } from '@/lib/schemas';
+import { deleteComponent, deleteHoliday, saveBrackets, saveComponent, saveHoliday, saveLeaveType } from '../../actions';
 
 export type Comp = { id: number; name: string; kind: string; calc: string; value: number; taxable: number; min_amount: number | null; max_amount: number | null };
+export type Holiday = { date: string; name: string };
 export type LeaveTypeRow = { id: number; name: string; days_per_year: number };
 
-export function SettingsClient({ comps, brackets, relief, types }: {
-  comps: Comp[]; brackets: { upper_limit: number | null; rate: number }[]; relief: number; types: LeaveTypeRow[];
+export function SettingsClient({ comps, brackets, relief, types, holidays }: {
+  comps: Comp[]; brackets: { upper_limit: number | null; rate: number }[]; relief: number; types: LeaveTypeRow[]; holidays: Holiday[];
 }) {
   return (
     <>
@@ -23,6 +24,7 @@ export function SettingsClient({ comps, brackets, relief, types }: {
       <TaxCard brackets={brackets} relief={relief} />
       <ComponentsCard comps={comps} />
       <LeaveTypesCard types={types} />
+      <HolidaysCard holidays={holidays} />
     </>
   );
 }
@@ -128,6 +130,30 @@ function LeaveTypesCard({ types }: { types: LeaveTypeRow[] }) {
         <Field label="Name (same name updates it)" error={errors.name}><input {...register('name')} /></Field>
         <Field label="Days per year" error={errors.days_per_year}><input type="number" {...register('days_per_year', asNumber)} /></Field>
         <button disabled={pending}>{pending ? 'Saving…' : 'Save leave type'}</button>
+      </form></div>
+  );
+}
+
+function HolidaysCard({ holidays }: { holidays: Holiday[] }) {
+  const { run, pending } = useRun();
+  const { register, handleSubmit, reset, formState: { errors } } = useForm<HolidayInput>({ resolver: zodResolver(holidaySchema), defaultValues: { date: '', name: '' } });
+  const columns = useMemo<ColumnDef<Holiday>[]>(() => [
+    { accessorKey: 'date', header: 'Date', cell: ({ getValue }) => `${getValue()} (${new Date(String(getValue()) + 'T00:00:00Z').toLocaleString('en-GB', { weekday: 'short', timeZone: 'UTC' })})` },
+    { accessorKey: 'name', header: 'Holiday' },
+    { id: 'act', header: '', enableSorting: false, cell: ({ row: { original: h } }) => (
+      <span style={{ display: 'flex', gap: 8 }}>
+        <button type="button" className="sec" onClick={() => reset({ date: h.date, name: h.name })}>Edit</button>
+        <ConfirmButton label="Delete" className="sec" title={`Delete ${h.name}?`} danger
+          message="Leave requested from now on will count this day as a working day." action={() => deleteHoliday(h.date)} /></span>) },
+  ], [reset]);
+  return (
+    <div className="card"><h2>Public holidays</h2>
+      <p style={{ color: 'var(--mute)', marginTop: 0 }}>Holidays are not counted against leave balances and show on the leave calendar. Add movable or newly gazetted days (for example Eid) here each year, and check the dates against the official gazette.</p>
+      <DataTable data={holidays} columns={columns} pageSize={8} searchPlaceholder="Search holidays…" />
+      <form className="row" style={{ marginTop: 12 }} noValidate onSubmit={handleSubmit((v) => run(() => saveHoliday(v), () => reset({ date: '', name: '' })))}>
+        <Field label="Date" error={errors.date}><input type="date" {...register('date')} /></Field>
+        <Field label="Name" error={errors.name}><input {...register('name')} /></Field>
+        <button disabled={pending}>{pending ? 'Saving…' : 'Save holiday'}</button>
       </form></div>
   );
 }

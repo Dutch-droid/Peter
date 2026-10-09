@@ -45,6 +45,13 @@ export function seed(db: DB) {
 
   db.prepare("INSERT INTO settings (key,value) VALUES ('currency','KES'), ('monthly_relief','2400')").run();
 
+  // Kenya public holidays that fall on fixed dates (plus 2026 Easter). Movable and gazetted-annually
+  // days (Eid, Utamaduni/Mazingira) are deliberately left for an admin to add in Settings.
+  const hol = db.prepare('INSERT INTO holidays (date,name) VALUES (?,?)');
+  [['2026-01-01', "New Year's Day"], ['2026-04-03', 'Good Friday'], ['2026-04-06', 'Easter Monday'], ['2026-05-01', 'Labour Day'],
+    ['2026-06-01', 'Madaraka Day'], ['2026-10-20', 'Mashujaa Day'], ['2026-12-12', 'Jamhuri Day'],
+    ['2026-12-25', 'Christmas Day'], ['2026-12-26', 'Boxing Day']].forEach(([d, n]) => hol.run(d, n));
+
   // Recruitment sample: one open role with candidates spread across the pipeline.
   const job = Number(db.prepare("INSERT INTO jobs (title,department,location,description) VALUES (?,?,?,?)")
     .run('Senior Backend Engineer', 'Engineering', 'Nairobi', 'Own our payroll and HR services.').lastInsertRowid);

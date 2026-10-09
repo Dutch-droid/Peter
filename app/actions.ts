@@ -4,10 +4,10 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { db } from '@/lib/db';
 import { createSession, destroySession, hashPassword, requireUser, verifyPassword } from '@/lib/auth';
-import { businessDays, leaveUsed } from '@/lib/leave';
+import { businessDays, holidaySet, leaveUsed } from '@/lib/leave';
 import { computePayslip, type Bracket, type Component } from '@/lib/payroll';
 import {
-  STAGES, bracketsSchema, candidateSchema, componentSchema, cycleSchema, employeeSchema, goalSchema, jobSchema, ratingSchema, employeeUpdateSchema, leaveRequestSchema,
+  STAGES, bracketsSchema, candidateSchema, componentSchema, cycleSchema, employeeSchema, goalSchema, hireSchema, holidaySchema, jobSchema, ratingSchema, employeeUpdateSchema, leaveRequestSchema,
   leaveTypeSchema, periodSchema,
 } from '@/lib/schemas';
 import type { z } from 'zod';
@@ -16,8 +16,11 @@ export type Result<T = undefined> = { ok: true; message?: string; data?: T } | {
 const ok = <T,>(message?: string, data?: T): Result<T> => ({ ok: true, message, data });
 const fail = (error: string): Result<never> => ({ ok: false, error });
 const bad = (e: z.ZodError) => fail(e.issues[0]?.message ?? 'Invalid input');
-const dbError = (e: unknown, dup: string) =>
-  fail(/UNIQUE/i.test(String(e)) ? dup : 'Could not save. Please try again.');
+const dbError = (e: unknown, dup: string) => {
+  if (/UNIQUE/i.test(String(e))) return fail(dup);
+  console.error('Unexpected database error:', e); // keep the real cause in the server log
+  return fail('Could not save. Please try again.');
+};
 
 /* ---------- Auth ---------- */
 
@@ -38,21 +41,25 @@ export async function logout() {
 
 /* ---------- Employees (admin) ---------- */
 
+/** Creates the employee record and their login in the caller's transaction; returns the new employee id. */
+function insertEmployee(v: z.infer<typeof employeeSchema>): number {
+  const d = db();
+  const id = Number(d.prepare(
+    `INSERT INTO employees (first_name,last_name,email,department,job_title,manager_id,hire_date,monthly_salary)
+     VALUES (?,?,?,?,?,?,?,?)`,
+  ).run(v.first_name, v.last_name, v.email, v.department, v.job_title, v.manager_id, v.hire_date, v.monthly_salary).lastInsertRowid);
+  d.prepare('INSERT INTO users (email,password_hash,role,employee_id) VALUES (?,?,?,?)')
+    .run(v.email, hashPassword(v.password), v.role, id);
+  return id;
+}
+
 export async function addEmployee(input: unknown): Promise<Result> {
   await requireUser(['admin']);
   const p = employeeSchema.safeParse(input);
   if (!p.success) return bad(p.error);
   const v = p.data;
-  const d = db();
   try {
-    d.transaction(() => {
-      const id = Number(d.prepare(
-        `INSERT INTO employees (first_name,last_name,email,department,job_title,manager_id,hire_date,monthly_salary)
-         VALUES (?,?,?,?,?,?,?,?)`,
-      ).run(v.first_name, v.last_name, v.email, v.department, v.job_title, v.manager_id, v.hire_date, v.monthly_salary).lastInsertRowid);
-      d.prepare('INSERT INTO users (email,password_hash,role,employee_id) VALUES (?,?,?,?)')
-        .run(v.email, hashPassword(v.password), v.role, id);
-    })();
+    db().transaction(() => insertEmployee(v))();
   } catch (e) {
     return dbError(e, 'An employee with that email already exists');
   }
@@ -88,7 +95,8 @@ export async function requestLeave(input: unknown): Promise<Result> {
   const type = d.prepare('SELECT days_per_year FROM leave_types WHERE id=?').get(v.leave_type_id) as
     { days_per_year: number } | undefined;
   if (!type) return fail('Unknown leave type');
-  const days = businessDays(v.start_date, v.end_date);
+  const days = businessDays(v.start_date, v.end_date, holidaySet());
+  if (days < 1) return fail('Those dates are only weekends or public holidays');
   const left = type.days_per_year - leaveUsed(u.employeeId, v.leave_type_id, Number(v.start_date.slice(0, 4)));
   if (days > left) return fail(`You only have ${Math.max(left, 0)} day(s) left of this leave type`);
   const overlap = d.prepare(
@@ -388,4 +396,51 @@ export async function submitManagerReview(input: unknown): Promise<Result> {
     .run(p.data.rating, p.data.comment, p.data.review_id);
   revalidatePath('/performance');
   return ok('Review completed');
+}
+
+/** Turns a hired candidate into an employee (with a login) and links the two, atomically. */
+export async function hireCandidate(input: unknown): Promise<Result> {
+  await requireUser(['admin']);
+  const p = hireSchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  const { candidate_id, ...v } = p.data;
+  const d = db();
+  const cand = d.prepare('SELECT job_id, stage, employee_id FROM candidates WHERE id=?').get(candidate_id) as
+    { job_id: number; stage: string; employee_id: number | null } | undefined;
+  if (!cand) return fail('Candidate not found');
+  if (cand.employee_id) return fail('This candidate has already been added as an employee');
+  if (cand.stage !== 'hired') return fail('Move the candidate to Hired first');
+  try {
+    d.transaction(() => {
+      const id = insertEmployee(v);
+      d.prepare('UPDATE candidates SET employee_id=? WHERE id=?').run(id, candidate_id);
+    })();
+  } catch (e) {
+    return dbError(e, 'An employee with that email already exists');
+  }
+  revalidatePath(`/recruitment/${cand.job_id}`);
+  revalidatePath('/employees');
+  revalidatePath('/');
+  return ok(`${v.first_name} ${v.last_name} is now an employee. Share their login details securely.`);
+}
+
+/* ---------- Public holidays (admin) ---------- */
+
+export async function saveHoliday(input: unknown): Promise<Result> {
+  await requireUser(['admin']);
+  const p = holidaySchema.safeParse(input);
+  if (!p.success) return bad(p.error);
+  db().prepare('INSERT INTO holidays (date,name) VALUES (?,?) ON CONFLICT(date) DO UPDATE SET name=excluded.name')
+    .run(p.data.date, p.data.name);
+  revalidatePath('/settings');
+  revalidatePath('/leave');
+  return ok(`${p.data.name} saved. It applies to leave requested from now on.`);
+}
+
+export async function deleteHoliday(date: string): Promise<Result> {
+  await requireUser(['admin']);
+  db().prepare('DELETE FROM holidays WHERE date=?').run(date);
+  revalidatePath('/settings');
+  revalidatePath('/leave');
+  return ok('Holiday removed');
 }

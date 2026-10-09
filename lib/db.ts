@@ -77,7 +77,12 @@ CREATE TABLE IF NOT EXISTS candidates (
   phone TEXT NOT NULL DEFAULT '',
   stage TEXT NOT NULL DEFAULT 'applied' CHECK (stage IN ('applied','screening','interview','offer','hired','rejected')),
   notes TEXT NOT NULL DEFAULT '',
+  employee_id INTEGER REFERENCES employees(id),
   created_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE TABLE IF NOT EXISTS holidays (
+  date TEXT PRIMARY KEY,
+  name TEXT NOT NULL
 );
 CREATE TABLE IF NOT EXISTS review_cycles (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -152,6 +157,9 @@ export function openDb(file: string): DB {
   const raw = new DatabaseSync(file);
   raw.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
   raw.exec(SCHEMA);
+  // Databases created before a column existed: CREATE TABLE IF NOT EXISTS won't add it.
+  const cols = raw.prepare('PRAGMA table_info(candidates)').all() as { name: string }[];
+  if (!cols.some((c) => c.name === 'employee_id')) raw.exec('ALTER TABLE candidates ADD COLUMN employee_id INTEGER REFERENCES employees(id)');
   return {
     prepare: (sql) => {
       const st = raw.prepare(sql);

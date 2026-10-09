@@ -4,25 +4,28 @@ import { useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Modal, ConfirmButton } from '@/components/modal';
-import { Field, StatusTag } from '@/components/form';
+import { Field, StatusTag, asNumber, asOptId } from '@/components/form';
 import { Progress } from '@/components/progress';
 import { useRun, useToast } from '@/components/toast';
-import { STAGES, candidateSchema, type CandidateInput, type Stage } from '@/lib/schemas';
-import { deleteCandidate, moveCandidate, saveCandidate } from '../../../actions';
+import { STAGES, candidateSchema, hireSchema, type CandidateInput, type HireInput, type Stage } from '@/lib/schemas';
+import { generatePassword } from '@/lib/password';
+import { deleteCandidate, hireCandidate, moveCandidate, saveCandidate } from '../../../actions';
 
-export type Cand = { id: number; job_id: number; name: string; email: string; phone: string; stage: Stage; notes: string; created_at: string };
+export type Cand = { id: number; job_id: number; name: string; email: string; phone: string; stage: Stage; notes: string; employee_id: number | null; created_at: string };
+type Mgr = { id: number; name: string; department: string };
 type Job = { id: number; title: string; department: string; location: string; description: string; status: string };
 
 const LABEL: Record<Stage, string> = { applied: 'Applied', screening: 'Screening', interview: 'Interview', offer: 'Offer', hired: 'Hired', rejected: 'Rejected' };
 const FORWARD = STAGES.slice(0, 5); // applied..hired: the happy path used for the progress bar
 
-export function BoardClient({ job, initial }: { job: Job; initial: Cand[] }) {
+export function BoardClient({ job, initial, managers }: { job: Job; initial: Cand[]; managers: Mgr[] }) {
   const toast = useToast();
   const router = useRouter();
   const [cands, setCands] = useState(initial);
   const [dragId, setDragId] = useState<number | null>(null);
   const [over, setOver] = useState<Stage | null>(null);
   const [editing, setEditing] = useState<Cand | 'new' | null>(null);
+  const [hiring, setHiring] = useState<Cand | null>(null);
   const [, start] = useTransition();
   useEffect(() => setCands(initial), [initial]);
 
@@ -46,7 +49,8 @@ export function BoardClient({ job, initial }: { job: Job; initial: Cand[] }) {
         <span className="sp" />
         <button type="button" onClick={() => setEditing('new')}>+ Add candidate</button>
       </div>
-      {hired > 0 && <div className="banner">🎉 {hired} hired for this role. Add them as an employee from <a href="/employees">Employees</a>.</div>}
+      {cands.some((c) => c.stage === 'hired' && !c.employee_id) && (
+        <div className="banner">🎉 You have hired for this role. Use <b>Create employee</b> on their card to set up their record and login.</div>)}
       <div className="board">
         {STAGES.map((stage) => {
           const list = cands.filter((c) => c.stage === stage);
@@ -65,6 +69,9 @@ export function BoardClient({ job, initial }: { job: Job; initial: Cand[] }) {
                   <button type="button" className="linkbtn name" onClick={() => setEditing(c)}>{c.name}</button>
                   {c.email && <small>{c.email}</small>}
                   {c.stage !== 'rejected' && <Progress value={FORWARD.indexOf(c.stage as typeof FORWARD[number])} max={FORWARD.length - 1} label={`${c.name} progress`} />}
+                  {c.stage === 'hired' && (c.employee_id
+                    ? <a className="tag active" href="/employees" style={{ justifySelf: 'start', textDecoration: 'none' }}>✓ Employee</a>
+                    : <button type="button" onClick={() => setHiring(c)}>Create employee</button>)}
                   <select aria-label={`Move ${c.name}`} value={c.stage} onChange={(e) => move(c.id, e.target.value as Stage)}>
                     {STAGES.map((s) => <option key={s} value={s}>{LABEL[s]}</option>)}</select>
                 </article>))}
@@ -75,7 +82,44 @@ export function BoardClient({ job, initial }: { job: Job; initial: Cand[] }) {
         {editing && (
           <CandidateForm jobId={job.id} cand={editing === 'new' ? null : editing} onDone={() => { setEditing(null); router.refresh(); }} />)}
       </Modal>
+      <Modal open={!!hiring} onClose={() => setHiring(null)} title={hiring ? `Create employee: ${hiring.name}` : ''}>
+        {hiring && <HireForm cand={hiring} job={job} managers={managers} onDone={() => { setHiring(null); router.refresh(); }} />}
+      </Modal>
     </>
+  );
+}
+
+function HireForm({ cand, job, managers, onDone }: { cand: Cand; job: Job; managers: Mgr[]; onDone: () => void }) {
+  const { run, pending } = useRun();
+  const [first, ...rest] = cand.name.trim().split(/\s+/);
+  const { register, handleSubmit, setValue, getValues, formState: { errors } } = useForm<HireInput>({
+    resolver: zodResolver(hireSchema),
+    // Smart defaults from what we already know about the candidate and the role.
+    defaultValues: { candidate_id: cand.id, first_name: first ?? '', last_name: rest.join(' '), email: cand.email, department: job.department,
+      job_title: job.title, hire_date: new Date().toISOString().slice(0, 10), role: 'employee', manager_id: null, password: generatePassword() },
+  });
+  return (
+    <form noValidate onSubmit={handleSubmit((v) => run(() => hireCandidate(v), onDone))}>
+      <div className="grid2">
+        <Field label="First name" error={errors.first_name}><input {...register('first_name')} /></Field>
+        <Field label="Last name" error={errors.last_name}><input {...register('last_name')} /></Field>
+        <Field label="Email (their login)" error={errors.email}><input type="email" {...register('email')} /></Field>
+        <Field label="Initial password" error={errors.password} hint="Suggested. Share it securely.">
+          <span style={{ display: 'flex', gap: 6 }}><input style={{ flex: 1 }} autoComplete="off" spellCheck={false} {...register('password')} />
+            <button type="button" className="sec" onClick={() => setValue('password', generatePassword(), { shouldValidate: true })}>New</button></span></Field>
+        <Field label="Department" error={errors.department}><input {...register('department')} /></Field>
+        <Field label="Job title" error={errors.job_title}><input {...register('job_title')} /></Field>
+        <Field label="Start date" error={errors.hire_date}><input type="date" {...register('hire_date')} /></Field>
+        <Field label="Monthly salary (KES)" error={errors.monthly_salary}><input type="number" step="0.01" {...register('monthly_salary', asNumber)} /></Field>
+        <Field label="Manager" error={errors.manager_id} hint="Picking a manager fills in their department if blank">
+          <select {...register('manager_id', { ...asOptId, onChange: (e) => {
+            const m = managers.find((x) => x.id === Number(e.target.value)); if (m && !getValues('department')) setValue('department', m.department);
+          } })}><option value="">— none —</option>{managers.map((m) => <option key={m.id} value={m.id}>{m.name}</option>)}</select></Field>
+        <Field label="Role" error={errors.role}><select {...register('role')}><option value="employee">Employee</option><option value="manager">Manager</option><option value="admin">Admin</option></select></Field>
+      </div>
+      <div className="actions"><button type="button" className="sec" onClick={onDone}>Cancel</button>
+        <button disabled={pending}>{pending ? 'Creating…' : 'Create employee'}</button></div>
+    </form>
   );
 }
 

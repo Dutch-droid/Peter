@@ -30,6 +30,8 @@ export default async function LeaveCalendar({ searchParams }: { searchParams: Pr
     return inScope && pendingOk;
   });
 
+  const holidays = new Map((db().prepare('SELECT date, name FROM holidays WHERE date BETWEEN ? AND ?').all(from, to) as { date: string; name: string }[]).map((h) => [h.date, h.name]));
+
   const title = new Date(month + '-01T00:00:00Z').toLocaleString('en-GB', { month: 'long', year: 'numeric', timeZone: 'UTC' });
   return (
     <>
@@ -42,7 +44,7 @@ export default async function LeaveCalendar({ searchParams }: { searchParams: Pr
       </div>
       <p style={{ color: 'var(--mute)' }}>
         {u.role === 'admin' ? 'Everyone' : `${me.department || 'Your department'}`} · <span className="chip approved">approved</span>{' '}
-        <span className="chip pending">pending</span>
+        <span className="chip pending">pending</span>{' '}<span className="chip holiday">public holiday</span>
       </p>
       <div className="card" style={{ padding: 8 }}>
         <div className="cal" role="grid" aria-label={`Leave in ${title}`}>
@@ -50,8 +52,9 @@ export default async function LeaveCalendar({ searchParams }: { searchParams: Pr
           {weeks.flat().map((c) => {
             const list = entriesOn(c.date, visible);
             return (
-              <div key={c.date} role="gridcell" className={`calday${c.inMonth ? '' : ' out'}${c.weekend ? ' we' : ''}${c.date === today ? ' today' : ''}`}>
+              <div key={c.date} role="gridcell" className={`calday${c.inMonth ? '' : ' out'}${c.weekend ? ' we' : ''}${c.date === today ? ' today' : ''}${holidays.has(c.date) ? ' hol' : ''}`}>
                 <div className="num">{Number(c.date.slice(8))}</div>
+                {holidays.has(c.date) && <div className="chip holiday" title={holidays.get(c.date)}>{holidays.get(c.date)}</div>}
                 {list.slice(0, MAX_CHIPS).map((e, i) => (
                   <div key={i} className={`chip ${e.status}`} title={`${e.name} · ${e.type} (${e.status})`}>{e.name.split(' ')[0]} · {e.type}</div>))}
                 {list.length > MAX_CHIPS && (

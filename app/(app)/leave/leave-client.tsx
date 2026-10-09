@@ -16,8 +16,8 @@ export type Balance = { id: number; name: string; total: number; left: number };
 export type MyReq = { id: number; type: string; start_date: string; end_date: string; days: number; status: string; reason: string };
 export type QueueReq = { id: number; name: string; type: string; start_date: string; end_date: string; days: number; reason: string };
 
-export function LeaveClient({ balances, mine, queue, defaults }: {
-  balances: Balance[]; mine: MyReq[]; queue: QueueReq[]; defaults: { typeId: number; start: string };
+export function LeaveClient({ balances, mine, queue, defaults, holidays }: {
+  balances: Balance[]; mine: MyReq[]; queue: QueueReq[]; defaults: { typeId: number; start: string }; holidays: string[];
 }) {
   return (
     <>
@@ -28,21 +28,23 @@ export function LeaveClient({ balances, mine, queue, defaults }: {
         <div key={b.id} className="card stat"><b>{b.left}</b><span>{b.name} days yours to use</span>
           <div style={{ marginTop: 8 }}><Progress value={b.total - b.left} max={b.total} label={`${b.name} used`} /></div>
           <div className="meta"><span>{b.total - b.left} used</span><span>of {b.total}</span></div></div>))}</div>
-      <RequestForm balances={balances} defaults={defaults} />
+      <RequestForm balances={balances} defaults={defaults} holidays={holidays} />
       {queue.length > 0 && <Queue rows={queue} />}
       <MyRequests rows={mine} />
     </>
   );
 }
 
-function RequestForm({ balances, defaults }: { balances: Balance[]; defaults: { typeId: number; start: string } }) {
+function RequestForm({ balances, defaults, holidays }: { balances: Balance[]; defaults: { typeId: number; start: string }; holidays: string[] }) {
   const { run, pending } = useRun();
   const { register, handleSubmit, watch, reset, setValue, getValues, formState: { errors } } = useForm<LeaveRequestInput>({
     resolver: zodResolver(leaveRequestSchema),
     defaultValues: { leave_type_id: defaults.typeId, reason: '', start_date: defaults.start, end_date: defaults.start },
   });
   const [typeId, start, end] = watch(['leave_type_id', 'start_date', 'end_date']);
-  const days = start && end ? businessDays(start, end) : 0;
+  const holidaySet = useMemo(() => new Set(holidays), [holidays]);
+  const days = start && end ? businessDays(start, end, holidaySet) : 0;
+  const holidaysInRange = start && end ? holidays.filter((h) => h >= start && h <= end) : [];
   const bal = balances.find((b) => b.id === Number(typeId));
   const over = bal && days > bal.left;
   return (
@@ -58,10 +60,12 @@ function RequestForm({ balances, defaults }: { balances: Balance[]; defaults: { 
           <Field label="To" error={errors.end_date}><input type="date" min={start || undefined} {...register('end_date')} /></Field>
           <Field label="Reason (optional)" error={errors.reason}><input {...register('reason')} /></Field>
         </div>
+        {start && end && days === 0 && end >= start && (
+          <div className="banner warn">That range is only weekends{holidaysInRange.length ? ' and public holidays' : ''}. Pick working days.</div>)}
         {days > 0 && (
           <div className={`banner${over ? ' warn' : ''}`}>
             {days} working day{days === 1 ? '' : 's'}{bal ? ` · ${bal.left} available in ${bal.name}` : ''}
-            {over ? ' · exceeds your balance' : ''}. Weekends are excluded; public holidays are not.
+            {over ? ' · exceeds your balance' : ''}. Weekends{holidaysInRange.length ? ` and ${holidaysInRange.length} public holiday${holidaysInRange.length > 1 ? 's' : ''}` : ' and public holidays'} are excluded.
           </div>)}
         <div className="actions"><button disabled={pending}>{pending ? 'Submitting…' : 'Submit request'}</button></div>
       </form>

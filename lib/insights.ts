@@ -2,22 +2,28 @@ import type { DB } from './db';
 
 export type PayPoint = { period: string; gross: number; net: number };
 
-/** Totals per finalized payroll run, oldest first (drafts are excluded so charts never show unpublished numbers). */
-export function payrollTrend(d: DB, limit = 12): PayPoint[] {
-  const rows = d.prepare(
+/** Totals per finalized payroll run in `year`, oldest first (drafts are excluded so charts never show unpublished numbers). */
+export function payrollTrend(d: DB, year: number): PayPoint[] {
+  return d.prepare(
     `SELECT r.period, SUM(p.gross) AS gross, SUM(p.net) AS net
      FROM payroll_runs r JOIN payslips p ON p.run_id = r.id
-     WHERE r.status='finalized' GROUP BY r.id ORDER BY r.period DESC LIMIT ?`,
-  ).all(limit) as PayPoint[];
-  return rows.reverse();
+     WHERE r.status='finalized' AND substr(r.period,1,4)=? GROUP BY r.id ORDER BY r.period`,
+  ).all(String(year)) as PayPoint[];
 }
 
-export function myPayTrend(d: DB, employeeId: number, limit = 12): PayPoint[] {
-  const rows = d.prepare(
+export function myPayTrend(d: DB, employeeId: number, year: number): PayPoint[] {
+  return d.prepare(
     `SELECT r.period, p.gross, p.net FROM payslips p JOIN payroll_runs r ON r.id=p.run_id
-     WHERE p.employee_id=? AND r.status='finalized' ORDER BY r.period DESC LIMIT ?`,
-  ).all(employeeId, limit) as PayPoint[];
-  return rows.reverse();
+     WHERE p.employee_id=? AND r.status='finalized' AND substr(r.period,1,4)=? ORDER BY r.period`,
+  ).all(employeeId, String(year)) as PayPoint[];
+}
+
+/** Years worth offering in the filter: every year with payroll or leave, plus the current one. Newest first. */
+export function chartYears(d: DB, current: number): number[] {
+  const rows = d.prepare(
+    `SELECT substr(period,1,4) AS y FROM payroll_runs UNION SELECT substr(start_date,1,4) FROM leave_requests`,
+  ).all() as { y: string }[];
+  return [...new Set([current, ...rows.map((r) => Number(r.y)).filter((y) => y > 1999 && y < 2200)])].sort((a, b) => b - a);
 }
 
 export function headcountByDepartment(d: DB): { name: string; count: number }[] {

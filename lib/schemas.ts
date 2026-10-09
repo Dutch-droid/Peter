@@ -15,7 +15,7 @@ export const employeeSchema = z.object({
   job_title: z.string().trim(),
   hire_date: dateStr,
   monthly_salary: money,
-  manager_id: z.number().nullable(),
+  manager_id: z.number().int().positive('Pick a manager').nullable(),
   role: z.enum(['employee', 'manager', 'admin']),
   password: z.string().min(8, 'At least 8 characters'),
 });
@@ -25,7 +25,7 @@ export const employeeUpdateSchema = z.object({
   department: z.string().trim(),
   job_title: z.string().trim(),
   monthly_salary: money,
-  manager_id: z.number().nullable(),
+  manager_id: z.number().int().positive('Pick a manager').nullable(),
   status: z.enum(['active', 'inactive']),
 });
 
@@ -133,6 +133,15 @@ export const ratingSchema = z.object({
   comment: z.string().trim().min(1, 'Add a short comment').max(2000, 'Keep it under 2000 characters'),
 });
 
+export const holidaySchema = z.object({
+  date: dateStr,
+  name: z.string().trim().min(1, 'Required').max(80, 'Too long'),
+});
+
+export const hireSchema = employeeSchema.extend({ candidate_id: z.number() });
+
+export type HolidayInput = z.infer<typeof holidaySchema>;
+export type HireInput = z.infer<typeof hireSchema>;
 export type JobInput = z.infer<typeof jobSchema>;
 export type CandidateInput = z.infer<typeof candidateSchema>;
 export type CycleInput = z.infer<typeof cycleSchema>;

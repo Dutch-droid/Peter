@@ -163,7 +163,7 @@ test('calendar helpers: entriesOn spans ranges, shiftMonth wraps years', () => {
 });
 
 import { arcPath, columnPath, compactNumber, niceTicks, periodLabel } from '../lib/chart-math';
-import { headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '../lib/insights';
+import { chartYears, headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '../lib/insights';
 
 test('niceTicks gives round numbers that cover the max', () => {
   assert.deepEqual(niceTicks(0), [0, 1]);
@@ -193,12 +193,17 @@ test('chart paths are well formed', () => {
 test('insights queries (seeded db + finalized run)', () => {
   const d = openDb(':memory:');
   seed(d);
-  assert.deepEqual(payrollTrend(d), []); // nothing finalized yet
+  assert.deepEqual(payrollTrend(d, 2026), []); // nothing finalized yet
   const r = Number(d.prepare("INSERT INTO payroll_runs (period,status) VALUES ('2026-09','finalized')").run().lastInsertRowid);
   d.prepare("INSERT INTO payslips (run_id,employee_id,base,gross,total_deductions,tax,net,detail) VALUES (?,?,?,?,?,?,?,'{}')").run(r, 3, 100, 120, 10, 10, 100);
   d.prepare("INSERT INTO payslips (run_id,employee_id,base,gross,total_deductions,tax,net,detail) VALUES (?,?,?,?,?,?,?,'{}')").run(r, 4, 50, 60, 5, 5, 50);
-  assert.deepEqual(payrollTrend(d), [{ period: '2026-09', gross: 180, net: 150 }]);
-  assert.deepEqual(myPayTrend(d, 3), [{ period: '2026-09', gross: 120, net: 100 }]);
+  assert.deepEqual(payrollTrend(d, 2026), [{ period: '2026-09', gross: 180, net: 150 }]);
+  assert.deepEqual(payrollTrend(d, 2025), []); // year filter scopes the trend
+  assert.deepEqual(myPayTrend(d, 3, 2026), [{ period: '2026-09', gross: 120, net: 100 }]);
+  assert.deepEqual(myPayTrend(d, 3, 2025), []);
+  assert.deepEqual(chartYears(d, 2026), [2026]);
+  d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (3,1,'2025-02-03','2025-02-03',1,'approved')").run();
+  assert.deepEqual(chartYears(d, 2026), [2026, 2025]);
   assert.deepEqual(headcountByDepartment(d), [{ name: 'Engineering', count: 3 }, { name: 'HR', count: 1 }]);
   d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (3,1,'2026-03-02','2026-03-04',3,'approved')").run();
   d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (4,1,'2026-03-09','2026-03-09',1,'approved')").run();
@@ -207,4 +212,34 @@ test('insights queries (seeded db + finalized run)', () => {
   assert.equal(all[2], 4); assert.equal(mine[2], 3); assert.equal(all[4], 0); // pending ignored
   const f = hiringFunnel(d);
   assert.deepEqual(f.map((x) => x.count), [1, 1, 1, 0, 0]);
+});
+
+test('businessDays skips public holidays (and weekends are not double counted)', () => {
+  const h = new Set(['2026-10-20']); // Tuesday
+  assert.equal(businessDays('2026-10-19', '2026-10-23'), 5);
+  assert.equal(businessDays('2026-10-19', '2026-10-23', h), 4);
+  assert.equal(businessDays('2026-10-20', '2026-10-20', h), 0);
+  assert.equal(businessDays('2026-10-17', '2026-10-18', new Set(['2026-10-17'])), 0);
+});
+
+test('migration adds candidates.employee_id to an older database', async () => {
+  const { DatabaseSync } = await import('node:sqlite');
+  const os = await import('node:os'); const path = await import('node:path'); const fs = await import('node:fs');
+  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'hr-')), 'old.db');
+  const old = new DatabaseSync(file);
+  old.exec("CREATE TABLE jobs (id INTEGER PRIMARY KEY, title TEXT); CREATE TABLE candidates (id INTEGER PRIMARY KEY, job_id INTEGER, name TEXT, email TEXT DEFAULT '', phone TEXT DEFAULT '', stage TEXT DEFAULT 'applied', notes TEXT DEFAULT '', created_at TEXT DEFAULT '')");
+  old.close();
+  const d = openDb(file);
+  d.prepare("INSERT INTO candidates (job_id,name,employee_id) VALUES (1,'x',NULL)").run(); // would throw without the migration
+  assert.equal((d.prepare('SELECT COUNT(*) c FROM candidates').get() as { c: number }).c, 1);
+});
+
+import { employeeSchema, hireSchema } from '../lib/schemas';
+
+test('manager_id 0 is rejected before it can hit the foreign key', () => {
+  const e = { first_name: 'A', last_name: 'B', email: 'a@b.co', department: '', job_title: '', hire_date: '2026-01-01', monthly_salary: 1, manager_id: 0, role: 'employee', password: 'longenough' };
+  assert.ok(!employeeSchema.safeParse(e).success);
+  assert.ok(employeeSchema.safeParse({ ...e, manager_id: null }).success);
+  assert.ok(employeeSchema.safeParse({ ...e, manager_id: 2 }).success);
+  assert.ok(hireSchema.safeParse({ ...e, manager_id: null, candidate_id: 1 }).success);
 });

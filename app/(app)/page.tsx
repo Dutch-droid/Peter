@@ -5,7 +5,8 @@ import { leaveUsed } from '@/lib/leave';
 import { CountUp } from '@/components/count-up';
 import { Progress } from '@/components/progress';
 import { AdminInsights, MyInsights } from '@/components/charts/insights';
-import { headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '@/lib/insights';
+import { chartYears, headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '@/lib/insights';
+import { FilterScope } from '@/components/charts/filter-scope';
 
 const count = (sql: string, ...p: unknown[]) => (db().prepare(sql).get(...p) as { c: number }).c;
 
@@ -15,11 +16,15 @@ function tenure(hire: string): string {
   return [y && `${y} year${y > 1 ? 's' : ''}`, m && `${m} month${m > 1 ? 's' : ''}`].filter(Boolean).join(' ') || 'just getting started';
 }
 
-export default async function Dashboard() {
+export default async function Dashboard({ searchParams }: { searchParams: Promise<{ y?: string }> }) {
   const u = await requireUser();
+  const sp = await searchParams;
   const d = db();
   const now = new Date();
-  const year = now.getFullYear();
+  const thisYear = now.getFullYear();
+  const year = thisYear; // leave balances and earnings below always describe the current year
+  const years = chartYears(d, thisYear);
+  const chartYear = years.includes(Number(sp.y)) ? Number(sp.y) : thisYear;
 
   const me = d.prepare('SELECT first_name, hire_date FROM employees WHERE id=?').get(u.employeeId) as { first_name: string; hire_date: string };
   const types = d.prepare('SELECT id, name, days_per_year FROM leave_types ORDER BY id').all() as { id: number; name: string; days_per_year: number }[];
@@ -83,9 +88,11 @@ export default async function Dashboard() {
         </div>
       )}
 
-      {u.role === 'admin'
-        ? <AdminInsights pay={payrollTrend(d)} depts={headcountByDepartment(d)} leave={leaveByMonth(d, year)} funnel={hiringFunnel(d)} year={year} />
-        : <MyInsights pay={myPayTrend(d, u.employeeId)} leave={leaveByMonth(d, year, u.employeeId)} year={year} />}
+      <FilterScope years={years} year={chartYear}>
+        {u.role === 'admin'
+          ? <AdminInsights pay={payrollTrend(d, chartYear)} depts={headcountByDepartment(d)} leave={leaveByMonth(d, chartYear)} funnel={hiringFunnel(d)} year={chartYear} />
+          : <MyInsights pay={myPayTrend(d, u.employeeId, chartYear)} leave={leaveByMonth(d, chartYear, u.employeeId)} year={chartYear} />}
+      </FilterScope>
 
       <div className="card">
         <h2>Your leave this year</h2>
