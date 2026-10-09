@@ -4,7 +4,7 @@ An HR, leave and payroll app (Next.js + TypeScript + SQLite), configured for Ken
 
 ## Run
 ```
-npm install
+npm install   # Node 22.13+ required (uses built-in node:sqlite, no compiler needed)
 npm run seed     # creates data/hr.db with demo data
 npm run dev      # http://localhost:3000
 npm test         # payroll + leave unit tests

@@ -1,4 +1,4 @@
-import type Database from 'better-sqlite3';
+import type { DB } from './db';
 import { hashPassword } from './auth';
 
 /**
@@ -11,7 +11,7 @@ import { hashPassword } from './auth';
  *  - Affordable Housing Levy: 1.5% of gross
  * NSSF, SHIF and the Housing Levy are deductible before PAYE.
  */
-export function seed(db: Database.Database) {
+export function seed(db: DB) {
   if ((db.prepare('SELECT COUNT(*) c FROM employees').get() as { c: number }).c > 0) return;
 
   const emp = db.prepare(

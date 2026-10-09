@@ -1,4 +1,3 @@
-import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -85,17 +84,45 @@ CREATE TABLE IF NOT EXISTS payslips (
 );
 `;
 
-const g = globalThis as unknown as { __hrdb?: Database.Database };
+/* eslint-disable @typescript-eslint/no-explicit-any */
+export type Stmt = {
+  run(...p: any[]): { changes: number | bigint; lastInsertRowid: number | bigint };
+  get(...p: any[]): any;
+  all(...p: any[]): any[];
+};
+export type DB = {
+  prepare(sql: string): Stmt;
+  exec(sql: string): void;
+  /** Returns a function that runs `fn` inside a transaction (commit on return, rollback on throw). */
+  transaction<T>(fn: () => T): () => T;
+};
 
-export function openDb(file: string): Database.Database {
+const g = globalThis as unknown as { __hrdb?: DB };
+
+export function openDb(file: string): DB {
+  // Node's built-in SQLite (Node 22.13+): no native compilation needed.
+  const { DatabaseSync } = process.getBuiltinModule('node:sqlite') as typeof import('node:sqlite');
   if (file !== ':memory:') fs.mkdirSync(path.dirname(file), { recursive: true });
-  const db = new Database(file);
-  db.pragma('journal_mode = WAL');
-  db.pragma('foreign_keys = ON');
-  db.exec(SCHEMA);
-  return db;
+  const raw = new DatabaseSync(file);
+  raw.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
+  raw.exec(SCHEMA);
+  return {
+    prepare: (sql) => raw.prepare(sql) as unknown as Stmt,
+    exec: (sql) => raw.exec(sql),
+    transaction: (fn) => () => {
+      raw.exec('BEGIN');
+      try {
+        const out = fn();
+        raw.exec('COMMIT');
+        return out;
+      } catch (e) {
+        raw.exec('ROLLBACK');
+        throw e;
+      }
+    },
+  };
 }
 
-export function db(): Database.Database {
+export function db(): DB {
   return (g.__hrdb ??= openDb(process.env.HR_DB ?? path.join(process.cwd(), 'data', 'hr.db')));
 }
