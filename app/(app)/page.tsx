@@ -4,6 +4,8 @@ import { requireUser } from '@/lib/auth';
 import { leaveUsed } from '@/lib/leave';
 import { CountUp } from '@/components/count-up';
 import { Progress } from '@/components/progress';
+import { AdminInsights, MyInsights } from '@/components/charts/insights';
+import { headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '@/lib/insights';
 
 const count = (sql: string, ...p: unknown[]) => (db().prepare(sql).get(...p) as { c: number }).c;
 
@@ -80,6 +82,10 @@ export default async function Dashboard() {
           Rest is part of the job, so <Link href="/leave">plan some time off</Link> before the year ends.
         </div>
       )}
+
+      {u.role === 'admin'
+        ? <AdminInsights pay={payrollTrend(d)} depts={headcountByDepartment(d)} leave={leaveByMonth(d, year)} funnel={hiringFunnel(d)} year={year} />
+        : <MyInsights pay={myPayTrend(d, u.employeeId)} leave={leaveByMonth(d, year, u.employeeId)} year={year} />}
 
       <div className="card">
         <h2>Your leave this year</h2>

@@ -25,6 +25,10 @@ Change these before any real use.
 - **Recruitment** (admin): jobs and a candidate pipeline board (Applied, Screening, Interview, Offer, Hired, Rejected) with drag-and-drop and a keyboard-friendly dropdown fallback.
 - **Performance:** review cycles, personal goals with progress, self-assessment then manager review. Employees only see their manager's rating once the review is completed.
 
+## Dashboard charts
+Hand-built SVG (no chart library). Admins: payroll cost line chart (gross vs net), headcount-by-department donut, leave-taken columns, hiring-pipeline bars. Everyone else: own net-pay trend and own leave.
+Every chart has a hover/keyboard tooltip (arrow keys, Esc), a Table view with the exact numbers, dark mode, and an empty state. Palette checked with a colour-blind / contrast validator; the donut folds small departments into "Other" past five.
+
 ## UX design
 - **Tables:** search, sort, filter and paginate (TanStack Table). **Forms:** shared zod validation on client and server, inline errors, toast feedback, confirm dialogs for irreversible actions.
 - **Smart defaults:** leave starts next working day with Annual preselected and the end date following the start; payroll month suggests the next unprocessed month; new employees get today's hire date, a generated password and the manager's department.

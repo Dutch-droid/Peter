@@ -161,3 +161,50 @@ test('calendar helpers: entriesOn spans ranges, shiftMonth wraps years', () => {
   assert.equal(shiftMonth('2026-12', 1), '2027-01');
   assert.equal(shiftMonth('2026-01', -1), '2025-12');
 });
+
+import { arcPath, columnPath, compactNumber, niceTicks, periodLabel } from '../lib/chart-math';
+import { headcountByDepartment, hiringFunnel, leaveByMonth, myPayTrend, payrollTrend } from '../lib/insights';
+
+test('niceTicks gives round numbers that cover the max', () => {
+  assert.deepEqual(niceTicks(0), [0, 1]);
+  assert.deepEqual(niceTicks(7), [0, 2, 4, 6, 8]);
+  assert.deepEqual(niceTicks(95), [0, 25, 50, 75, 100]);
+  assert.deepEqual(niceTicks(10, 4), [0, 2.5, 5, 7.5, 10]);
+  assert.deepEqual(niceTicks(10, 4, true), [0, 5, 10]); // counts never get fractional ticks
+  assert.deepEqual(niceTicks(3, 4, true), [0, 1, 2, 3]);
+  const t = niceTicks(1_234_567);
+  assert.ok(t[t.length - 1] >= 1_234_567 && t[0] === 0);
+});
+
+test('compactNumber and periodLabel', () => {
+  assert.equal(compactNumber(950), '950');
+  assert.equal(compactNumber(12900), '12.9K');
+  assert.equal(compactNumber(100000), '100K');
+  assert.equal(compactNumber(1250000), '1.25M');
+  assert.equal(periodLabel('2026-09'), 'Sep 26');
+});
+
+test('chart paths are well formed', () => {
+  assert.match(arcPath(50, 50, 40, 25, -Math.PI / 2, 0), /^M[\d.,-]+ A40,40 0 0 1 .* Z$/);
+  assert.match(arcPath(50, 50, 40, 25, 0, Math.PI * 2), / 0 1 1 /); // full circle uses large-arc
+  assert.ok(columnPath(0, 10, 20, 30).startsWith('M0,40'));
+});
+
+test('insights queries (seeded db + finalized run)', () => {
+  const d = openDb(':memory:');
+  seed(d);
+  assert.deepEqual(payrollTrend(d), []); // nothing finalized yet
+  const r = Number(d.prepare("INSERT INTO payroll_runs (period,status) VALUES ('2026-09','finalized')").run().lastInsertRowid);
+  d.prepare("INSERT INTO payslips (run_id,employee_id,base,gross,total_deductions,tax,net,detail) VALUES (?,?,?,?,?,?,?,'{}')").run(r, 3, 100, 120, 10, 10, 100);
+  d.prepare("INSERT INTO payslips (run_id,employee_id,base,gross,total_deductions,tax,net,detail) VALUES (?,?,?,?,?,?,?,'{}')").run(r, 4, 50, 60, 5, 5, 50);
+  assert.deepEqual(payrollTrend(d), [{ period: '2026-09', gross: 180, net: 150 }]);
+  assert.deepEqual(myPayTrend(d, 3), [{ period: '2026-09', gross: 120, net: 100 }]);
+  assert.deepEqual(headcountByDepartment(d), [{ name: 'Engineering', count: 3 }, { name: 'HR', count: 1 }]);
+  d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (3,1,'2026-03-02','2026-03-04',3,'approved')").run();
+  d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (4,1,'2026-03-09','2026-03-09',1,'approved')").run();
+  d.prepare("INSERT INTO leave_requests (employee_id,leave_type_id,start_date,end_date,days,status) VALUES (3,1,'2026-05-04','2026-05-05',2,'pending')").run();
+  const all = leaveByMonth(d, 2026), mine = leaveByMonth(d, 2026, 3);
+  assert.equal(all[2], 4); assert.equal(mine[2], 3); assert.equal(all[4], 0); // pending ignored
+  const f = hiringFunnel(d);
+  assert.deepEqual(f.map((x) => x.count), [1, 1, 1, 0, 0]);
+});
