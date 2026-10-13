@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>{% block title %}Treasury Platform{% endblock %}</title>
+<link rel="stylesheet" href="/static/style.css"></head>
+<body>
+{% if user %}
+<header><div class="bar"><a class="brand" href="/">Treasury Platform</a>
+<nav>
+{% if can('treasury') %}<a href="/e/investors">Investors</a>{% endif %}
+{% if can('finance') %}<a href="/e/leases">Rent</a><a href="/e/internet">Internet</a><a href="/e/suppliers">Suppliers</a><a href="/e/procurement">Procurement</a>{% endif %}
+<a href="/reports">Reports</a>
+{% if can('admin') %}<a href="/admin/users">Users</a><a href="/admin/audit">Audit</a><a href="/admin/tools">Tools</a>{% endif %}
+</nav>
+<form method="post" action="/logout" class="logout"><input type="hidden" name="csrf_token" value="{{ csrf }}"><span>{{ user.username }} · {{ user.role }}</span><button class="link">Sign out</button></form>
+</div></header>
+{% endif %}
+<main>
+{% if flash %}<div class="flash {{ 'err' if flash.startswith('Error') else '' }}">{{ flash }}</div>{% endif %}
+{% block content %}{% endblock %}
+</main></body></html>

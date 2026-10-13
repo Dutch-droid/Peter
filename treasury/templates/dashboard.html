@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block content %}
+<h1>Dashboard</h1>
+{% if tre is defined %}
+<div class="kpis">
+<div><b>{{ tre.investors }}</b><span>Investors</span></div>
+<div><b>{{ tre.open_accounts }}</b><span>Open accounts</span></div>
+<div><b>{{ tre.principal|money }}</b><span>Principal invested</span></div>
+<div><b>{{ tre.accrued|money }}</b><span>Interest accrued</span></div>
+<div><b>{{ (tre.principal + tre.accrued)|money }}</b><span>Net position</span></div>
+</div>
+<h2>Maturing within 30 days (or matured, action needed)</h2>
+<table><tr><th>Investor</th><th>Account</th><th>Principal</th><th>Maturity</th><th>Days</th></tr>
+{% for a in tre.maturing %}<tr><td>{{ a.investor.name }}</td><td><a href="/accounts/{{ a.id }}">{{ a.reference }}</a></td><td class="n">{{ a.principal|money }}</td><td>{{ a.current_term.maturity_date }}</td>
+<td class="{{ 'bad' if (a.current_term.maturity_date - today()).days < 0 else '' }}">{{ (a.current_term.maturity_date - today()).days }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">None</td></tr>{% endfor %}</table>
+{% endif %}
+{% if due is defined %}
+<h2>Payments due within 30 days</h2>
+<table><tr><th>Type</th><th>Branch</th><th>Due</th><th>Amount</th><th>Days</th></tr>
+{% for t,b,d,amt,url in due %}<tr><td>{{ t }}</td><td><a href="{{ url }}">{{ b }}</a></td><td>{{ d }}</td><td class="n">{{ amt|money }}</td>
+<td class="{{ 'bad' if (d - today()).days < 0 else '' }}">{{ (d - today()).days }}{{ ' (overdue)' if (d - today()).days < 0 else '' }}</td></tr>
+{% else %}<tr><td colspan="5" class="muted">None</td></tr>{% endfor %}</table>
+<h2>Leases expiring within 90 days</h2>
+<table><tr><th>Branch</th><th>Landlord</th><th>Expiry</th><th>Days</th></tr>
+{% for l in expiring %}<tr><td>{{ l.branch_name }}</td><td>{{ l.landlord }}</td><td>{{ l.lease_expiry }}</td><td>{{ (l.lease_expiry - today()).days }}</td></tr>
+{% else %}<tr><td colspan="4" class="muted">None</td></tr>{% endfor %}</table>
+{% endif %}
+{% endblock %}

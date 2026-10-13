@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<h1>Reports</h1>
+<table><tr><th>Report</th><th>Area</th><th></th></tr>
+{% for k,v in avail.items() %}<tr><td>{{ v.title }}</td><td>{{ v.module|title }}</td><td><a href="/reports/{{ k }}">Open</a></td></tr>{% endfor %}</table>
+{% endblock %}

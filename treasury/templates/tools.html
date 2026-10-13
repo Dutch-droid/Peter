@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% block content %}
+<h1>System tools</h1>
+<div class="grid3">
+<form method="post" action="/admin/run/reminders" class="card"><h3>Send due reminders now</h3><small>Rent: 30/14/7/0 days before due. Internet: 7/3/1/0. Each reminder is sent once.</small><input type="hidden" name="csrf_token" value="{{ csrf }}"><button>Run</button></form>
+<form method="post" action="/admin/run/accrual" class="card"><h3>Write daily accrual snapshot</h3><small>Records yesterday's accrual per account (idempotent).</small><input type="hidden" name="csrf_token" value="{{ csrf }}"><button>Run</button></form>
+<form method="post" action="/admin/backup" class="card"><h3>Download database backup</h3><small>Consistent SQLite snapshot. Store it securely; it contains bank details.</small><input type="hidden" name="csrf_token" value="{{ csrf }}"><button>Download</button></form>
+</div>{% endblock %}

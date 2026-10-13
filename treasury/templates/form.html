@@ -1,0 +1,15 @@
+{% extends "base.html" %}{% block content %}
+<h1>{{ 'Edit' if obj else 'New' }} {{ ent.title|lower }}</h1>
+<form method="post" class="card">
+<input type="hidden" name="csrf_token" value="{{ csrf }}">
+{% if errors.get('__all__') %}<div class="flash err">{{ errors['__all__'] }}</div>{% endif %}
+{% for f in ent.fields %}
+<label>{{ f.label }}{% if f.required %} *{% endif %}
+{% if f.kind == 'choice' %}<select name="{{ f.name }}">{% for c in f.choices %}<option {{ 'selected' if vals.get(f.name) == c else '' }}>{{ c }}</option>{% endfor %}</select>
+{% elif f.kind == 'ref' %}<select name="{{ f.name }}"><option value="">-- select --</option>{% for id,lab in options[f.name] %}<option value="{{ id }}" {{ 'selected' if vals.get(f.name)|string == id|string else '' }}>{{ lab }}</option>{% endfor %}</select>
+{% elif f.kind == 'textarea' %}<textarea name="{{ f.name }}" rows="3">{{ vals.get(f.name, '') }}</textarea>
+{% else %}<input name="{{ f.name }}" type="{{ {'date':'date','email':'email','tel':'tel'}.get(f.kind,'text') }}" {% if f.kind in ('money','number') %}inputmode="decimal"{% endif %} value="{{ vals.get(f.name, '') if vals.get(f.name) is not none else '' }}">{% endif %}
+{% if errors.get(f.name) %}<small class="bad">{{ errors[f.name] }}</small>{% endif %}</label>
+{% endfor %}
+<div><button>Save</button> <a href="/e/{{ ent.key }}">Cancel</a></div>
+</form>{% endblock %}

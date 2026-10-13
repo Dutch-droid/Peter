@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><h1>{{ rep.title }}</h1><div>
+<a class="btn" href="/reports/{{ key }}?{{ qs }}&fmt=xlsx">Excel</a> <a class="btn" href="/reports/{{ key }}?{{ qs }}&fmt=pdf">PDF</a> <a href="/reports/{{ key }}">Change parameters</a></div></div>
+<p class="muted">{{ rep.subtitle }}</p>
+<table><tr>{% for c in rep.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+{% for r in rep.rows %}<tr>{% for v in r %}<td class="{{ 'n' if loop.index0 in rep.money_cols else '' }}">{% if v is not none and v.__class__.__name__ == 'Decimal' %}{{ v|money }}{% else %}{{ '' if v is none else v }}{% endif %}</td>{% endfor %}</tr>
+{% else %}<tr><td colspan="{{ rep.columns|length }}" class="muted">No data for these parameters</td></tr>{% endfor %}
+{% if rep.totals %}<tr class="total">{% for v in rep.totals %}<td class="n">{% if v.__class__.__name__ == 'Decimal' %}{{ v|money }}{% else %}{{ v }}{% endif %}</td>{% endfor %}</tr>{% endif %}</table>
+{% endblock %}

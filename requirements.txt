@@ -3,3 +3,11 @@ numpy
 openpyxl
 reportlab
 matplotlib
+fastapi
+uvicorn
+sqlalchemy>=2.0
+jinja2
+itsdangerous
+python-multipart
+httpx
+pytest

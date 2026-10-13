@@ -1,0 +1,5 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><h1>Audit log</h1><form method="get" class="inline"><input name="q" value="{{ q }}" placeholder="user / action / entity"><button>Filter</button></form></div>
+<table><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Entity</th><th>ID</th><th>Detail</th><th>IP</th></tr>
+{% for l in logs %}<tr><td>{{ l.at.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ l.username }}</td><td>{{ l.action }}</td><td>{{ l.entity }}</td><td>{{ l.entity_id }}</td><td>{{ l.detail }}</td><td>{{ l.ip }}</td></tr>{% endfor %}</table>
+{% endblock %}

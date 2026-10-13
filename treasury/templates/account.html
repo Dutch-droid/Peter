@@ -1,0 +1,32 @@
+{% extends "base.html" %}{% block content %}
+<p><a href="/investors/{{ a.investor.id }}">&larr; {{ a.investor.name }}</a></p>
+<h1>{{ a.reference }} <span class="tag {{ acct_status|lower }}">{{ acct_status }}</span></h1>
+<div class="kpis"><div><b>{{ a.principal|money }}</b><span>Principal</span></div><div><b>{{ a.current_term.rate_pct }}%</b><span>Rate p.a. (current term)</span></div>
+<div><b>{{ accrued|money }}</b><span>Accrued interest to date</span></div><div><b>{{ a.current_term.maturity_date }}</b><span>Maturity</span></div></div>
+<p class="muted">Simple interest, actual/{{ 365 }}: funds earn interest from the start date (inclusive) to maturity or redemption (exclusive).</p>
+<h2>Terms</h2>
+<table><tr><th>#</th><th>Principal</th><th>Rate %</th><th>Start</th><th>Maturity</th></tr>
+{% for t in a.terms %}<tr><td>{{ t.seq }}</td><td class="n">{{ t.principal|money }}</td><td class="n">{{ t.rate_pct }}</td><td>{{ t.start_date }}</td><td>{{ t.maturity_date }}</td></tr>{% endfor %}</table>
+{% if a.redemption_date %}<p>Redeemed on <b>{{ a.redemption_date }}</b>. Accrual stopped on that date.</p>{% endif %}
+{% if can('treasury', True) and not a.redemption_date %}
+<div class="grid3">
+<form method="post" action="/accounts/{{ a.id }}/rollover" class="card"><h3>Roll over</h3><input type="hidden" name="csrf_token" value="{{ csrf }}">
+<small>Available once matured. New term starts at current maturity.</small>
+<label>New rate %<input name="rate_pct" inputmode="decimal" required></label><label>New maturity<input type="date" name="maturity_date" required></label><button>Roll over</button></form>
+<form method="post" action="/accounts/{{ a.id }}/redeem" class="card"><h3>Redeem</h3><input type="hidden" name="csrf_token" value="{{ csrf }}">
+<label>Redemption date<input type="date" name="redemption_date" value="{{ today() }}" required></label><button onclick="return confirm('Mark as redeemed? Accrual stops on this date.')">Mark redeemed</button></form>
+<form method="post" action="/accounts/{{ a.id }}/adjust" class="card"><h3>Interest adjustment</h3><input type="hidden" name="csrf_token" value="{{ csrf }}">
+<label>Effective date<input type="date" name="effective_date" value="{{ today() }}" required></label><label>Amount (+/-)<input name="amount" inputmode="decimal" required></label><label>Reason<input name="reason" required></label><button>Add adjustment</button></form>
+</div>{% endif %}
+{% if a.adjustments %}<h2>Adjustments</h2><table><tr><th>Effective</th><th>Amount</th><th>Reason</th><th>By</th></tr>
+{% for j in a.adjustments %}<tr><td>{{ j.effective_date }}</td><td class="n">{{ j.amount|money }}</td><td>{{ j.reason }}</td><td>{{ j.created_by }}</td></tr>{% endfor %}</table>{% endif %}
+<div class="grid3">
+<div><h2>Quarterly (WHT {{ (wht*100)|round|int }}%)</h2><table><tr><th>Quarter</th><th>Gross</th><th>WHT</th><th>Net</th></tr>
+{% for q,g,w,n in quarters %}<tr><td>{{ q }}</td><td class="n">{{ g|money }}</td><td class="n">{{ w|money }}</td><td class="n">{{ n|money }}</td></tr>{% endfor %}</table></div>
+<div><h2>Monthly</h2><table><tr><th>Month</th><th>Interest</th></tr>{% for m,v in monthly %}<tr><td>{{ m }}</td><td class="n">{{ v|money }}</td></tr>{% endfor %}</table></div>
+<div><h2>Daily (last 14 days)</h2><table><tr><th>Day</th><th>Interest</th></tr>{% for d,v in daily %}<tr><td>{{ d }}</td><td class="n">{{ v|money }}</td></tr>{% endfor %}</table></div>
+</div>
+<h2>Account history (audit)</h2>
+<table><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Detail</th></tr>
+{% for h in history %}<tr><td>{{ h.at.strftime('%Y-%m-%d %H:%M') }}</td><td>{{ h.username }}</td><td>{{ h.action }}</td><td>{{ h.detail }}</td></tr>{% else %}<tr><td colspan="4" class="muted">No events</td></tr>{% endfor %}</table>
+{% endblock %}

@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block content %}
+<div class="head"><h1>{{ inv.name }}</h1>{% if can('treasury', True) %}<a class="btn" href="/e/investors/{{ inv.id }}/edit">Edit profile</a>{% endif %}</div>
+<div class="grid2 card"><div><b>KRA PIN</b> {{ inv.kra_pin }}<br><b>ID / Reg.</b> {{ inv.id_number }}<br><b>Address</b> {{ inv.address }}</div>
+<div><b>Bank</b> {{ inv.bank_name }} {{ inv.bank_account }}<br><b>Phone</b> {{ inv.telephone }}<br><b>Email</b> {{ inv.email }}</div></div>
+<div class="kpis"><div><b>{{ total_p|money }}</b><span>Total principal invested</span></div><div><b>{{ total_i|money }}</b><span>Total interest accrued</span></div><div><b>{{ net|money }}</b><span>Net position (principal + accrued interest)</span></div></div>
+<h2>Investment accounts</h2>
+<table><tr><th>Reference</th><th>Status</th><th>Principal</th><th>Rate %</th><th>Start</th><th>Maturity</th><th>Accrued interest</th></tr>
+{% for r in rows %}{% set a = r.a %}<tr><td><a href="/accounts/{{ a.id }}">{{ a.reference }}</a></td><td>{{ r.status }}</td><td class="n">{{ a.principal|money }}</td><td class="n">{{ a.current_term.rate_pct }}</td>
+<td>{{ a.current_term.start_date }}</td><td>{{ a.current_term.maturity_date }}</td><td class="n">{{ r.accrued|money }}</td></tr>
+{% else %}<tr><td colspan="7" class="muted">No accounts yet</td></tr>{% endfor %}</table>
+{% if can('treasury', True) %}
+<h2>Add investment account</h2>
+<form method="post" action="/investors/{{ inv.id }}/accounts" class="card grid3">
+<input type="hidden" name="csrf_token" value="{{ csrf }}">
+<label>Reference<input name="reference" value="{{ suggested_ref }}" required></label>
+<label>Date funds received<input type="date" name="date_received" required></label>
+<label>Interest start date (blank = date received)<input type="date" name="start_date"></label>
+<label>Principal<input name="principal" inputmode="decimal" required></label>
+<label>Agreed rate % p.a.<input name="rate_pct" inputmode="decimal" required></label>
+<label>Maturity date<input type="date" name="maturity_date" required></label>
+<div><button>Create account</button></div></form>{% endif %}
+{% endblock %}

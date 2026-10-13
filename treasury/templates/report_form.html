@@ -1,0 +1,13 @@
+{% extends "base.html" %}{% block content %}
+<h1>{{ spec.title }}</h1>
+<form method="get" class="card">
+{% for name,label,kind,default in spec.params %}
+<label>{{ label }}
+{% if kind == 'date' %}<input type="date" name="{{ name }}" value="{{ vals.get(name) }}">
+{% elif kind == 'int' %}<input name="{{ name }}" inputmode="numeric" value="{{ vals.get(name) }}">
+{% elif kind == 'quarter' %}<select name="{{ name }}">{% for q in (1,2,3,4) %}<option value="{{ q }}" {{ 'selected' if vals.get(name)==q else '' }}>Q{{ q }}</option>{% endfor %}</select>
+{% elif kind == 'group' %}<select name="{{ name }}"><option value="account">Account</option><option value="investor">Investor</option></select>
+{% elif kind in ('investor','optinvestor') %}<select name="{{ name }}">{% if kind == 'optinvestor' %}<option value="">All investors</option>{% endif %}{% for id,lab in opts.investors %}<option value="{{ id }}">{{ lab }}</option>{% endfor %}</select>
+{% elif kind == 'account' %}<select name="{{ name }}">{% for id,lab in opts.accounts %}<option value="{{ id }}">{{ lab }}</option>{% endfor %}</select>{% endif %}</label>
+{% endfor %}
+<div><button>Run report</button></div></form>{% endblock %}
