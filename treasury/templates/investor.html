@@ -1,22 +1,30 @@
-{% extends "base.html" %}{% block content %}
-<div class="head"><h1>{{ inv.name }}</h1>{% if can('treasury', True) %}<a class="btn" href="/e/investors/{{ inv.id }}/edit">Edit profile</a>{% endif %}</div>
-<div class="grid2 card"><div><b>KRA PIN</b> {{ inv.kra_pin }}<br><b>ID / Reg.</b> {{ inv.id_number }}<br><b>Address</b> {{ inv.address }}</div>
-<div><b>Bank</b> {{ inv.bank_name }} {{ inv.bank_account }}<br><b>Phone</b> {{ inv.telephone }}<br><b>Email</b> {{ inv.email }}</div></div>
-<div class="kpis"><div><b>{{ total_p|money }}</b><span>Total principal invested</span></div><div><b>{{ total_i|money }}</b><span>Total interest accrued</span></div><div><b>{{ net|money }}</b><span>Net position (principal + accrued interest)</span></div></div>
+{% extends "base.html" %}{% from "_m.html" import status %}{% set page_title = inv.name %}
+{% block content %}
+<div class="crumbs"><a href="/e/investors">Investors</a> / {{ inv.name }}</div>
+<div class="head"><div><h1>{{ inv.name }}</h1><p class="sub">KRA PIN {{ inv.kra_pin }}{% if inv.id_number %} · ID/Reg {{ inv.id_number }}{% endif %}</p></div>
+<div class="actions">{% if can('treasury', True) %}<a class="btn ghost" href="/e/investors/{{ inv.id }}/edit">Edit profile</a><button type="button" data-dialog="dlg-account">+ Add investment account</button>{% endif %}
+<a class="btn ghost" href="/reports/investor_statement?investor_id={{ inv.id }}">Statement</a></div></div>
+<div class="kpis">
+<div class="kpi hero"><b>{{ net|money }}</b><span>Net position: principal plus accrued interest</span></div>
+<div class="kpi"><b>{{ total_p|money }}</b><span>Total principal invested</span></div>
+<div class="kpi"><b>{{ total_i|money }}</b><span>Total interest accrued</span></div></div>
+<div class="grid2" style="margin-bottom:18px">
+<div class="card"><h2>Contact</h2><p style="margin:0">{{ inv.address or '—' }}<br>{{ inv.telephone or '—' }}<br>{{ inv.email or '—' }}</p></div>
+<div class="card"><h2>Banking</h2><p style="margin:0">{{ inv.bank_name or '—' }}<br>Account {{ inv.bank_account or '—' }}</p></div></div>
 <h2>Investment accounts</h2>
-<table><tr><th>Reference</th><th>Status</th><th>Principal</th><th>Rate %</th><th>Start</th><th>Maturity</th><th>Accrued interest</th></tr>
-{% for r in rows %}{% set a = r.a %}<tr><td><a href="/accounts/{{ a.id }}">{{ a.reference }}</a></td><td>{{ r.status }}</td><td class="n">{{ a.principal|money }}</td><td class="n">{{ a.current_term.rate_pct }}</td>
-<td>{{ a.current_term.start_date }}</td><td>{{ a.current_term.maturity_date }}</td><td class="n">{{ r.accrued|money }}</td></tr>
-{% else %}<tr><td colspan="7" class="muted">No accounts yet</td></tr>{% endfor %}</table>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>Reference</th><th>Status</th><th class="n">Principal</th><th class="n">Rate %</th><th>Start</th><th>Maturity</th><th class="n">Accrued interest</th></tr></thead><tbody>
+{% for r in rows %}{% set a = r.a %}<tr><td><a href="/accounts/{{ a.id }}"><b>{{ a.reference }}</b></a></td><td>{{ status(r.status) }}</td><td class="n">{{ a.principal|money }}</td><td class="n">{{ a.current_term.rate_pct }}</td>
+<td data-v="{{ a.current_term.start_date }}">{{ a.current_term.start_date }}</td><td data-v="{{ a.current_term.maturity_date }}">{{ a.current_term.maturity_date }}</td><td class="n">{{ r.accrued|money }}</td></tr>
+{% else %}<tr><td colspan="7" class="empty"><b>No investment accounts yet</b>{% if can('treasury', True) %}Use “Add investment account” to record the first subscription.{% endif %}</td></tr>{% endfor %}</tbody></table></div>
 {% if can('treasury', True) %}
-<h2>Add investment account</h2>
-<form method="post" action="/investors/{{ inv.id }}/accounts" class="card grid3">
+<dialog id="dlg-account"><form method="post" action="/investors/{{ inv.id }}/accounts"><h3>Add investment account</h3><p class="muted" style="margin-top:0">Interest accrues from the start date at the agreed rate.</p>
 <input type="hidden" name="csrf_token" value="{{ csrf }}">
 <label>Reference<input name="reference" value="{{ suggested_ref }}" required></label>
-<label>Date funds received<input type="date" name="date_received" required></label>
-<label>Interest start date (blank = date received)<input type="date" name="start_date"></label>
-<label>Principal<input name="principal" inputmode="decimal" required></label>
-<label>Agreed rate % p.a.<input name="rate_pct" inputmode="decimal" required></label>
+<div class="fgrid"><label>Date funds received<input type="date" name="date_received" required></label>
+<label>Interest start date<input type="date" name="start_date"><span class="hint" style="font-weight:400">Blank = date received</span></label>
+<label>Principal<input name="principal" inputmode="decimal" data-money required></label>
+<label>Agreed rate (% p.a.)<input name="rate_pct" inputmode="decimal" required></label></div>
 <label>Maturity date<input type="date" name="maturity_date" required></label>
-<div><button>Create account</button></div></form>{% endif %}
+<div class="row"><button type="button" class="ghost" data-close>Cancel</button><button>Create account</button></div></form></dialog>
+{% endif %}
 {% endblock %}

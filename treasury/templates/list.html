@@ -1,15 +1,24 @@
-{% extends "base.html" %}{% block content %}
-<div class="head"><h1>{{ ent.title }}</h1>
-<form method="get" class="inline"><input name="q" value="{{ q }}" placeholder="Search"><button>Search</button></form>
-{% if can(ent.module, True) %}<a class="btn" href="/e/{{ ent.key }}/new">+ New</a>{% endif %}</div>
-{% if ent.key in ('leases','internet') %}<p class="muted">Recording a payment moves the next due date forward automatically.
-{% if can(ent.module, True) %}<a href="/e/{{ 'rent_payments' if ent.key=='leases' else 'internet_payments' }}/new">Record a payment</a>{% endif %}
-· <a href="/e/{{ 'rent_payments' if ent.key=='leases' else 'internet_payments' }}">Payment history</a></p>{% endif %}
-<table><tr>{% for f in ent.fields if f.in_list %}<th>{{ f.label }}</th>{% endfor %}{% if ent.key in ('leases','internet') %}<th>Due in</th>{% endif %}<th></th></tr>
+{% extends "base.html" %}{% from "_m.html" import status, due, icon %}{% set page_title = ent.title %}
+{% block content %}
+{% set pay = {'leases':'rent_payments','internet':'internet_payments'}.get(ent.key) %}
+<div class="head"><div><h1>{{ ent.title }}</h1>
+{% if pay %}<p class="sub">Recording a payment moves the next due date forward automatically.</p>{% endif %}</div>
+<div class="actions">
+{% if pay %}<a class="btn ghost" href="/e/{{ pay }}">Payment history</a>{% if can(ent.module, True) %}<a class="btn ghost" href="/e/{{ pay }}/new">Record payment</a>{% endif %}{% endif %}
+{% if can(ent.module, True) %}<a class="btn" href="/e/{{ ent.key }}/new">+ New</a>{% endif %}</div></div>
+<div class="toolbar"><input type="search" data-filter="#tbl" placeholder="Filter this list…" aria-label="Filter rows"><span class="count"></span></div>
+<div class="tablewrap"><table id="tbl" class="sortable"><thead><tr>
+{% for f in ent.fields if f.in_list %}<th class="{{ 'n' if f.kind in ('money','number') else '' }}">{{ f.label }}</th>{% endfor %}
+{% if ent.key in ('leases','internet') %}<th>Next payment</th>{% endif %}<th data-nosort></th></tr></thead><tbody>
 {% for r in rows %}<tr>
-{% for f in ent.fields if f.in_list %}{% set v = r[f.name] %}<td class="{{ 'n' if f.kind in ('money','number') else '' }}">
-{% if f.kind == 'ref' %}{{ refs[f.name].get(v, v) }}{% elif f.kind in ('money',) %}{{ v|money }}{% elif f.kind == 'number' %}{{ v }}{% else %}{{ '' if v is none else v }}{% endif %}</td>{% endfor %}
-{% if ent.key in ('leases','internet') %}{% set dd = (r.next_due_date - today()).days %}<td class="{{ 'bad' if dd < 0 else ('warn' if dd <= 14 else '') }}">{{ dd }}d</td>{% endif %}
-<td>{% if ent.detail_url %}<a href="{{ ent.detail_url.format(id=r.id) }}">Open</a> {% endif %}{% if can(ent.module, True) %}<a href="/e/{{ ent.key }}/{{ r.id }}/edit">Edit</a>{% endif %}</td></tr>
-{% else %}<tr><td colspan="20" class="muted">No records</td></tr>{% endfor %}</table>
+{% for f in ent.fields if f.in_list %}{% set v = r[f.name] %}<td class="{{ 'n' if f.kind in ('money','number') else '' }}" {% if f.kind=='date' %}data-v="{{ v }}"{% endif %}>
+{%- if f.kind == 'ref' %}{{ refs[f.name].get(v, v) }}
+{%- elif f.kind == 'money' %}{{ v|money }}
+{%- elif f.name == 'approval_status' %}{{ status(v) }}
+{%- elif f.name == 'name' and ent.detail_url %}<a href="{{ ent.detail_url.format(id=r.id) }}"><b>{{ v }}</b></a>
+{%- else %}{{ '' if v is none else v }}{% endif %}</td>{% endfor %}
+{% if ent.key in ('leases','internet') %}<td data-v="{{ r.next_due_date }}">{{ r.next_due_date }} {{ due((r.next_due_date - today()).days) }}</td>{% endif %}
+<td style="text-align:right;white-space:nowrap">{% if ent.detail_url %}<a href="{{ ent.detail_url.format(id=r.id) }}">Open</a>{% endif %}{% if can(ent.module, True) %} <a href="/e/{{ ent.key }}/{{ r.id }}/edit">Edit</a>{% endif %}</td></tr>
+{% else %}<tr><td colspan="20" class="empty"><b>Nothing here yet</b>{% if can(ent.module, True) %}<a class="btn" href="/e/{{ ent.key }}/new">Add the first one</a>{% else %}No records to show.{% endif %}</td></tr>{% endfor %}
+</tbody></table></div>
 {% endblock %}

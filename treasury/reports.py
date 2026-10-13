@@ -256,6 +256,26 @@ def internet_schedule(db, p):
     return Report("Internet Billing Schedule", ["Due date", "Branch", "ISP", "Account", "Amount", "Pay point"], rows, "projected monthly", None, {4})
 
 
+DESCS = {
+    "investor_statement": "Accounts, rates, accrued interest and net position for one investor.",
+    "investment_statement": "Terms, rollovers and adjustments for a single investment account.",
+    "interest_earned": "Interest earned per account over a chosen period.",
+    "active_investors": "Investors with open accounts and the principal they hold.",
+    "total_funds": "Principal currently invested, per investor.",
+    "accrual_summary": "Last day, month-to-date, quarter-to-date and cumulative accrual.",
+    "quarterly_interest": "Gross interest, withholding tax and net payable, by account or investor.",
+    "withholding_tax": "Withholding tax per investor for a quarter, ready for filing.",
+    "net_position": "Principal plus accrued interest per investor.",
+    "maturing": "Investments maturing soon, or already matured and awaiting action.",
+    "redeemed": "Investments redeemed in a period, with total interest earned.",
+    "vat_report": "Procurement net cost, VAT and invoice value over a period.",
+    "rent_schedule": "Projected rent payments for the next 12 months.",
+    "internet_schedule": "Projected internet payments for the next 12 months.",
+}
+for _k, _v in REPORTS.items():
+    _v["desc"] = DESCS.get(_k, "")
+
+
 def parse_params(spec, raw) -> dict:
     t = _today()
     defaults = {"today": t, "month_start": t.replace(day=1), "year_start": date(t.year, 1, 1), "year": t.year}

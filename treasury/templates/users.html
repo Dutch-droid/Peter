@@ -1,14 +1,15 @@
-{% extends "base.html" %}{% block content %}
-<h1>Users</h1>
-<table><tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Active</th><th>Actions</th></tr>
-{% for u in users %}<tr><td>{{ u.username }}</td><td>{{ u.full_name }}</td><td>{{ u.email }}</td>
-<td><form method="post" action="/admin/users/{{ u.id }}/role" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><select name="role">{% for r in ROLES %}<option {{ 'selected' if r==u.role else '' }}>{{ r }}</option>{% endfor %}</select><button>Set</button></form></td>
-<td>{{ 'Yes' if u.active else 'No' }}</td>
-<td><form method="post" action="/admin/users/{{ u.id }}/toggle" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><button>{{ 'Deactivate' if u.active else 'Activate' }}</button></form>
-<form method="post" action="/admin/users/{{ u.id }}/password" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><input name="password" type="password" placeholder="New password" autocomplete="new-password"><button>Reset</button></form></td></tr>{% endfor %}</table>
-<h2>Add user</h2>
-<form method="post" action="/admin/users" class="card grid3"><input type="hidden" name="csrf_token" value="{{ csrf }}">
-<label>Username<input name="username" required></label><label>Full name<input name="full_name"></label><label>Email<input name="email" type="email"></label>
+{% extends "base.html" %}{% from "_m.html" import chip %}{% set page_title = 'Users' %}
+{% block content %}
+<div class="head"><div><h1>Users</h1><p class="sub">Roles control what each person can see and change.</p></div><div class="actions"><button type="button" data-dialog="dlg-user">+ Add user</button></div></div>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>Username</th><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th data-nosort>Actions</th></tr></thead><tbody>
+{% for u in users %}<tr><td><b>{{ u.username }}</b></td><td>{{ u.full_name }}</td><td>{{ u.email }}</td>
+<td><form method="post" action="/admin/users/{{ u.id }}/role" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><select name="role" aria-label="Role for {{ u.username }}">{% for r in ROLES %}<option {{ 'selected' if r==u.role else '' }}>{{ r }}</option>{% endfor %}</select><button class="ghost sm">Set</button></form></td>
+<td>{% if u.active %}{{ chip('good','Active','check') }}{% else %}{{ chip('neutral','Inactive','dot') }}{% endif %}</td>
+<td><form method="post" action="/admin/users/{{ u.id }}/toggle" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><button class="ghost sm">{{ 'Deactivate' if u.active else 'Activate' }}</button></form>
+<form method="post" action="/admin/users/{{ u.id }}/password" class="inline"><input type="hidden" name="csrf_token" value="{{ csrf }}"><input name="password" type="password" placeholder="New password" aria-label="New password for {{ u.username }}" autocomplete="new-password"><button class="ghost sm">Reset</button></form></td></tr>{% endfor %}</tbody></table></div>
+<dialog id="dlg-user"><form method="post" action="/admin/users"><h3>Add user</h3><input type="hidden" name="csrf_token" value="{{ csrf }}">
+<label>Username<input name="username" required></label><label>Full name<input name="full_name"></label><label>Email<input name="email" type="email"><span class="hint" style="font-weight:400">Used for payment reminders (Finance Officers and Administrators)</span></label>
 <label>Role<select name="role">{% for r in ROLES %}<option>{{ r }}</option>{% endfor %}</select></label>
-<label>Password (10+ chars, mixed case, a digit)<input name="password" type="password" autocomplete="new-password" required></label><div><button>Create</button></div></form>
+<label>Password<input name="password" type="password" autocomplete="new-password" required><span class="hint" style="font-weight:400">10+ characters, upper and lower case, and a digit</span></label>
+<div class="row"><button type="button" class="ghost" data-close>Cancel</button><button>Create user</button></div></form></dialog>
 {% endblock %}

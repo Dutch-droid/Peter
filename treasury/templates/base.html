@@ -1,20 +1,44 @@
+{% from "_m.html" import icon %}
+{% macro nav(href, label, ic, match) -%}
+<a class="nav" href="{{ href }}" {% if path == href or path.startswith(match) %}aria-current="page"{% endif %}>{{ icon(ic) }}{{ label }}</a>
+{%- endmacro %}
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>{% block title %}Treasury Platform{% endblock %}</title>
+<title>{% block title %}{{ page_title|default('Treasury Platform') }}{% endblock %} · Treasury Platform</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23256abf' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M3 20h18M5 20V10l7-6 7 6v10M9 20v-6h6v6'/%3E%3C/svg%3E">
+<script>try{var t=localStorage.getItem("theme");if(t)document.documentElement.dataset.theme=t}catch(e){}</script>
 <link rel="stylesheet" href="/static/style.css"></head>
 <body>
+<a class="skip" href="#main">Skip to content</a>
 {% if user %}
-<header><div class="bar"><a class="brand" href="/">Treasury Platform</a>
-<nav>
-{% if can('treasury') %}<a href="/e/investors">Investors</a>{% endif %}
-{% if can('finance') %}<a href="/e/leases">Rent</a><a href="/e/internet">Internet</a><a href="/e/suppliers">Suppliers</a><a href="/e/procurement">Procurement</a>{% endif %}
-<a href="/reports">Reports</a>
-{% if can('admin') %}<a href="/admin/users">Users</a><a href="/admin/audit">Audit</a><a href="/admin/tools">Tools</a>{% endif %}
-</nav>
-<form method="post" action="/logout" class="logout"><input type="hidden" name="csrf_token" value="{{ csrf }}"><span>{{ user.username }} · {{ user.role }}</span><button class="link">Sign out</button></form>
-</div></header>
-{% endif %}
-<main>
-{% if flash %}<div class="flash {{ 'err' if flash.startswith('Error') else '' }}">{{ flash }}</div>{% endif %}
+<div class="shell">
+<aside class="side" aria-label="Main navigation">
+<a class="brand" href="/"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#6da7ec" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V10l7-6 7 6v10M9 20v-6h6v6"/></svg>Treasury Platform</a>
+{{ nav('/', 'Dashboard', 'home', '/#') }}
+{% if can('treasury') %}<h4>Treasury</h4>{{ nav('/e/investors', 'Investors', 'users', '/investors') }}{% endif %}
+{% if can('finance') %}<h4>Administration</h4>
+{{ nav('/e/leases', 'Rent', 'building', '/e/rent') }}{{ nav('/e/internet', 'Internet billing', 'wifi', '/e/internet_') }}
+{{ nav('/e/suppliers', 'Suppliers', 'box', '/e/suppliers') }}{{ nav('/e/procurement', 'Procurement', 'cart', '/e/procurement') }}{% endif %}
+<h4>Insights</h4>{{ nav('/reports', 'Reports', 'chart', '/reports') }}
+{% if can('admin') %}<h4>Admin</h4>{{ nav('/admin/users', 'Users', 'shield', '/admin/users') }}{{ nav('/admin/audit', 'Audit log', 'list', '/admin/audit') }}{{ nav('/admin/tools', 'System tools', 'tool', '/admin/tools') }}{% endif %}
+<div class="grow"></div>
+</aside>
+<div class="content">
+<div class="top">
+<button id="menu" class="iconbtn ghost" type="button" aria-label="Open menu">{{ icon('menu') }}</button>
+<form class="search" action="/search" role="search">{{ icon('search') }}<input id="q" name="q" placeholder="Search investors, accounts, suppliers…  ( / )" aria-label="Search" autocomplete="off"></form>
+<span class="spacer"></span>
+<button id="theme" class="iconbtn ghost" type="button" aria-label="Toggle light/dark theme" title="Toggle theme">{{ icon('theme') }}</button>
+<div class="who"><b>{{ user.full_name or user.username }}</b>{{ user.role }}</div>
+<form method="post" action="/logout"><input type="hidden" name="csrf_token" value="{{ csrf }}"><button class="ghost sm">Sign out</button></form>
+</div>
+<main id="main">
+{% if flash %}<div id="flash" class="note" data-kind="{{ 'err' if flash.startswith('Error') else 'ok' }}" role="status">{{ flash }}</div>{% endif %}
 {% block content %}{% endblock %}
-</main></body></html>
+</main></div></div>
+<div class="toasts" id="toasts" aria-live="polite"></div>
+{% else %}
+{% block bare %}{% endblock %}
+{% endif %}
+<script src="/static/app.js" defer></script>
+</body></html>

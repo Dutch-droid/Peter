@@ -1,9 +1,10 @@
-{% extends "base.html" %}{% block content %}
-<div class="head"><h1>{{ rep.title }}</h1><div>
-<a class="btn" href="/reports/{{ key }}?{{ qs }}&fmt=xlsx">Excel</a> <a class="btn" href="/reports/{{ key }}?{{ qs }}&fmt=pdf">PDF</a> <a href="/reports/{{ key }}">Change parameters</a></div></div>
-<p class="muted">{{ rep.subtitle }}</p>
-<table><tr>{% for c in rep.columns %}<th>{{ c }}</th>{% endfor %}</tr>
+{% extends "base.html" %}{% set page_title = rep.title %}
+{% block content %}
+<div class="crumbs"><a href="/reports">Reports</a> / {{ rep.title }}</div>
+<div class="head"><div><h1>{{ rep.title }}</h1><p class="sub">{{ rep.subtitle }}</p></div>
+<div class="actions"><a class="btn ghost" href="/reports/{{ key }}">Change parameters</a><a class="btn ghost" href="/reports/{{ key }}?{{ qs }}&fmt=xlsx">Export Excel</a><a class="btn" href="/reports/{{ key }}?{{ qs }}&fmt=pdf">Export PDF</a></div></div>
+<div class="tablewrap"><table class="sortable"><thead><tr>{% for c in rep.columns %}<th class="{{ 'n' if loop.index0 in rep.money_cols else '' }}">{{ c }}</th>{% endfor %}</tr></thead><tbody>
 {% for r in rep.rows %}<tr>{% for v in r %}<td class="{{ 'n' if loop.index0 in rep.money_cols else '' }}">{% if v is not none and v.__class__.__name__ == 'Decimal' %}{{ v|money }}{% else %}{{ '' if v is none else v }}{% endif %}</td>{% endfor %}</tr>
-{% else %}<tr><td colspan="{{ rep.columns|length }}" class="muted">No data for these parameters</td></tr>{% endfor %}
-{% if rep.totals %}<tr class="total">{% for v in rep.totals %}<td class="n">{% if v.__class__.__name__ == 'Decimal' %}{{ v|money }}{% else %}{{ v }}{% endif %}</td>{% endfor %}</tr>{% endif %}</table>
+{% else %}<tr><td colspan="{{ rep.columns|length }}" class="empty"><b>No data for these parameters</b>Try a wider period or another investor.</td></tr>{% endfor %}
+{% if rep.totals %}<tr class="total">{% for v in rep.totals %}<td class="{{ 'n' if loop.index0 in rep.money_cols else '' }}">{% if v.__class__.__name__ == 'Decimal' %}{{ v|money }}{% else %}{{ v }}{% endif %}</td>{% endfor %}</tr>{% endif %}</tbody></table></div>
 {% endblock %}

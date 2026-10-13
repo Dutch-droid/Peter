@@ -1,10 +1,11 @@
-{% extends "base.html" %}{% block title %}Sign in{% endblock %}
-{% block content %}
-<form method="post" action="/login" class="card narrow">
-<h1>Treasury Platform</h1>
-{% if error %}<div class="flash err">{{ error }}</div>{% endif %}
+{% extends "base.html" %}{% from "_m.html" import icon %}{% block title %}Sign in{% endblock %}
+{% block bare %}
+<div class="loginwrap"><form method="post" action="/login" class="card login">
+<div class="logo"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20h18M5 20V10l7-6 7 6v10M9 20v-6h6v6"/></svg><h1>Treasury Platform</h1></div>
+<p class="muted" style="margin:0 0 16px">Sign in to continue</p>
+{% if error %}<div class="note" role="alert" style="background:color-mix(in srgb,var(--crit) 14%,transparent);color:var(--ink)">{{ error }}</div>{% endif %}
 <input type="hidden" name="csrf_token" value="{{ csrf }}">
 <label>Username<input name="username" autocomplete="username" required autofocus></label>
 <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
-<button>Sign in</button>
-</form>{% endblock %}
+<button style="width:100%">Sign in</button>
+</form></div>{% endblock %}

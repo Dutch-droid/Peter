@@ -25,6 +25,8 @@ class F:
     ref: str = ""                 # entity key for kind=ref
     in_list: bool = True
     optional_money: bool = False  # blank allowed (computed later)
+    group: str = ""               # form section heading
+    help: str = ""                # hint under the input
 
 
 @dataclass
@@ -75,7 +77,7 @@ ENTITIES: dict[str, Entity] = {e.key: e for e in [
     Entity("leases", "Rent / Leases", Lease, "finance", [
         F("branch_name", "Branch", required=True), F("landlord", "Landlord", required=True), F("location", "Property location", in_list=False),
         F("rent_amount", "Rent amount", "money", True), F("frequency", "Payment frequency", "choice", True, FREQ),
-        F("next_due_date", "Next due date", "date", True), F("lease_expiry", "Lease expiry", "date"),
+        F("next_due_date", "Next due date", "date", True, in_list=False), F("lease_expiry", "Lease expiry", "date"),
         F("pay_point", "Pay point details", "textarea", in_list=False), F("contact_person", "Contact person", in_list=False),
         F("contact_email", "Contact email (gets reminders)", "email", in_list=False)],
         label=lambda o: f"{o.branch_name} - {o.landlord}", search=("branch_name", "landlord", "location"), order="next_due_date", can_delete=False),
@@ -85,7 +87,7 @@ ENTITIES: dict[str, Entity] = {e.key: e for e in [
         label=lambda o: f"Payment {o.id}", after_save=_hook_rent_paid, search=("reference",), order="paid_on", can_delete=False),
     Entity("internet", "Internet billing", InternetAccount, "finance", [
         F("branch_name", "Branch", required=True), F("isp", "Internet service provider", required=True),
-        F("monthly_cost", "Monthly cost", "money", True), F("next_due_date", "Next due date", "date", True),
+        F("monthly_cost", "Monthly cost", "money", True), F("next_due_date", "Next due date", "date", True, in_list=False),
         F("account_number", "Account number"), F("pay_point", "Pay point details", "textarea", in_list=False),
         F("contact_person", "Contact person", in_list=False), F("contact_email", "Contact email (gets reminders)", "email", in_list=False)],
         label=lambda o: f"{o.branch_name} - {o.isp}", search=("branch_name", "isp", "account_number"), order="next_due_date", can_delete=False),
@@ -151,3 +153,32 @@ def parse_form(ent: Entity, form: dict, existing_ids: dict[str, set[int]]) -> tu
     if ent.key == "leases" and vals.get("lease_expiry") and vals.get("next_due_date") and "next_due_date" not in errs:
         pass
     return vals, errs
+
+
+# Form sections and hints: {entity: {field: (group, help)}}
+_LAYOUT = {
+    "investors": {"name": ("Identity", "Registered name of the individual or institution"), "kra_pin": ("Identity", "Format A123456789Z; must be unique"),
+                  "id_number": ("Identity", "Where applicable"), "address": ("Contact", ""), "telephone": ("Contact", ""), "email": ("Contact", ""),
+                  "bank_name": ("Banking", ""), "bank_account": ("Banking", "Used for interest and redemption payments")},
+    "leases": {"branch_name": ("Property", ""), "landlord": ("Property", ""), "location": ("Property", ""),
+               "rent_amount": ("Payment terms", ""), "frequency": ("Payment terms", ""),
+               "next_due_date": ("Payment terms", "Moves forward automatically when you record a payment"),
+               "lease_expiry": ("Lease", "Used for expiry tracking on the dashboard"), "pay_point": ("Payment terms", "Where and how the rent is paid"),
+               "contact_person": ("Contact", ""), "contact_email": ("Contact", "Also receives payment reminders")},
+    "internet": {"branch_name": ("Service", ""), "isp": ("Service", ""), "account_number": ("Service", ""),
+                 "monthly_cost": ("Billing", ""), "next_due_date": ("Billing", "Moves forward automatically when you record a payment"),
+                 "pay_point": ("Billing", "Where and how the bill is paid"), "contact_person": ("Contact", ""), "contact_email": ("Contact", "Also receives payment reminders")},
+    "suppliers": {"name": ("Details", ""), "category": ("Details", "e.g. Stationery, IT, Cleaning"), "contact_person": ("Contact", ""), "telephone": ("Contact", ""),
+                  "email": ("Contact", ""), "kra_pin": ("Payment information", "Format A123456789Z"), "bank_details": ("Payment information", ""), "pay_point": ("Payment information", "")},
+    "procurement": {"request_date": ("Request", ""), "department": ("Request", ""), "supplier_id": ("Request", ""), "items": ("Request", "What is being bought"),
+                    "quantity": ("Cost", ""), "unit_cost": ("Cost", ""), "vat_amount": ("Cost", "Leave blank to calculate VAT automatically"),
+                    "approval_status": ("Approval", "")},
+    "rent_payments": {"lease_id": ("Payment", ""), "period_due": ("Payment", "The due date this payment settles"), "paid_on": ("Payment", ""),
+                      "amount": ("Payment", ""), "reference": ("Payment", "Bank or cheque reference")},
+    "internet_payments": {"internet_account_id": ("Payment", ""), "period_due": ("Payment", "The due date this payment settles"), "paid_on": ("Payment", ""),
+                          "amount": ("Payment", ""), "reference": ("Payment", "Bank or cheque reference")},
+}
+for _k, _m in _LAYOUT.items():
+    for _f in ENTITIES[_k].fields:
+        if _f.name in _m:
+            _f.group, _f.help = _m[_f.name]

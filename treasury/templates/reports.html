@@ -1,5 +1,9 @@
-{% extends "base.html" %}{% block content %}
-<h1>Reports</h1>
-<table><tr><th>Report</th><th>Area</th><th></th></tr>
-{% for k,v in avail.items() %}<tr><td>{{ v.title }}</td><td>{{ v.module|title }}</td><td><a href="/reports/{{ k }}">Open</a></td></tr>{% endfor %}</table>
+{% extends "base.html" %}{% set page_title = 'Reports' %}
+{% block content %}
+<div class="head"><div><h1>Reports</h1><p class="sub">Run a report, then export it to Excel or PDF.</p></div></div>
+{% for mod, label in (('treasury','Treasury & investors'),('finance','Rent, internet & procurement')) %}
+{% set items = avail.items()|selectattr('1.module','equalto',mod)|list %}
+{% if items %}<h2 style="margin-top:18px">{{ label }}</h2><div class="reportgrid">
+{% for k,v in items %}<a class="rcard" href="/reports/{{ k }}"><b>{{ v.title }}</b><span>{{ v.desc }}</span></a>{% endfor %}</div>{% endif %}
+{% endfor %}
 {% endblock %}

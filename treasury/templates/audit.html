@@ -1,5 +1,8 @@
-{% extends "base.html" %}{% block content %}
-<div class="head"><h1>Audit log</h1><form method="get" class="inline"><input name="q" value="{{ q }}" placeholder="user / action / entity"><button>Filter</button></form></div>
-<table><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Entity</th><th>ID</th><th>Detail</th><th>IP</th></tr>
-{% for l in logs %}<tr><td>{{ l.at.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ l.username }}</td><td>{{ l.action }}</td><td>{{ l.entity }}</td><td>{{ l.entity_id }}</td><td>{{ l.detail }}</td><td>{{ l.ip }}</td></tr>{% endfor %}</table>
+{% extends "base.html" %}{% set page_title = 'Audit log' %}
+{% block content %}
+<div class="head"><div><h1>Audit log</h1><p class="sub">Every sign-in, change and report run. Latest 500 events.</p></div></div>
+<form class="toolbar" method="get"><input type="search" name="q" value="{{ q }}" placeholder="Filter by user, action or entity" aria-label="Filter"><button class="ghost">Filter</button></form>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>When (UTC)</th><th>User</th><th>Action</th><th>Entity</th><th>ID</th><th>Detail</th><th>IP</th></tr></thead><tbody>
+{% for l in logs %}<tr><td>{{ l.at.strftime('%Y-%m-%d %H:%M:%S') }}</td><td>{{ l.username }}</td><td>{{ l.action }}</td><td>{{ l.entity }}</td><td>{{ l.entity_id }}</td><td>{{ l.detail }}</td><td>{{ l.ip }}</td></tr>
+{% else %}<tr><td colspan="7" class="empty"><b>No events match</b></td></tr>{% endfor %}</tbody></table></div>
 {% endblock %}

@@ -1,0 +1,7 @@
+{% extends "base.html" %}{% set page_title = 'Search' %}
+{% block content %}
+<div class="head"><div><h1>Search</h1><p class="sub">{% if q %}{{ hits|length }} result{{ '' if hits|length == 1 else 's' }} for “{{ q }}”{% else %}Type in the search box above.{% endif %}</p></div></div>
+{% if q %}<div class="tablewrap"><table><thead><tr><th>Type</th><th>Name</th><th>Details</th></tr></thead><tbody>
+{% for t,title,sub,url in hits %}<tr><td><span class="chip neutral">{{ t }}</span></td><td><a href="{{ url }}"><b>{{ title }}</b></a></td><td>{{ sub }}</td></tr>
+{% else %}<tr><td colspan="3" class="empty"><b>No matches</b>Try part of a name, a KRA PIN or an account reference.</td></tr>{% endfor %}</tbody></table></div>{% endif %}
+{% endblock %}

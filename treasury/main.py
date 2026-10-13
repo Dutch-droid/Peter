@@ -80,7 +80,7 @@ def need(module: str, write: bool = False):
 def render(request: Request, name: str, user: User | None = None, status: int = 200, **ctx):
     if "csrf" not in request.session:
         request.session["csrf"] = security.new_csrf()
-    ctx.update(user=user, csrf=request.session["csrf"], flash=request.session.pop("flash", None),
+    ctx.update(user=user, path=request.url.path, csrf=request.session["csrf"], flash=request.session.pop("flash", None),
                can=(lambda m, w=False: bool(user) and security.can(user.role, m, w)))
     return templates.TemplateResponse(request, name, ctx, status_code=status)
 
@@ -155,6 +155,21 @@ def dashboard(request: Request, user: User = Depends(current_user), db: Session 
     if security.can(user.role, "treasury"):
         accts = list(db.scalars(select(Account)))
         live = [a for a in accts if a.status(t) in ("Active", "Matured", "Pending")]
+        ladder: dict[str, Decimal] = {"Overdue": Decimal(0)}
+        for i in range(12):
+            y, m = divmod(t.month - 1 + i, 12)
+            ladder[date(t.year + y, m + 1, 1).strftime("%b %y")] = Decimal(0)
+        for a in live:
+            md = a.current_term.maturity_date
+            key = "Overdue" if md <= t else md.strftime("%b %y")
+            if key in ladder:
+                ladder[key] += Decimal(a.principal)
+        by_inv: dict[str, Decimal] = {}
+        for a in live:
+            by_inv[a.investor.name] = by_inv.get(a.investor.name, Decimal(0)) + S.principal_outstanding(a, t)
+        top = sorted(by_inv.items(), key=lambda kv: -kv[1])[:8]
+        ctx["charts"] = {"ladder": {"labels": list(ladder), "values": [float(v) for v in ladder.values()]},
+                         "investors": {"labels": [k for k, _ in top], "values": [float(v) for _, v in top]}}
         ctx["tre"] = {
             "investors": db.scalar(select(func.count(Investor.id))), "open_accounts": len(live),
             "principal": sum((S.principal_outstanding(a, t) for a in live), Decimal(0)),
@@ -165,7 +180,7 @@ def dashboard(request: Request, user: User = Depends(current_user), db: Session 
         horizon = t + timedelta(days=30)
         due = [("Rent", l.branch_name, l.next_due_date, l.rent_amount, f"/e/leases/{l.id}/edit") for l in db.scalars(select(Lease)) if l.next_due_date <= horizon]
         due += [("Internet", a.branch_name, a.next_due_date, a.monthly_cost, f"/e/internet/{a.id}/edit") for a in db.scalars(select(InternetAccount)) if a.next_due_date <= horizon]
-        ctx["due"] = sorted(due, key=lambda r: r[2])
+        ctx["dues"] = sorted(due, key=lambda r: r[2])
         ctx["expiring"] = [l for l in db.scalars(select(Lease)) if l.lease_expiry and l.lease_expiry <= t + timedelta(days=90)]
     return render(request, "dashboard.html", user, **ctx)
 
@@ -320,7 +335,10 @@ def account_detail(aid: int, request: Request, db: Session = Depends(get_db), us
         quarters.append((f"Q{q} {y}", g, I.withholding_tax(g), g - I.withholding_tax(g)))
         y, q = (y + 1, 1) if q == 4 else (y, q + 1)
     daily = I.daily_schedule(terms, max(first, t - timedelta(days=14)), t, a.redemption_date)[::-1]
-    return render(request, "account.html", user, a=a, acct_status=a.status(t), accrued=S.accrued(a, t), monthly=monthly[::-1],
+    terms_json = [{"principal": float(x.principal), "rate": float(x.rate_pct), "start": str(x.start_date), "maturity": str(x.maturity_date)} for x in a.terms]
+    rollover_ok = (not a.redemption_date) and a.current_term.maturity_date <= t
+    chart = {"labels": [m for m, _ in monthly], "values": [float(v) for _, v in monthly]}
+    return render(request, "account.html", user, rollover_ok=rollover_ok, chart=chart, terms_json=terms_json, basis=config.DAY_COUNT_BASIS, a=a, acct_status=a.status(t), accrued=S.accrued(a, t), monthly=monthly[::-1],
                   quarters=quarters[::-1], daily=daily,
                   history=db.scalars(select(AuditLog).where(AuditLog.entity == "account", AuditLog.entity_id == str(a.id)).order_by(AuditLog.id.desc())).all(),
                   wht=config.WHT_RATE)
@@ -349,6 +367,29 @@ async def account_action(aid: int, action: str, request: Request, db: Session = 
     S.audit(db, user.username, action, "account", a.id, detail, ip(request))
     db.commit(); flash(request, f"Done: {detail}")
     return RedirectResponse(f"/accounts/{aid}", status_code=303)
+
+
+# ------------------------------------------------------------------ search
+@app.get("/search", response_class=HTMLResponse)
+def search(request: Request, q: str = "", db: Session = Depends(get_db), user: User = Depends(current_user)):
+    q = q.strip()[:80]
+    hits: list[tuple[str, str, str, str]] = []   # (type, title, subtitle, url)
+    if q:
+        like = f"%{q}%"
+        if security.can(user.role, "treasury"):
+            for i in db.scalars(select(Investor).where((Investor.name.ilike(like)) | (Investor.kra_pin.ilike(like)) | (Investor.email.ilike(like))).limit(15)):
+                hits.append(("Investor", i.name, i.kra_pin, f"/investors/{i.id}"))
+            for a in db.scalars(select(Account).where(Account.reference.ilike(like)).limit(15)):
+                hits.append(("Investment", a.reference, a.investor.name, f"/accounts/{a.id}"))
+        if security.can(user.role, "finance"):
+            from .models import Supplier
+            for l in db.scalars(select(Lease).where((Lease.branch_name.ilike(like)) | (Lease.landlord.ilike(like))).limit(10)):
+                hits.append(("Lease", l.branch_name, l.landlord, f"/e/leases/{l.id}/edit"))
+            for n in db.scalars(select(InternetAccount).where((InternetAccount.branch_name.ilike(like)) | (InternetAccount.isp.ilike(like)) | (InternetAccount.account_number.ilike(like))).limit(10)):
+                hits.append(("Internet", n.branch_name, n.isp, f"/e/internet/{n.id}/edit"))
+            for sp in db.scalars(select(Supplier).where((Supplier.name.ilike(like)) | (Supplier.category.ilike(like))).limit(10)):
+                hits.append(("Supplier", sp.name, sp.category, f"/e/suppliers/{sp.id}/edit"))
+    return render(request, "search.html", user, q=q, hits=hits)
 
 
 # ------------------------------------------------------------------ reports

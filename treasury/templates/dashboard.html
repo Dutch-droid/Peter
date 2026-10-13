@@ -1,28 +1,33 @@
-{% extends "base.html" %}{% block content %}
-<h1>Dashboard</h1>
+{% extends "base.html" %}{% from "_m.html" import chart, due, status, icon %}{% set page_title = 'Dashboard' %}
+{% block content %}
+<div class="head"><div><h1>Dashboard</h1><p class="sub">Position and obligations as of {{ today().strftime('%d %b %Y') }}</p></div></div>
 {% if tre is defined %}
 <div class="kpis">
-<div><b>{{ tre.investors }}</b><span>Investors</span></div>
-<div><b>{{ tre.open_accounts }}</b><span>Open accounts</span></div>
-<div><b>{{ tre.principal|money }}</b><span>Principal invested</span></div>
-<div><b>{{ tre.accrued|money }}</b><span>Interest accrued</span></div>
-<div><b>{{ (tre.principal + tre.accrued)|money }}</b><span>Net position</span></div>
+<div class="kpi hero"><b>{{ (tre.principal + tre.accrued)|money }}</b><span>Net position: principal plus accrued interest (KES)</span></div>
+<div class="kpi"><b>{{ tre.principal|money }}</b><span>Principal invested</span></div>
+<div class="kpi"><b>{{ tre.accrued|money }}</b><span>Interest accrued</span></div>
+<div class="kpi"><b>{{ tre.investors }}</b><span>Investors</span></div>
+<div class="kpi"><b>{{ tre.open_accounts }}</b><span>Open accounts</span></div>
 </div>
-<h2>Maturing within 30 days (or matured, action needed)</h2>
-<table><tr><th>Investor</th><th>Account</th><th>Principal</th><th>Maturity</th><th>Days</th></tr>
-{% for a in tre.maturing %}<tr><td>{{ a.investor.name }}</td><td><a href="/accounts/{{ a.id }}">{{ a.reference }}</a></td><td class="n">{{ a.principal|money }}</td><td>{{ a.current_term.maturity_date }}</td>
-<td class="{{ 'bad' if (a.current_term.maturity_date - today()).days < 0 else '' }}">{{ (a.current_term.maturity_date - today()).days }}</td></tr>
-{% else %}<tr><td colspan="5" class="muted">None</td></tr>{% endfor %}</table>
+<div class="grid2">
+{{ chart('c-ladder', 'Maturity ladder', 'Principal by maturity month; “Overdue” has matured and needs a rollover or redemption', charts.ladder, False, 'principal') }}
+{{ chart('c-inv', 'Exposure by investor', 'Top investors by principal currently invested', charts.investors, True, 'principal') }}
+</div>
+<h2 style="margin-top:22px">Needs attention: maturing within 30 days</h2>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>Investor</th><th>Account</th><th class="n">Principal</th><th>Maturity</th><th>Status</th></tr></thead><tbody>
+{% for a in tre.maturing %}{% set d = (a.current_term.maturity_date - today()).days %}<tr><td>{{ a.investor.name }}</td><td><a href="/accounts/{{ a.id }}">{{ a.reference }}</a></td><td class="n">{{ a.principal|money }}</td><td data-v="{{ a.current_term.maturity_date }}">{{ a.current_term.maturity_date }}</td>
+<td>{% if d <= 0 %}{{ status('Matured') }} <span class="muted">{{ -d }}d ago, action needed</span>{% else %}{{ due(d) }}{% endif %}</td></tr>
+{% else %}<tr><td colspan="5" class="empty"><b>Nothing maturing soon</b>All investments are outside the 30-day window.</td></tr>{% endfor %}</tbody></table></div>
 {% endif %}
-{% if due is defined %}
-<h2>Payments due within 30 days</h2>
-<table><tr><th>Type</th><th>Branch</th><th>Due</th><th>Amount</th><th>Days</th></tr>
-{% for t,b,d,amt,url in due %}<tr><td>{{ t }}</td><td><a href="{{ url }}">{{ b }}</a></td><td>{{ d }}</td><td class="n">{{ amt|money }}</td>
-<td class="{{ 'bad' if (d - today()).days < 0 else '' }}">{{ (d - today()).days }}{{ ' (overdue)' if (d - today()).days < 0 else '' }}</td></tr>
-{% else %}<tr><td colspan="5" class="muted">None</td></tr>{% endfor %}</table>
-<h2>Leases expiring within 90 days</h2>
-<table><tr><th>Branch</th><th>Landlord</th><th>Expiry</th><th>Days</th></tr>
-{% for l in expiring %}<tr><td>{{ l.branch_name }}</td><td>{{ l.landlord }}</td><td>{{ l.lease_expiry }}</td><td>{{ (l.lease_expiry - today()).days }}</td></tr>
-{% else %}<tr><td colspan="4" class="muted">None</td></tr>{% endfor %}</table>
+
+{% if dues is defined %}
+<h2 style="margin-top:22px">Payments due within 30 days</h2>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>Type</th><th>Branch</th><th>Due</th><th class="n">Amount</th><th>Status</th></tr></thead><tbody>
+{% for t,b,d,amt,url in dues %}{% set n = (d - today()).days %}<tr><td>{{ t }}</td><td><a href="{{ url }}">{{ b }}</a></td><td data-v="{{ d }}">{{ d }}</td><td class="n">{{ amt|money }}</td><td>{{ due(n) }}</td></tr>
+{% else %}<tr><td colspan="5" class="empty"><b>No payments due</b>Nothing falls due in the next 30 days.</td></tr>{% endfor %}</tbody></table></div>
+<h2 style="margin-top:22px">Leases expiring within 90 days</h2>
+<div class="tablewrap"><table class="sortable"><thead><tr><th>Branch</th><th>Landlord</th><th>Expiry</th><th>Status</th></tr></thead><tbody>
+{% for l in expiring %}<tr><td><a href="/e/leases/{{ l.id }}/edit">{{ l.branch_name }}</a></td><td>{{ l.landlord }}</td><td data-v="{{ l.lease_expiry }}">{{ l.lease_expiry }}</td><td>{{ due((l.lease_expiry - today()).days) }}</td></tr>
+{% else %}<tr><td colspan="4" class="empty"><b>No leases expiring soon</b></td></tr>{% endfor %}</tbody></table></div>
 {% endif %}
 {% endblock %}
