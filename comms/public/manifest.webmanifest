@@ -1,0 +1,10 @@
+{
+  "name": "Relay",
+  "short_name": "Relay",
+  "description": "Backup chat, mail and calls for when the usual tools are down",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#10231D",
+  "theme_color": "#10231D",
+  "icons": [{ "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }]
+}

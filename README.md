@@ -1,5 +1,7 @@
 # PeopleFlow HR
 
+> This repository also contains **Relay**, a self-hosted backup chat, mail and calling app for when Microsoft 365 or other usual tools are down. See [`comms/README.md`](comms/README.md).
+
 An HR, leave and payroll app (Next.js + TypeScript + SQLite), configured for Kenya (KES).
 
 ## Run
