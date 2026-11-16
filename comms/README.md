@@ -77,8 +77,16 @@ Host Relay **away from the systems it backs up**: a different cloud provider or 
 - **HTTPS is required** for calls (browsers only allow camera and microphone on secure origins; `localhost` is the exception). Put Relay behind a reverse proxy such as Caddy or nginx that terminates TLS and forwards WebSocket upgrades on `/ws`. Set `RELAY_TRUST_PROXY=1` so secure cookies, client IPs and login throttling use the proxy's `X-Forwarded-*` headers.
 - **Calls across the internet need STUN/TURN.** On one LAN or VPN, calls connect directly with no extra setup. Across the internet, run your own TURN server (for example coturn) and set `RELAY_ICE_SERVERS`, e.g. `[{"urls":"stun:turn.example.com:3478"},{"urls":"turn:turn.example.com:3478","username":"relay","credential":"…"}]`. Relay ships with no STUN/TURN servers configured, so it never contacts a third party unless you tell it to. Group calls are peer-to-peer (mesh), which works well up to about 6–8 people.
 - **Back up** the data directory (`data/relay.db` plus `data/uploads/`). SQLite runs in WAL mode; use `sqlite3 relay.db ".backup backup.db"` for a consistent copy.
-- **Monitor** `GET /api/health`.
+- **Monitor** `GET /api/health` (it touches the database, so a broken disk shows up too).
 - **Run a drill** every quarter: post a test announcement, check readiness, make a test call between two offices.
+
+### Running it reliably
+
+- **Keep it running** with a process manager that restarts it if it exits: systemd on Linux, NSSM or Task Scheduler on Windows, or `pm2`. The same `npm start` command works on Windows, macOS and Linux.
+- **Stopping is safe.** On Ctrl+C or a service stop (SIGINT, SIGTERM, SIGHUP, Ctrl+Break), Relay stops taking new connections, lets requests in progress finish, ends live calls and records them in the chat, tells browsers it is restarting (they reconnect by themselves), flushes the database and exits. If that takes more than 10 seconds it exits anyway.
+- **Crashes are contained.** An error in one request returns a clear message to that person and is logged; the server keeps running. A bug that escapes everything is logged, the database is closed cleanly and the process exits with code 1 so the process manager restarts it. On the next start, any calls left open are recorded as ended.
+- **Logs** are one timestamped line per event on stdout (errors on stderr), e.g. `2026-11-16T07:31:11.902Z WARN  request method=GET path=/api/files status=500 ms=4`. Set `RELAY_LOG_FORMAT=json` for log collectors and `RELAY_LOG_REQUESTS=1` to log every request (by default only server errors are). Passwords, cookies and webhook tokens are never written to the logs.
+- **People see what's wrong.** If the browser can't reach Relay, it shows that and retries by itself; failed screens offer **Try again**; a page that crashes shows a **Reload** button instead of going blank.
 
 | Variable | Default | Purpose |
 |---|---|---|
@@ -89,6 +97,8 @@ Host Relay **away from the systems it backs up**: a different cloud provider or 
 | `RELAY_ICE_SERVERS` | `[]` | JSON list of STUN/TURN servers for calls |
 | `RELAY_TRUST_PROXY` | unset | Set to `1` behind a TLS-terminating proxy |
 | `RELAY_MAX_UPLOAD_MB` | `25` | Largest file people can share |
+| `RELAY_LOG_FORMAT` | text | `json` for one JSON object per log line |
+| `RELAY_LOG_REQUESTS` | unset | `1` to log every API request, not just failures |
 
 ## Connected apps (webhooks)
 

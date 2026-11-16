@@ -7,7 +7,9 @@ import path from 'node:path';
 process.env.RELAY_DATA_DIR = fs.mkdtempSync(path.join(os.tmpdir(), 'relay-test-'));
 process.env.RELAY_RING_MS = '50';
 
-const { resetDb, db } = await import('../server/db.ts');
+const { resetDb, db, recoverAfterCrash } = await import('../server/db.ts');
+const { safePath, setQuiet } = await import('../server/log.ts');
+setQuiet(true);
 const auth = await import('../server/auth.ts');
 const chat = await import('../server/chat.ts');
 const mail = await import('../server/mail.ts');
@@ -228,4 +230,32 @@ test('announcements replace each other and reach every user', () => {
   assert.equal(admin.currentAnnouncement()!.body, 'Update');
   admin.clearAnnouncement();
   assert.equal(admin.currentAnnouncement(), null);
+});
+
+test('after a crash, calls left live in the database are closed on boot', () => {
+  const dm = chat.openDm(a, b);
+  const t = Date.now() - 60_000;
+  db().prepare("INSERT INTO calls (conversation_id, initiator_id, media, status, started_at, answered_at) VALUES (?,?,?,'active',?,?)").run(dm.id, a, 'audio', t, t + 1000);
+  db().prepare("INSERT INTO calls (conversation_id, initiator_id, media, status, started_at) VALUES (?,?,?,'ringing',?)").run(dm.id, a, 'audio', t);
+  db().prepare('INSERT INTO sessions (token, user_id, expires_at) VALUES (?,?,?)').run('old', a, t);
+  assert.equal(recoverAfterCrash(), 2);
+  const rows = db().prepare('SELECT status, ended_at FROM calls ORDER BY id').all() as { status: string; ended_at: number }[];
+  assert.deepEqual(rows.map((r) => r.status), ['ended', 'missed']);
+  assert.ok(rows.every((r) => r.ended_at));
+  assert.equal(auth.userForToken('old'), null);
+  assert.equal(recoverAfterCrash(), 0);
+});
+
+test('shutdown ends live calls and logs them in the chat', () => {
+  const dm = chat.openDm(a, b);
+  const call = calls.start(a, 'A', dm.id, 'video');
+  calls.join(b, 'B', call.id);
+  assert.equal(calls.endAll(), 1);
+  assert.equal(calls.activeCalls(a).length, 0);
+  assert.equal(chat.listMessages(a, dm.id).messages.at(-1)!.meta!.status, 'ended');
+});
+
+test('webhook secrets never reach the logs', () => {
+  assert.equal(safePath('/api/hooks/abc123secret'), '/api/hooks/[redacted]');
+  assert.equal(safePath('/api/me'), '/api/me');
 });

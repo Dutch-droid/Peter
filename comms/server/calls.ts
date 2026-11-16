@@ -245,6 +245,13 @@ export function history(userId: number, limit = 100) {
   });
 }
 
+/** Shutdown: record every live call as ended so the history stays correct after a restart. */
+export function endAll() {
+  const n = live.size;
+  for (const c of [...live.values()]) finish(c, c.answeredAt ? 'ended' : 'missed');
+  return n;
+}
+
 /** Test helper. */
 export function _resetCalls() {
   for (const c of live.values()) clearTimeout(c.ringTimer);

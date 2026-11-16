@@ -9,9 +9,11 @@ import { db } from './db.ts';
 import { isMember, memberIds } from './chat.ts';
 import * as calls from './calls.ts';
 import { HttpError } from './errors.ts';
+import { log } from './log.ts';
 
 type Conn = { id: string; userId: number; ws: WebSocket; alive: boolean };
 const byUser = new Map<number, Map<string, Conn>>();
+let shuttingDown = false;
 
 function everyone(): number[] {
   return (db().prepare('SELECT id FROM users').all() as { id: number }[]).map((r) => r.id);
@@ -38,6 +40,11 @@ export function handleUpgrade(req: IncomingMessage, socket: Duplex, head: Buffer
   const origin = req.headers.origin;
   const sameOrigin = !origin || (() => { try { return new URL(origin).host === req.headers.host; } catch { return false; } })();
   const user = url.pathname === '/ws' && sameOrigin ? userForToken(parseCookies(req.headers.cookie).relay_sid) : null;
+  if (shuttingDown) {
+    socket.write('HTTP/1.1 503 Service Unavailable\r\n\r\n');
+    socket.destroy();
+    return;
+  }
   if (!user || user.must_change_password) {
     socket.write('HTTP/1.1 401 Unauthorized\r\n\r\n');
     socket.destroy();
@@ -57,6 +64,7 @@ function attach(ws: WebSocket, userId: number) {
   if (!wasOnline) publish(everyone(), { type: 'presence', userId, online: true });
 
   ws.on('pong', () => (conn.alive = true));
+  ws.on('error', (e) => log.warn('websocket error', { user: userId, error: e.message }));
   ws.on('message', (raw) => {
     let msg: any;
     try {
@@ -69,17 +77,22 @@ function attach(ws: WebSocket, userId: number) {
       if (msg.reqId) ws.send(JSON.stringify({ type: 'reply', reqId: msg.reqId, ok: true, result }));
     } catch (e) {
       const message = e instanceof HttpError ? e.message : 'Something went wrong';
-      if (!(e instanceof HttpError)) console.error(e);
-      if (msg.reqId) ws.send(JSON.stringify({ type: 'reply', reqId: msg.reqId, ok: false, error: message }));
+      if (!(e instanceof HttpError)) log.error('websocket message failed', e, { user: userId, type: String(msg?.type) });
+      if (msg.reqId && ws.readyState === ws.OPEN) ws.send(JSON.stringify({ type: 'reply', reqId: msg.reqId, ok: false, error: message }));
     }
   });
   ws.on('close', () => {
     conns!.delete(conn.id);
-    calls.leaveAllFor(userId, undefined, conn.id);
-    if (!conns!.size) {
-      byUser.delete(userId);
-      touchLastSeen(userId);
-      publish(everyone(), { type: 'presence', userId, online: false });
+    if (shuttingDown) return; // calls were already ended and the database may be closed
+    try {
+      calls.leaveAllFor(userId, undefined, conn.id);
+      if (!conns!.size) {
+        byUser.delete(userId);
+        touchLastSeen(userId);
+        publish(everyone(), { type: 'presence', userId, online: false });
+      }
+    } catch (e) {
+      log.error('websocket cleanup failed', e, { user: userId });
     }
   });
 }
@@ -127,3 +140,20 @@ const heartbeat = setInterval(() => {
     }
 }, 20_000);
 heartbeat.unref();
+
+export function connectionCount() {
+  let n = 0;
+  for (const conns of byUser.values()) n += conns.size;
+  return n;
+}
+
+/**
+ * Shutdown: refuse new sockets and close open ones with 1012 (service restart).
+ * Relay's client treats any close as "reconnect with backoff".
+ */
+export function closeAllSockets() {
+  shuttingDown = true;
+  clearInterval(heartbeat);
+  for (const conns of byUser.values()) for (const c of conns.values()) c.ws.close(1012, 'Server restarting');
+  wss.close();
+}

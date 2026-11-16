@@ -5,7 +5,7 @@ import { socket } from '../socket';
 import { useCall } from '../call/CallProvider';
 import { useIsPhone } from '../useMedia';
 import {
-  Avatar, bytes, clock, dayLabel, duration, Empty, fullDate, GroupAvatar, Icon, Modal, PeoplePicker, presenceOf, REACTION_LABEL, RichText, timeShort,
+  Avatar, bytes, ErrorState, clock, dayLabel, duration, Empty, fullDate, GroupAvatar, Icon, Modal, PeoplePicker, presenceOf, REACTION_LABEL, RichText, timeShort,
 } from '../components/ui';
 
 export function ConvAvatar({ c, size = 36 }: { c: Conversation; size?: number }) {
@@ -297,7 +297,8 @@ function ChatPane({ id }: { id: number }) {
   const [messages, setMessages] = useState<Message[]>([]);
   const [hasMore, setHasMore] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [error, setError] = useState<unknown>(null);
+  const [attempt, setAttempt] = useState(0);
   const [replyTo, setReplyTo] = useState<Message | null>(null);
   const [editing, setEditing] = useState<Message | null>(null);
   const [panel, setPanel] = useState(() => !phone && window.innerWidth >= 1180);
@@ -313,6 +314,7 @@ function ChatPane({ id }: { id: number }) {
   useEffect(() => {
     let alive = true;
     setLoading(true);
+    setError(null);
     Promise.all([api(`/api/conversations/${id}`), api(`/api/conversations/${id}/messages`)])
       .then(([c, m]) => {
         if (!alive) return;
@@ -321,12 +323,12 @@ function ChatPane({ id }: { id: number }) {
         setHasMore(m.hasMore);
         stickBottom.current = true;
       })
-      .catch((e) => alive && setError(e.message))
+      .catch((e) => alive && setError(e))
       .finally(() => alive && setLoading(false));
     return () => {
       alive = false;
     };
-  }, [id]);
+  }, [id, attempt]);
 
   const markRead = useCallback(
     (msgId?: number) => {
@@ -400,7 +402,12 @@ function ChatPane({ id }: { id: number }) {
     } else toast('That message is further back. Load older messages to see it.');
   };
 
-  if (error) return <div className="chat-empty"><Empty icon="chat" title="Can’t open this chat">{error}</Empty></div>;
+  if (error)
+    return (
+      <div className="chat-empty">
+        <ErrorState title="Can’t open this chat" error={error} onRetry={() => setAttempt((n) => n + 1)} />
+      </div>
+    );
   if (!conv) return <div className="chat-empty"><div className="hint pad">Loading…</div></div>;
 
   const name = conversationName(conv);

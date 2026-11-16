@@ -1,5 +1,5 @@
-import { useEffect, useRef, useState, type ReactNode } from 'react';
-import type { User } from '../api';
+import { Component, useEffect, useRef, useState, type ReactNode } from 'react';
+import { isOffline, type User } from '../api';
 import { useStore } from '../store';
 
 const PATHS: Record<string, string> = {
@@ -60,6 +60,7 @@ const PATHS: Record<string, string> = {
   info: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 11v6M12 7.5h.01',
   external: 'M14 4h6v6M20 4l-9 9M18 14v6H4V6h6',
   more: 'M5 12h.01M12 12h.01M19 12h.01',
+  refresh: 'M20 11a8 8 0 1 0-2.3 5.7M20 4v7h-7',
 };
 
 /** Reaction keys from the server, drawn as line icons. */
@@ -306,4 +307,70 @@ export function Empty({ icon, title, children }: { icon: string; title: string; 
       {children}
     </div>
   );
+}
+
+/** A failed load, with what went wrong and a Try again button. Offline errors get their own wording. */
+export function ErrorState({ title, error, onRetry, compact }: { title: string; error: unknown; onRetry: () => void; compact?: boolean }) {
+  const [busy, setBusy] = useState(false);
+  const offline = isOffline(error);
+  const message = error instanceof Error ? error.message : String(error);
+  return (
+    <div className={`empty error-state ${compact ? 'compact' : ''}`} role="alert">
+      <span className="empty-icon error-icon">
+        <Icon name={offline ? 'wifiOff' : 'alert'} size={28} />
+      </span>
+      <h3>{offline ? 'You’re offline or Relay is unreachable' : title}</h3>
+      <p>{message}</p>
+      <button
+        className="btn primary"
+        disabled={busy}
+        onClick={async () => {
+          setBusy(true);
+          try {
+            await onRetry();
+          } finally {
+            setBusy(false);
+          }
+        }}
+      >
+        <Icon name="refresh" size={18} /> {busy ? 'Trying…' : 'Try again'}
+      </button>
+    </div>
+  );
+}
+
+/** Catches a crash while drawing the page so people see a way out instead of a blank screen. */
+export class ErrorBoundary extends Component<{ children: ReactNode; label?: string }, { error: Error | null }> {
+  state: { error: Error | null } = { error: null };
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+  componentDidCatch(error: Error) {
+    console.error('Relay UI error', error);
+  }
+  render() {
+    const { error } = this.state;
+    if (!error) return this.props.children;
+    return (
+      <div className="crash-screen" role="alert">
+        <span className="empty-icon error-icon">
+          <Icon name="alert" size={28} />
+        </span>
+        <h2>Something went wrong{this.props.label ? ` in ${this.props.label}` : ''}</h2>
+        <p className="muted">Your messages and mail are safe on the server. Try again, or reload Relay.</p>
+        <div className="row gap-s">
+          <button className="btn" onClick={() => this.setState({ error: null })}>
+            Try again
+          </button>
+          <button className="btn primary" onClick={() => location.reload()}>
+            <Icon name="refresh" size={18} /> Reload Relay
+          </button>
+        </div>
+        <details>
+          <summary>Technical details</summary>
+          <pre className="code-block">{error.message}</pre>
+        </details>
+      </div>
+    );
+  }
 }

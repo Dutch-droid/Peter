@@ -3,7 +3,7 @@ import { api, type CallRecord, type User } from '../api';
 import { go, useStore } from '../store';
 import { socket } from '../socket';
 import { useCall } from '../call/CallProvider';
-import { Avatar, duration, Empty, Icon, presenceOf, timeShort } from '../components/ui';
+import { Avatar, duration, Empty, ErrorState, Icon, presenceOf, timeShort } from '../components/ui';
 
 async function dmWith(userId: number) {
   const { conversation } = await api('/api/conversations/dm', { body: { userId } });
@@ -15,7 +15,11 @@ export function CallsView() {
   const { startCall } = useCall();
   const [history, setHistory] = useState<CallRecord[] | null>(null);
   const [q, setQ] = useState('');
-  const load = () => void api<{ calls: CallRecord[] }>('/api/calls').then((r) => setHistory(r.calls));
+  const [error, setError] = useState<unknown>(null);
+  const load = () =>
+    void api<{ calls: CallRecord[] }>('/api/calls')
+      .then((r) => (setHistory(r.calls), setError(null)))
+      .catch(setError);
   useEffect(load, []);
   useEffect(() => socket.on((e) => e.type === 'call:ended' && setTimeout(load, 300)), []);
 
@@ -66,7 +70,8 @@ export function CallsView() {
           <h1>Recent calls</h1>
         </div>
         <ul className="history">
-          {history === null && <li className="hint pad">Loading…</li>}
+          {error != null && <li><ErrorState compact title="Can’t load call history" error={error} onRetry={load} /></li>}
+          {history === null && error == null && <li className="hint pad">Loading…</li>}
           {history?.length === 0 && <li><Empty icon="phone" title="No calls yet">Call anyone from the list, or from any chat.</Empty></li>}
           {history?.map((h) => {
             const conv = conversations.find((c) => c.id === h.conversationId);

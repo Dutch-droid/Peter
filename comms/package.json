@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "node scripts/dev.mjs",
     "build": "vite build",
-    "start": "NODE_ENV=production tsx server/index.ts",
+    "start": "tsx server/index.ts",
     "seed": "tsx scripts/seed.ts",
     "test": "tsx --test tests/*.test.ts",
     "typecheck": "tsc --noEmit",

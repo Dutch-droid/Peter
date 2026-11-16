@@ -9,6 +9,7 @@ import { INLINE_SAFE, MAX_UPLOAD, openAttachment, saveUpload } from './attachmen
 import { bad, HttpError, id, ids } from './errors.ts';
 import { db } from './db.ts';
 import { publish } from './bus.ts';
+import { log, logRequests, safePath } from './log.ts';
 
 type Ctx = {
   req: IncomingMessage;
@@ -122,7 +123,7 @@ function iceServers() {
     try {
       return JSON.parse(process.env.RELAY_ICE_SERVERS);
     } catch {
-      console.warn('RELAY_ICE_SERVERS is not valid JSON; ignoring');
+      log.warn('RELAY_ICE_SERVERS is not valid JSON; ignoring it');
     }
   }
   // No STUN by default: on a LAN / VPN peers connect directly. Configure your own STUN/TURN for the internet.
@@ -176,6 +177,10 @@ route(
 );
 route('GET', '/api/attachments/:id', ({ user, params, res, query }) => {
   const a = openAttachment(user.id, id(params.id, 'id'));
+  if (!fs.existsSync(a.path)) {
+    log.error('attachment missing on disk', undefined, { attachment: a.id });
+    throw new HttpError(410, 'This file is no longer available on the server.');
+  }
   const inline = INLINE_SAFE.has(a.mime) && query.get('download') !== '1';
   res.writeHead(200, {
     'Content-Type': inline ? a.mime : 'application/octet-stream',
@@ -183,7 +188,13 @@ route('GET', '/api/attachments/:id', ({ user, params, res, query }) => {
     'Content-Disposition': `${inline ? 'inline' : 'attachment'}; filename*=UTF-8''${encodeURIComponent(a.filename)}`,
     'Cache-Control': 'private, max-age=86400',
   });
-  fs.createReadStream(a.path).pipe(res);
+  // A missing or unreadable file must not take the server down.
+  fs.createReadStream(a.path)
+    .on('error', (e) => {
+      log.error('attachment read failed', e, { attachment: a.id });
+      res.destroy();
+    })
+    .pipe(res);
   return RAW;
 });
 
@@ -288,6 +299,11 @@ function sameOrigin(req: IncomingMessage): boolean {
 export async function handleApi(req: IncomingMessage, res: ServerResponse): Promise<boolean> {
   const url = new URL(req.url ?? '/', 'http://x');
   if (!url.pathname.startsWith('/api/')) return false;
+  const started = Date.now();
+  res.on('finish', () => {
+    if (logRequests || res.statusCode >= 500)
+      log[res.statusCode >= 500 ? 'warn' : 'info']('request', { method: req.method, path: safePath(url.pathname), status: res.statusCode, ms: Date.now() - started });
+  });
   try {
     const method = req.method ?? 'GET';
     let match: { r: Route; params: Record<string, string> } | null = null;
@@ -326,8 +342,9 @@ export async function handleApi(req: IncomingMessage, res: ServerResponse): Prom
   } catch (e) {
     if (e instanceof HttpError) sendJson(res, e.status, { error: e.message });
     else {
-      console.error(e);
-      sendJson(res, 500, { error: 'Something went wrong' });
+      log.error('request failed', e, { method: req.method, path: safePath(url.pathname) });
+      if (!res.headersSent) sendJson(res, 500, { error: 'Something went wrong on the server. Try again in a moment.' });
+      else res.destroy();
     }
   }
   return true;

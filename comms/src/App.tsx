@@ -1,9 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
-import { api, type Email, type Message, type User } from './api';
+import { api, ApiError, type Email, type Message, type User } from './api';
 import { AppProvider, go, useStore } from './store';
 import { CallProvider, useCall } from './call/CallProvider';
 import { CallWindow, IncomingCalls } from './call/CallUI';
-import { Avatar, Icon, presenceOf, timeShort } from './components/ui';
+import { Avatar, ErrorBoundary, ErrorState, Icon, presenceOf, timeShort } from './components/ui';
 import { ChatView, SidebarConversations } from './views/Chat';
 import { MailView } from './views/Mail';
 import { CallsView, PeopleView } from './views/Calls';
@@ -16,25 +16,73 @@ import { useIsPhone } from './useMedia';
 
 export default function App() {
   const [me, setMe] = useState<User | null | undefined>(undefined);
+  const [bootError, setBootError] = useState<unknown>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
+    let alive = true;
     api('/api/me')
-      .then((r) => setMe(r.user))
-      .catch(() => setMe(null));
-  }, []);
+      .then((r) => alive && (setMe(r.user), setBootError(null)))
+      .catch((e) => {
+        if (!alive) return;
+        // Only "not signed in" means show the login form. Anything else (offline, server restarting) gets a retry screen.
+        if (e instanceof ApiError && e.status === 401) {
+          setMe(null);
+          setBootError(null);
+        } else setBootError(e);
+      });
+    return () => {
+      alive = false;
+    };
+  }, [attempt]);
   const logout = async () => {
     await api('/api/auth/logout', { method: 'POST' }).catch(() => {});
     location.hash = '';
     location.reload();
   };
+  if (bootError) return <BootError error={bootError} onRetry={() => setAttempt((n) => n + 1)} />;
   if (me === undefined) return <div className="boot"><img src="/icon.svg" alt="" width={48} /></div>;
   if (me === null) return <Login onSignedIn={setMe} />;
   if (me.mustChangePassword) return <Activate user={me} onDone={setMe} onLogout={logout} />;
   return (
-    <AppProvider initialMe={me}>
-      <CallProvider>
-        <Shell onLogout={logout} />
-      </CallProvider>
-    </AppProvider>
+    <ErrorBoundary>
+      <AppProvider initialMe={me}>
+        <CallProvider>
+          <Shell onLogout={logout} />
+        </CallProvider>
+      </AppProvider>
+    </ErrorBoundary>
+  );
+}
+
+/** Shown when Relay can't be reached at start-up. Retries by itself, with a button to retry now. */
+function BootError({ error, onRetry }: { error: unknown; onRetry: () => void }) {
+  const [wait, setWait] = useState(5);
+  const [tries, setTries] = useState(0);
+  useEffect(() => {
+    setWait(Math.min(5 * 2 ** tries, 60));
+  }, [error, tries]);
+  useEffect(() => {
+    if (wait <= 0) {
+      setTries((t) => t + 1);
+      onRetry();
+      return;
+    }
+    const t = setTimeout(() => setWait((w) => w - 1), 1000);
+    return () => clearTimeout(t);
+  }, [wait, onRetry]);
+  useEffect(() => {
+    const online = () => onRetry();
+    window.addEventListener('online', online);
+    return () => window.removeEventListener('online', online);
+  }, [onRetry]);
+  return (
+    <div className="boot-error">
+      <div className="boot-card">
+        <span className="app-name">Relay</span>
+        <ErrorState title="Relay isn’t responding" error={error} onRetry={onRetry} />
+        <p className="muted small" aria-live="polite">Trying again automatically in {wait}s.</p>
+      </div>
+    </div>
   );
 }
 
@@ -112,7 +160,7 @@ function Shell({ onLogout }: { onLogout: () => void }) {
           </header>
         )}
         {banners}
-        <main className="content">{view}</main>
+        <main className="content"><ErrorBoundary key={`${route.view}/${route.id ?? ""}`} label="this page">{view}</ErrorBoundary></main>
         {!inConversation && (
           <nav className="bottom-nav" aria-label="Main">
             {tabs.map((t) => (
@@ -164,7 +212,7 @@ function Shell({ onLogout }: { onLogout: () => void }) {
       </aside>
       <div className="main">
         {banners}
-        <main className="content">{view}</main>
+        <main className="content"><ErrorBoundary key={`${route.view}/${route.id ?? ""}`} label="this page">{view}</ErrorBoundary></main>
       </div>
       {overlays}
     </div>

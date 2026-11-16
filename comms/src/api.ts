@@ -105,13 +105,27 @@ export class ApiError extends Error {
   }
 }
 
+export const OFFLINE_MESSAGE = 'Can’t reach Relay. Check your connection, then try again.';
+
+/** status 0: the request never got an answer (offline, server down, DNS). */
+export const isOffline = (e: unknown) => e instanceof ApiError && (e.status === 0 || e.status === 502 || e.status === 503 || e.status === 504);
+
+async function send(input: string, init: RequestInit): Promise<Response> {
+  try {
+    return await fetch(input, init);
+  } catch {
+    throw new ApiError(0, OFFLINE_MESSAGE);
+  }
+}
+
 export async function api<T = any>(path: string, opts: { method?: string; body?: unknown } = {}): Promise<T> {
-  const res = await fetch(path, {
+  const res = await send(path, {
     method: opts.method ?? (opts.body ? 'POST' : 'GET'),
     headers: opts.body !== undefined ? { 'Content-Type': 'application/json' } : undefined,
     body: opts.body !== undefined ? JSON.stringify(opts.body) : undefined,
     credentials: 'same-origin',
   });
+  if (res.status === 502 || res.status === 503 || res.status === 504) throw new ApiError(res.status, 'Relay is restarting or unavailable. Try again in a moment.');
   let data: any = null;
   try {
     data = await res.json();
@@ -126,7 +140,7 @@ export async function api<T = any>(path: string, opts: { method?: string; body?:
 }
 
 export async function upload(file: File): Promise<Attachment> {
-  const res = await fetch('/api/attachments', {
+  const res = await send('/api/attachments', {
     method: 'POST',
     headers: { 'Content-Type': file.type || 'application/octet-stream', 'X-Filename': encodeURIComponent(file.name) },
     body: file,

@@ -201,9 +201,38 @@ export function db(): DatabaseSync {
   if (!instance) {
     const file = process.env.RELAY_DB ?? path.join(dataDir(), 'relay.db');
     instance = new DatabaseSync(file);
+    instance.exec('PRAGMA busy_timeout = 5000');
     instance.exec(SCHEMA);
   }
   return instance;
+}
+
+/** Shutdown: fold the write-ahead log into the main file and close it, so a copy of relay.db alone is complete. */
+export function closeDb() {
+  if (!instance) return;
+  try {
+    instance.exec('PRAGMA wal_checkpoint(TRUNCATE)');
+  } finally {
+    instance.close();
+    instance = null;
+  }
+}
+
+/**
+ * On boot, tidy up after a crash or power cut: calls that were live when the process died
+ * are recorded as ended (or missed), and expired sessions are removed. Returns the calls fixed.
+ */
+export function recoverAfterCrash(): number {
+  const t = Date.now();
+  const r = db()
+    .prepare(
+      `UPDATE calls SET status = CASE WHEN answered_at IS NULL THEN 'missed' ELSE 'ended' END, ended_at = COALESCE(ended_at, ?)
+       WHERE status IN ('ringing','active')`,
+    )
+    .run(t);
+  db().prepare('UPDATE call_participants SET left_at = COALESCE(left_at, ?) WHERE left_at IS NULL').run(t);
+  db().prepare('DELETE FROM sessions WHERE expires_at < ?').run(t);
+  return Number(r.changes);
 }
 
 /** For tests: swap in a fresh in-memory database. */

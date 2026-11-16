@@ -2,8 +2,10 @@ import fs from 'node:fs';
 import http from 'node:http';
 import path from 'node:path';
 import { handleApi } from './api.ts';
-import { handleUpgrade } from './realtime.ts';
-import { db } from './db.ts';
+import { closeAllSockets, connectionCount, handleUpgrade } from './realtime.ts';
+import { closeDb, dataDir, db, recoverAfterCrash } from './db.ts';
+import { endAll as endAllCalls } from './calls.ts';
+import { log } from './log.ts';
 
 const PORT = Number(process.env.PORT ?? 4000);
 const HOST = process.env.HOST ?? '0.0.0.0';
@@ -60,19 +62,102 @@ function serveStatic(req: http.IncomingMessage, res: http.ServerResponse) {
     'Content-Type': TYPES[ext] ?? 'application/octet-stream',
     'Cache-Control': immutable ? 'public, max-age=31536000, immutable' : 'no-cache',
   });
-  fs.createReadStream(file).pipe(res);
+  fs.createReadStream(file)
+    .on('error', (e) => {
+      log.error('static file read failed', e, { file: path.relative(DIST, file) });
+      res.destroy();
+    })
+    .pipe(res);
 }
 
-db(); // create schema on boot
+// ---------- boot ----------
+
+try {
+  db(); // opens the file and creates the schema
+  const fixed = recoverAfterCrash();
+  if (fixed) log.warn('recovered after an unclean stop', { callsClosed: fixed });
+} catch (e) {
+  log.error('cannot open the database; check RELAY_DATA_DIR / RELAY_DB and file permissions', e, { dataDir: dataDir() });
+  process.exit(1);
+}
+if (!fs.existsSync(path.join(DIST, 'index.html'))) log.warn('frontend not built: run `npm run build` (the API still works)');
 
 const server = http.createServer(async (req, res) => {
-  security(res);
-  if (await handleApi(req, res)) return;
-  if (req.method !== 'GET' && req.method !== 'HEAD') {
-    res.writeHead(405).end();
-    return;
+  try {
+    security(res);
+    if (await handleApi(req, res)) return;
+    if (req.method !== 'GET' && req.method !== 'HEAD') {
+      res.writeHead(405).end();
+      return;
+    }
+    serveStatic(req, res);
+  } catch (e) {
+    log.error('request handler crashed', e, { method: req.method });
+    if (!res.headersSent) res.writeHead(500, { 'Content-Type': 'text/plain' }).end('Something went wrong on the server.');
+    else res.destroy();
   }
-  serveStatic(req, res);
 });
-server.on('upgrade', handleUpgrade);
-server.listen(PORT, HOST, () => console.log(`Relay listening on http://${HOST}:${PORT}`));
+server.on('upgrade', (req, socket, head) => {
+  socket.on('error', () => socket.destroy());
+  try {
+    handleUpgrade(req, socket, head);
+  } catch (e) {
+    log.error('websocket upgrade failed', e);
+    socket.destroy();
+  }
+});
+server.on('clientError', (_e, socket) => {
+  if (socket.writable) socket.end('HTTP/1.1 400 Bad Request\r\n\r\n');
+  else socket.destroy();
+});
+server.on('error', (e: NodeJS.ErrnoException) => {
+  if (e.code === 'EADDRINUSE') log.error(`port ${PORT} is already in use; stop the other process or set PORT`, undefined, { port: PORT });
+  else if (e.code === 'EACCES') log.error(`no permission to listen on port ${PORT}; use a port above 1024 or a reverse proxy`, undefined, { port: PORT });
+  else log.error('server error', e);
+  process.exit(1);
+});
+server.listen(PORT, HOST, () => log.info('Relay is listening', { url: `http://${HOST === '0.0.0.0' ? 'localhost' : HOST}:${PORT}`, dataDir: dataDir(), node: process.version }));
+
+// ---------- clean shutdown ----------
+
+let stopping = false;
+async function shutdown(reason: string, code = 0) {
+  if (stopping) return;
+  stopping = true;
+  log.info('shutting down', { reason, connections: connectionCount() });
+  // Hard stop if something hangs, so a process manager can restart us.
+  setTimeout(() => {
+    log.error('shutdown took too long; forcing exit');
+    process.exit(code || 1);
+  }, 10_000).unref();
+  try {
+    const closed = new Promise<void>((resolve) => server.close(() => resolve())); // stop accepting; finish in-flight requests
+    server.closeIdleConnections();
+    const ended = endAllCalls(); // posts "call ended" to chats while sockets are still open
+    if (ended) log.info('ended live calls', { calls: ended });
+    closeAllSockets(); // clients see a restart and reconnect with backoff
+    await Promise.race([closed, new Promise((r) => setTimeout(r, 5_000))]);
+    server.closeAllConnections();
+    closeDb();
+    log.info('stopped cleanly');
+  } catch (e) {
+    log.error('error during shutdown', e);
+    code ||= 1;
+  }
+  process.exit(code);
+}
+
+for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP', 'SIGBREAK'] as const) {
+  try {
+    process.on(sig, () => void shutdown(sig));
+  } catch {
+    /* signal not supported on this platform */
+  }
+}
+// A bug we didn't catch: log it, close the database cleanly, and exit non-zero so the process manager restarts us.
+process.on('uncaughtException', (e) => {
+  log.error('uncaught exception', e);
+  void shutdown('uncaught exception', 1);
+});
+// A rejected promise nobody awaited is logged but doesn't take everyone offline.
+process.on('unhandledRejection', (e) => log.error('unhandled promise rejection', e));

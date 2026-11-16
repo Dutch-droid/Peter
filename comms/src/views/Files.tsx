@@ -1,18 +1,26 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { api, type SharedFile } from '../api';
 import { go, useStore } from '../store';
 import { socket } from '../socket';
-import { bytes, Empty, Icon, timeShort } from '../components/ui';
+import { bytes, Empty, ErrorState, Icon, timeShort } from '../components/ui';
 
 export function FilesView() {
   const { user, conversations, conversationName } = useStore();
   const [files, setFiles] = useState<SharedFile[] | null>(null);
   const [q, setQ] = useState('');
+  const [error, setError] = useState<unknown>(null);
+  const load = useCallback(
+    () =>
+      api(`/api/files?q=${encodeURIComponent(q)}`)
+        .then((r) => (setFiles(r.files), setError(null)))
+        .catch(setError),
+    [q],
+  );
   useEffect(() => {
-    const t = setTimeout(() => void api(`/api/files?q=${encodeURIComponent(q)}`).then((r) => setFiles(r.files)), q ? 250 : 0);
+    const t = setTimeout(() => void load(), q ? 250 : 0);
     return () => clearTimeout(t);
-  }, [q]);
-  useEffect(() => socket.on((e) => e.type === 'message:new' && e.message.attachment && api('/api/files').then((r) => setFiles(r.files))), []);
+  }, [load, q]);
+  useEffect(() => socket.on((e) => ((e.type === 'message:new' && e.message.attachment) || e.type === 'hello') && void load()), [load]);
   return (
     <div className="page">
       <div className="page-head">
@@ -24,7 +32,8 @@ export function FilesView() {
         <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search files by name" aria-label="Search files" />
       </div>
       <ul className="files-list">
-        {files === null && <li className="hint pad">Loading…</li>}
+        {error != null && <li><ErrorState compact title="Can’t load files" error={error} onRetry={load} /></li>}
+        {files === null && error == null && <li className="hint pad">Loading…</li>}
         {files?.length === 0 && <li><Empty icon="file" title={q ? 'No files match' : 'No files yet'}>Files you send or receive in chats and mail show up here.</Empty></li>}
         {files?.map((f) => {
           const conv = f.source === 'chat' ? conversations.find((c) => c.id === f.ref_id) : undefined;

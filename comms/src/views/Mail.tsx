@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { api, upload, type Attachment, type Email } from '../api';
 import { go, useStore } from '../store';
 import { socket } from '../socket';
-import { Avatar, bytes, Empty, fullDate, Icon, PeoplePicker, RichText, timeShort } from '../components/ui';
+import { Avatar, bytes, Empty, ErrorState, fullDate, Icon, PeoplePicker, RichText, timeShort } from '../components/ui';
 import { AttachmentView } from './Chat';
 
 const FOLDERS: { key: string; label: string; icon: string }[] = [
@@ -36,10 +36,11 @@ function quote(e: Email) {
 const prefixed = (p: string, s: string) => (s.toLowerCase().startsWith(p.toLowerCase()) ? s : `${p} ${s}`);
 
 export function MailView() {
-  const { route, mailCounts, toast } = useStore();
+  const { route, mailCounts } = useStore();
   const [sub, query] = (route.sub ?? 'inbox').split('?');
   const folder = sub === 'compose' ? 'inbox' : sub;
   const [emails, setEmails] = useState<Email[] | null>(null);
+  const [listError, setListError] = useState<unknown>(null);
   const [q, setQ] = useState('');
   const [compose, setCompose] = useState<Draft | null>(null);
   const selected = route.id;
@@ -54,9 +55,9 @@ export function MailView() {
 
   const load = useCallback(() => {
     api<{ emails: Email[] }>(`/api/mail?folder=${folder}&q=${encodeURIComponent(q)}`)
-      .then((r) => setEmails(r.emails))
-      .catch((e) => toast(e.message, 'error'));
-  }, [folder, q, toast]);
+      .then((r) => (setEmails(r.emails), setListError(null)))
+      .catch((e) => setListError(e));
+  }, [folder, q]);
 
   useEffect(() => {
     setEmails(null);
@@ -121,7 +122,10 @@ export function MailView() {
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search mail" aria-label="Search mail" />
         </div>
         <ul className="mail-list">
-          {emails === null && <li className="hint pad">Loading…</li>}
+          {listError != null && (
+            <li><ErrorState compact title="Can’t load your mail" error={listError} onRetry={load} /></li>
+          )}
+          {emails === null && listError == null && <li className="hint pad">Loading…</li>}
           {emails?.length === 0 && <li><Empty icon={FOLDERS.find((f) => f.key === folder)?.icon ?? 'inbox'} title={q ? 'No matches' : 'Nothing here'} /></li>}
           {emails?.map((e) => {
             const who = folder === 'sent' || folder === 'drafts' ? (e.to.length ? `To: ${e.to.map((p) => p.name).join(', ')}` : '(no recipients)') : e.from.name;
@@ -169,17 +173,19 @@ export function MailView() {
 function Reader({ id, folder, onChanged, onCompose }: { id: number; folder: string; onChanged: () => void; onCompose: (d: Draft) => void }) {
   const { me, toast } = useStore();
   const [data, setData] = useState<{ email: Email; thread: Email[] } | null>(null);
-  const [err, setErr] = useState('');
+  const [err, setErr] = useState<unknown>(null);
+  const [attempt, setAttempt] = useState(0);
   useEffect(() => {
+    setErr(null);
     api(`/api/mail/${id}`)
       .then((d) => {
         setData(d);
         onChanged();
       })
-      .catch((e) => setErr(e.message));
-  }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+      .catch((e) => setErr(e));
+  }, [id, attempt]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (err) return <div className="detail"><Empty icon="mail" title="Can’t open this email">{err}</Empty></div>;
+  if (err) return <div className="detail"><ErrorState title="Can’t open this email" error={err} onRetry={() => setAttempt((n) => n + 1)} /></div>;
   if (!data) return <div className="detail"><div className="hint pad">Loading…</div></div>;
   const e = data.email;
 
